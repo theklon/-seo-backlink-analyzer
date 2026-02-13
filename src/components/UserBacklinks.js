@@ -249,10 +249,6 @@ function UserBacklinks() {
     }
   };
 
-  const openActionsMenu = (id) => {
-    setMenuOpenId((prev) => (prev === id ? null : id));
-  };
-
   const handleEditBacklinkClick = (item) => {
     setEditingBacklink(item);
     setEditDomain(item.domain || "");

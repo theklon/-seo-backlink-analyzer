@@ -1,6 +1,6 @@
 // src/components/ProjectBacklinksPage.js
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 import { API_BASE_URL } from "../api";
 

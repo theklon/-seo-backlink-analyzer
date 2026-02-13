@@ -15,7 +15,7 @@ import { IoIosArrowDown } from "react-icons/io";
 
 function AdminDashboard() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [stats, setStats] = useState({
+  const [, setStats] = useState({
     totalUsers: 0,
     totalProjects: 0,
     totalBacklinks: 0,
