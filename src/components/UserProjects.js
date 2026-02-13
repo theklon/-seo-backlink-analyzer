@@ -69,32 +69,6 @@ function UserProjects() {
     fetchProjects();
   }, []);
 
-  const openBacklinksModal = async (project) => {
-    setBacklinksProjectName(project.name || "");
-    setBacklinksModalOpen(true);
-    setBacklinksLoading(true);
-    setBacklinksError("");
-    setBacklinksForProject([]);
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/user/backlinks`);
-      if (!res.ok) {
-        throw new Error(`Failed to load backlinks: ${res.status}`);
-      }
-      const data = await res.json();
-
-      // In UserBacklinks, projectId is stored as the project name
-      const filtered = data.filter(
-        (b) => (b.projectId || "") === (project.name || "")
-      );
-
-      setBacklinksForProject(filtered);
-    } catch (err) {
-      setBacklinksError(err.message || "Error loading backlinks for project");
-    } finally {
-      setBacklinksLoading(false);
-    }
-  };
 
   const closeBacklinksModal = () => {
     setBacklinksModalOpen(false);
