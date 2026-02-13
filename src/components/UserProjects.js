@@ -27,12 +27,6 @@ function UserProjects() {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [projectsError, setProjectsError] = useState("");
 
-  // Backlinks modal state
-  const [backlinksModalOpen, setBacklinksModalOpen] = useState(false);
-  const [backlinksError, setBacklinksError] = useState("");
-  const [backlinksForProject, setBacklinksForProject] = useState([]);
-  const [backlinksProjectName, setBacklinksProjectName] = useState("");
-
   // Info (social links) modal state
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const [infoProject, setInfoProject] = useState(null);
@@ -67,14 +61,6 @@ function UserProjects() {
 
     fetchProjects();
   }, []);
-
-
-  const closeBacklinksModal = () => {
-    setBacklinksModalOpen(false);
-    setBacklinksForProject([]);
-    setBacklinksError("");
-    setBacklinksProjectName("");
-  };
 
   // INFO modal handlers
   const openInfoModal = (project) => {
@@ -224,7 +210,7 @@ function UserProjects() {
         {/* MAIN CONTENT – View Projects */}
         <div className="main-content">
           {/* Breadcrumb */}
-          <div className="breadcrumb">Home &gt; View Projects</div>
+          <div className="breadcrumb">Home &​gt; View Projects</div>
 
           {/* Title */}
           <h2 className="page-title">View Projects</h2>
@@ -295,7 +281,7 @@ function UserProjects() {
                           >
                             Media
                           </button>
-                          <button 
+                          <button
                             className="user-project-btn user-project-btn-backlinks"
                             type="button"
                             onClick={() => {
@@ -535,58 +521,6 @@ function UserProjects() {
                   {infoSaving ? "Saving..." : "Save"}
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* BACKLINKS LIST MODAL */}
-      {backlinksModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-card backlinks-modal-card">
-            <div className="modal-header">
-              <h3>Backlinks for {backlinksProjectName || "Project"}</h3>
-              <span className="modal-close" onClick={closeBacklinksModal}>
-                ×
-              </span>
-            </div>
-
-            <div className="modal-body backlinks-modal-body">
-              {backlinksLoading && <p>Loading backlinks...</p>}
-              {backlinksError && (
-                <p style={{ color: "red", marginBottom: 8 }}>
-                  {backlinksError}
-                </p>
-              )}
-
-              {!backlinksLoading &&
-                !backlinksError &&
-                backlinksForProject.length === 0 && (
-                  <p>No backlinks found for this project.</p>
-                )}
-
-              {!backlinksLoading &&
-                !backlinksError &&
-                backlinksForProject.length > 0 && (
-                  <div className="backlinks-list">
-                    {backlinksForProject.map((b) => (
-                      <div
-                        className="backlinks-list-item"
-                        key={b.id || b._id || b.url}
-                      >
-                        <div className="backlinks-dot" />
-                        <a
-                          href={b.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="backlinks-url"
-                        >
-                          {b.url}
-                        </a>
-                      </div>
-                    ))}
-                  </div>
-                )}
             </div>
           </div>
         </div>
