@@ -29,7 +29,6 @@ function UserProjects() {
 
   // Backlinks modal state
   const [backlinksModalOpen, setBacklinksModalOpen] = useState(false);
-  const [backlinksLoading, setBacklinksLoading] = useState(false);
   const [backlinksError, setBacklinksError] = useState("");
   const [backlinksForProject, setBacklinksForProject] = useState([]);
   const [backlinksProjectName, setBacklinksProjectName] = useState("");
