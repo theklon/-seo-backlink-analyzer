@@ -1,2 +1,2 @@
 // src/api.js
-export const API_BASE_URL = "http://127.0.0.1:8000"; // FastAPI dev server
+export const API_BASE_URL = "https://seo-backlink-analyzer.onrender.com"; // FastAPI dev server
