@@ -90,6 +90,9 @@ async def health():
 
 
 # ================= AUTH: OTP + LOGIN =================
+@app.get("/")
+async def root():
+    return {"status": "ok"}
 
 
 @app.post("/api/auth/request-otp")
