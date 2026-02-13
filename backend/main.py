@@ -41,11 +41,12 @@ origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://klon-backlink.vercel.app",
+    "https://klon-backlink-git-main-theklon.vercel.app",  # preview URL
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -121,10 +122,6 @@ async def request_otp(payload: dict):
         },
     )
 
-    try:
-        send_otp_email(email, otp)
-    except Exception as e:
-        print("Failed to send OTP email:", e)
 
     print("TEST OTP for", email, "=", otp)
     return {"message": "OTP sent"}
