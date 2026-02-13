@@ -17,8 +17,10 @@ function Userlogin() {
   // Step 1: send OTP
   const handleSendOtp = async (e) => {
     e.preventDefault();
+    console.log("Sending OTP for", email);
     setError("");
     setMessage("");
+
     if (!email.trim()) {
       setError("Please enter Email");
       return;
@@ -34,14 +36,30 @@ function Userlogin() {
         }),
       });
 
-      const data = await res.json();
+      console.log("OTP res status", res.status);
+      const text = await res.text();
+      console.log("Raw response text:", text);
+
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (err) {
+        console.error("Failed to parse JSON:", err);
+        throw new Error("Invalid server response");
+      }
+
+      console.log("Parsed data", data);
+
       if (!res.ok) {
         throw new Error(data.detail || "Failed to send OTP");
       }
 
+      console.log("Before setStep, step =", step);
       setMessage("OTP sent to your email. Please check your inbox.");
-      setStep(2); // move to OTP screen
+      setStep(2);
+      console.log("After setStep(2)");
     } catch (err) {
+      console.error("handleSendOtp error", err);
       setError(err.message || "Error sending OTP");
     } finally {
       setLoading(false);
