@@ -1,6 +1,8 @@
 # backend/main.py
 from datetime import datetime, timedelta
 from typing import List, Optional
+import os
+from dotenv import load_dotenv
 
 import random
 import string
@@ -49,13 +51,16 @@ app.add_middleware(
 
 # ================= SMTP / OTP HELPERS =================
 
-# TODO: move these to environment variables in production
-# Amazon SES SMTP configuration
-SMTP_HOST = "email-smtp.us-east-1.amazonaws.com"
-SMTP_PORT = 587  # STARTTLS
-SMTP_USER = "AKIAXAMGVQ5KPN6B2S5R"  # SES SMTP username (from AWS console)
-SMTP_PASS = "BATB3TTy47XxmoaaZ+naXv07ngTOET1tsgmRHvb/wcBf"  # SES SMTP password
-SMTP_FROM = "digital@nextwebi.com"
+load_dotenv()  # load from .env in development
+
+SMTP_HOST = os.getenv("SMTP_HOST", "email-smtp.us-east-1.amazonaws.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USER = os.getenv("SMTP_USER")
+SMTP_PASS = os.getenv("SMTP_PASS")
+SMTP_FROM = os.getenv("SMTP_FROM")
+
+if not all([SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM]):
+    raise RuntimeError("SMTP environment variables are not fully set")
 
 
 def generate_otp(length: int = 6) -> str:
