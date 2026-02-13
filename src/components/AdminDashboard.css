@@ -1,0 +1,1959 @@
+/* ROOT */
+.dashboard-root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Lato", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background: #f8fafc;
+}
+
+/* Hide browser default password eye icon */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none !important;
+}
+
+/* TOP BAR */
+.topbar {
+  height: 56px;
+  background: #2a2828;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.topbar-logo {
+  height: 40px;    /* or 44px if you want slightly bigger */
+  width: auto;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.topbar-icon {
+  font-size: 18px;
+  cursor: pointer;
+}
+/* ===== USER PAGES: LIGHT TOP BAR ===== */
+.user-dashboard .topbar {
+  background: #ffffff;
+  color: #0f172a;
+  border-bottom: 1px solid #e5e7eb;
+}
+.user-dashboard .topbar-logo {
+  height: 140px;    /* or 44px if you want slightly bigger */
+  width: auto;
+  margin-top: 15px;
+}
+
+/* Icons in the user topbar */
+.user-dashboard .topbar-icon,
+.user-dashboard .topbar-right svg {
+  color: #0f172a !important;
+}
+
+/* Divider can be a bit lighter on white */
+.user-dashboard .topbar-divider {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+/* User name / role text color on white bar */
+.user-dashboard .admin-name {
+  color: #0f172a;
+}
+
+.user-dashboard .admin-role {
+  color: #6b7280;
+}
+
+/* Users table – smaller / centered like reference image */
+.users-table {
+  max-width: 1075px;      /* or 850–900px */
+  margin: 8px;   /* center horizontally */
+  margin-left: 4px;   /* adjust 30–60px until it lines up with cards */
+  margin-right: 0;
+}
+/* Users table – equal spacing between columns */
+.users-table table {
+  width: 400%;
+  table-layout: fixed;    /* forces equal column widths */
+}
+
+.users-table th,
+.users-table td {
+  text-align: center;
+}
+
+/* First column (User Name) left aligned */
+.users-table th:first-child,
+.users-table td:first-child {
+  text-align: left;
+}
+.users-table th:last-child,
+.users-table td:last-child {
+  text-align: center;
+}
+.users-table td {
+  padding: 8px 16px;    /* slightly smaller rows */
+}
+
+
+/* Header row for Users table (Create User aligned with Actions) */
+.users-header {
+  max-width: 1065px;        /* or 1045 if you prefer */
+  margin-top: 2px;         /* was 24px – reduce to bring closer */
+  margin-left: 4px;
+  margin-right: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-avatar {
+  width: 32px;
+  height: 32px;
+  background: #1a4487;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-name {
+  font-size: 13px;
+}
+
+.admin-role {
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+/* BODY */
+.dashboard-body {
+  flex: 1;
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 18px 12px;
+}
+
+/* SIDEBAR MENU */
+.sidebar ul {
+  list-style: none;   /* removes dots */
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;          /* icon ↔ text */
+  padding: 10px 16px;
+  margin-bottom: 14px;/* 👈 SPACE BETWEEN MENU ITEMS */
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
+
+/* ACTIVE MENU ITEM */
+
+
+/* ICONS */
+.menu-item i,
+.menu-item svg {
+  font-size: 18px;   /* exact dashboard-like size */
+  color: #374151;
+}
+
+
+.menu-item.active i,
+.menu-item.active {
+  background: #eef2ff;
+  color: #2f3b82;
+}
+
+.menu-item.active svg {
+  color: #2f3b82;
+}
+
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  padding: 18px 22px;
+}
+
+/* BANNER */
+.banner {
+  width: 100%;
+  height: 240px;
+  border-radius: 16px;
+
+  background-image: url("../assets/admindashboardslide.png");
+  background-size: cover;       /* FULL FIT */
+  background-position: center;
+  background-repeat: no-repeat;
+
+  background-color: #eef5f3;
+}
+
+/* DOTS */
+.dots {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  background: #d1d5db;
+  border-radius: 50%;
+}
+
+.dot.active {
+  background: #2f3b82;
+}
+
+/* PLACEHOLDER CONTENT */
+.content-placeholder {
+  margin-top: 30px;
+}
+
+
+
+
+/* Calendar & Notification icons (React Icons) */
+.topbar-icon {
+  font-size: 20px;
+  color: #ffffff;     /* 👈 PURE WHITE */
+  cursor: pointer;
+}
+
+.topbar-right svg {
+  color: #ffffff !important;
+  font-size: 20px;     /* try 20–22px, first image ≈ 20px */
+  stroke-width: 1.8;
+   transform: translateY(5px); 
+}
+.topbar-right svg:hover {
+  color: #e5e7eb;
+}
+
+/* spacing between icons */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 13px;                /* THIS controls spacing */
+}
+.topbar-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.25); /* subtle */
+  margin: 0 12px;
+}
+
+/* hover effect */
+.topbar-icon:hover {
+  color: #e5e7eb;
+  transform: scale(1.05);
+}
+.admin-arrow {
+  color: #ffffff;          /* white arrow */
+  font-size: 14px;         /* same as reference */
+  margin-left: 6px;        /* space from name */
+  cursor: pointer;
+
+  /* vertical alignment fix */
+  position: relative;
+  top: 1px;
+}
+.admin-info-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Dropdown card */
+.profile-menu-card {
+  position: absolute;
+  top: 56px;          /* just below topbar */
+  right: 0;
+  width: 260px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.25);
+  padding: 18px 20px 12px;
+  z-index: 50;
+}
+
+/* Header inside card */
+.profile-menu-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.profile-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #2f3b82;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 16px;
+  color:black
+}
+
+.profile-company {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.profile-email {
+  font-size: 12px;
+  color: #5f6672;
+}
+.profile-menu-icon svg {
+  color: #000000 !important;
+  font-size: 20px;      /* 20–22px similar to reference */
+  stroke-width: 1.8;
+  transform: translateY(5px);
+}
+/* Menu items */
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+}
+
+.profile-menu-item:hover {
+  background: #f3f4ff;
+  border-radius: 8px;
+}
+
+.profile-menu-icon {
+  width: 20px;
+  text-align: center;
+}
+
+.profile-logout {
+  margin-top: 6px;
+  color: #000000;
+}
+
+/* normal menu item */
+.sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 2px;          /* space between items */
+  border-radius: 12px;
+  cursor: pointer;
+  color: #374151;
+}
+
+/* ACTIVE menu item (Home blue state) */
+.sidebar li.active {
+  background: #eef2ff;          /* light blue background */
+  color: #2f3b82;               /* blue text */
+}
+
+/* icon color change when active */
+.sidebar li.active .nav-icon {
+  color: #2f3b82;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  width: 220px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.table-container {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-top: 24px;
+  padding: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.breadcrumb span {
+  margin: 0 6px;
+}
+
+/* ===== PAGE TITLE ===== */
+.page-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1px;
+}
+
+/* ===== STATS ROW ===== */
+.stats-row {
+  display: flex;
+  gap: 32px;                 /* spacing between cards */
+  margin-bottom:2px;
+}
+
+/* ===== CARD ===== */
+.stats-card {
+  width: 230px;              /* exact width */
+  height: 140px;             /* exact height */
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+
+/* ===== CARD TEXT ===== */
+.stats-card p {
+  font-size: 13px;
+  color: #7a7a7a;
+  margin: 0;
+}
+
+.stats-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ===== ICON CIRCLE ===== */
+.stats-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* Icon color themes */
+.stats-icon.blue {
+  background: #eaf0ff;
+  color: #2563eb;
+}
+
+.stats-icon.orange {
+  background: #fff3e6;
+  color: #d97706;
+}
+
+.stats-icon.green {
+  background: #eaffea;
+  color: #16a34a;
+}
+
+/* ===== NUMBER COLORS ===== */
+.blue-text {
+  color: #2563eb;
+}
+
+.orange-text {
+  color: #d97706;
+}
+
+.green-text {
+  color: #16a34a;
+}
+/* ===== TABLE HEADER (BUTTON ROW) ===== */
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px; /* space between button & table */
+}
+
+/* ===== CREATE USER BUTTON ===== */
+.create-user-btn {
+  background-color: #2f3b82;
+  color: #ffffff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(47, 59, 130, 0.35);
+}
+
+.create-user-btn:hover {
+  background: #263070;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.modal-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ===== MODAL CARD ===== */
+.modal-card {
+  width: auto;
+  height: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  padding: 20px 22px;
+}
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-close {
+  font-size: 22px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.modal-close:hover {
+  color: #111827;
+}
+
+/* BODY */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-field label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+  color: #111827;
+}
+
+.modal-field label span {
+  color: #ef4444;
+}
+
+.modal-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+/* DA + SS side by side in Add Backlink modal */
+.modal-field-row {
+  display: flex;
+  gap: 16px;
+}
+.modal-field-row .modal-field.small-field {
+  flex: 1;             /* each takes half of the row */
+  min-width: 0;
+}
+
+
+.modal-field-row .small-field {
+  flex: 0 0 auto;
+}
+
+.modal-field-row .small-field input {
+  max-width: 80px;   /* enough for 2 digits */
+}
+
+/* FOOTER */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;   /* IMPORTANT */
+}
+
+
+.table-container thead {
+  background: #f1f6ff;
+}
+
+.table-container th {
+  text-align: left;
+  padding: 19px 20px;
+  font-weight: 600;
+  color: #111827;
+  font-size: 14px;
+}
+
+.table-container td {
+  padding: 15px;
+  border-bottom: 1px solid #e5ecf6;
+  color: #0f172a;
+}
+
+.table-container tr:last-child td {
+  border-bottom: none;
+}
+
+
+
+.table-container td:last-child {
+  text-align: center;
+  color: #475569;
+}
+.main-content {
+  background: transparent;   /* DO NOT use white here */
+}
+/* add project button */
+.primary-btn {
+  background-color: #2f3b82;   /* same blue */
+  color: #ffffff;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  box-shadow: 0 6px 14px rgba(47, 59, 130, 0.25);
+  transition: all 0.2s ease;
+}
+.primary-btn:hover {
+  background-color: #1f2a6b;
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end; /* pushes button to right */
+  margin-bottom: 1px;       /* space above table */
+}
+/* ONLY Projects & Categories tables */
+.project-page .table-container,
+.category-page .table-container {
+  max-width: 750px;   /* adjust if needed */
+}
+.project-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;              /* space between buttons */
+}
+ 
+/* Buttons styling to match screenshot */
+ 
+
+/* UserProjects table column sizing */
+/* === UserProjects table ONLY (inside user dashboard) === */
+/* UserProjects table – aligned with content, under search bar */
+.user-dashboard .user-projects-table {
+  max-width: 1600px;    /* or 100% if you prefer full width */
+  margin-top: 8px;
+  margin-left: 0;      /* align with search box */
+  margin-right: 0;
+}
+.user-dashboard .user-projects-table td.user-projects-actions-col {
+  padding-right: 16px;    /* space between last button and table border */
+}
+.user-dashboard .user-project-btn {
+  padding: 8px 26px;      /* taller & longer buttons */
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  min-width: 90px;        /* ensures all three same width */
+}
+ 
+/* User Projects – layout of Info / Media / Backlinks buttons */
+/* User Projects – Info / Media / Backlinks row */
+.user-dashboard .user-projects-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;  /* move buttons away from extreme right */
+  gap: 8px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+/* Extra space under View Projects title (user dashboard only) */
+.user-dashboard .page-title {
+  margin-bottom: 16px;   /* default might be smaller */
+}
+
+/* Or, if you only want to affect this page: */
+.user-dashboard .backlink-filters {
+  margin-top: 16px;       /* more space under title */
+}
+/* 1. Project Name column (first column) – take remaining width */
+.user-dashboard .project-table th:first-child,
+.user-dashboard .project-table td:first-child {
+  width: auto;              /* grow to fill remaining space */
+}
+
+/* 2. Actions column – fixed narrow width for 3 buttons */
+.user-dashboard .project-table th.actions-col,
+.user-dashboard .project-table td.actions-col {
+  width: 260px;             /* tweak 240–280 until it matches image */
+  text-align: center;
+  padding-right: 0;
+}
+.user-dashboard .user-projects-actions-col,
+.user-dashboard .user-projects-table th:last-child,
+.user-dashboard .user-projects-table td:last-child {
+  width: 340px;
+  text-align: center;
+  padding-right: 0;
+}
+
+/* 4. Layout of Info / Media / Backlinks buttons */
+.user-dashboard .project-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;   /* center under Actions */
+  gap: 12px;
+  flex-wrap:nowrap;                 /* space between buttons */
+}
+.user-dashboard .user-project-btn-info {
+  background-color: #1d61d0;   /* same blue as before */
+  color: #ffffff;
+}
+ 
+/* Media = old light orange design */
+.user-dashboard .user-project-btn-media {
+  background-color: #ffdcb1;   /* light orange */
+  color: #d77300;
+  border: 1px solid #d97706;
+}
+ 
+/* Backlinks = old white pill design */
+.user-dashboard .user-project-btn-backlinks {
+  background-color: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+/* Wraps table + button */
+.table-wrapper {
+  max-width: 900px;      /* same width as table */
+}
+
+/* Button aligned above Actions column */
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+  padding-right: 20px; /* SAME as table cell padding */
+}
+
+
+
+
+/* Actions column alignment */
+.actions-col {
+  text-align: center;
+  width: 220px;
+}
+/* limit width of the View Projects table and center it */
+.project-table {
+  max-width: 900px;     /* reduce card width */
+  margin: 2px ;  /* center horizontally */
+}
+/* Actions column */
+.project-table th:last-child,
+.project-table td:last-child {
+  width: 120px;
+  text-align: left;
+  padding-right: 80px;
+}
+.actions-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.actions-dot-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+}
+
+.actions-menu {
+  position: absolute;
+  top: 50%;          /* vertically center relative to the dots */
+  left: 100%;        /* place it to the right of the button */
+  transform: translateY(-50%); /* adjust for height */
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 4px 0;
+  z-index: 10;
+  margin-left: 8px;  /* small gap between dots and menu */
+}
+.url-text a,
+.url-text {
+  color: #2563eb;          /* blue */
+  cursor: pointer;
+}
+
+.url-text a:hover,
+.url-text:hover {
+  text-decoration: underline;
+}
+/* in AdminDashboard.css */
+.url-list-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));  /* 2 columns */
+  gap: 12px;                                         /* vertical + horizontal spacing */
+}
+/* Make the generic modal a bit wider and scrollable */
+/* ===== ADMIN MODALS ===== */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);   /* can be a bit darker for admin */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.admin-modal-card {
+  width: 550px;                         /* wider / different size for admin */
+  max-width: 96%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.35);
+  overflow: hidden;
+}
+
+/* Optional: tweak padding just for admin modals */
+.admin-modal-card .modal-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-modal-card .modal-body {
+  padding: 20px 24px 18px;
+}
+
+.admin-modal-card .modal-actions {
+  padding: 0 24px 20px;
+}
+/* Header row: label on left, + button on right */
+.modal-field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.modal-field-header .url-add-btn {
+  padding-inline: 14px;
+  min-height: 36px;
+  font-size: 20px;      /* increase size of + */
+  line-height: 1;       /* keep it visually centered */
+}
+
+/* 3-column grid for URL inputs */
+.url-list-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;           /* row gap, column gap */
+}
+
+.url-list-input {
+  width: 100%;
+}
+.url-list-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+ 
+.actions-menu button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+ 
+.actions-menu button:hover {
+  background-color: #f3f4f6;
+}
+
+
+/* Categories table column spacing */
+.categories-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Category Name */
+.categories-table th:nth-child(1),
+.categories-table td:nth-child(1) {
+  width: 26%;
+}
+
+/* Description */
+.categories-table th:nth-child(2),
+.categories-table td:nth-child(2) {
+  width: 54%;
+}
+
+/* Actions */
+.categories-table th:nth-child(3),
+.categories-table td:nth-child(3) {
+  width: 20%;
+  text-align: right;
+}
+/* DA / SS badges */
+.da-badge {
+  display: inline-flex;
+  min-width: 32px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: #e6f7ea; /* light green */
+  color: #16913a;
+  font-size: 12px;
+  text-align: center;
+  justify-content: center;
+}
+
+.ss-badge {
+  display: inline-flex;
+  min-width: 32px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: #ffe6e6; /* light red */
+  color: #c53030;
+  font-size: 12px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* URL row with icons */
+.url-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.url-icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a5568;
+}
+
+.url-icon-btn:hover {
+  color: #2b6cb0;
+}
+
+.url-text a {
+  text-decoration: none;
+}
+.url-text {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Header look */
+.categories-table thead th {
+  background: #f1f6ff;   /* light blue */
+  padding: 18px 28px;
+  font-weight: 500;
+}
+/* Force wrapper to match table width */
+.project-page .table-wrapper,
+.category-page .table-wrapper {
+  max-width: 750px;   /* EXACT same as table */
+}
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+
+/* HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-close {
+  font-size: 22px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.modal-close:hover {
+  color: #111827;
+}
+
+/* BODY */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-field label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+  color: #111827;
+}
+
+.modal-field label span {
+  color: #ef4444;
+}
+
+.modal-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+/* FOOTER */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+/* Title + "+ New Backlink" on the same row */
+.backlink-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* Make filters a reasonable width, not full page */
+.backlink-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  max-width: 900px;       /* control total width */
+}
+
+/* Search width similar to screenshot */
+.search-box {
+  flex: 0 0 320px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 6px;   /* <-- was 999px */
+  padding: 8px 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.filter-select {
+  min-width: 100px;
+  padding: 5px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-size: 13px;
+  color: #111827;
+  outline: none;
+}
+
+/* "+ New Backlink" button on the right */
+.new-backlink-btn {
+  background: #2f3b82;
+  color: #ffffff;
+  border: none;
+  padding: 9px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(47, 59, 130, 0.35);
+}
+
+.new-backlink-btn:hover {
+  background: #24306a;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 13px;
+  color: #111827;
+}
+
+.search-icon {
+  margin-right: 8px;
+  font-size: 14px;
+  color: #9ca3af;
+}
+/* Let the actions dropdown overflow outside the table area */
+.user-backlinks-table {
+  overflow: visible;
+}
+
+/* Base URL style in user backlinks table */
+.user-backlinks-table .url-text a {
+  color: #1f2937;           /* same as normal text */
+  text-decoration: none;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+/* Hover state: slight highlight + underline */
+.user-backlinks-table .url-text a:hover {
+  color: #4f46e5;           /* light indigo like buttons */
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+}
+
+.user-backlinks-table th,
+.user-backlinks-table td {
+  padding: 8px  8px;
+  vertical-align: top;
+  font-size: 13px;
+}
+
+/* 1: Domain Name */
+.user-backlinks-table th:nth-child(1),
+.user-backlinks-table td:nth-child(1) {
+  width: 16%;
+}
+
+/* 2: project */
+.user-backlinks-table th:nth-child(2),
+.user-backlinks-table td:nth-child(2) {
+  width: 14%;
+
+}
+
+/* 3: category*/
+.user-backlinks-table th:nth-child(3),
+.user-backlinks-table td:nth-child(3) {
+  width: 12%;
+}
+/* 4: DA – small (max 3 digits) */
+.user-backlinks-table th:nth-child(4),
+.user-backlinks-table td:nth-child(4) {
+  width: 6%;
+  text-align: center;
+  padding-left: 4px;
+  padding-right: 19px;
+}
+/* 5: SS – small (max 3 digits) */
+.user-backlinks-table th:nth-child(5),
+.user-backlinks-table td:nth-child(5) {
+  width: 4%;
+  text-align: center;
+  padding-left: 5px;
+  padding-right: 19px;
+}
+ 
+/* 6: URL – large, takes the slack */
+.user-backlinks-table th:nth-child(6),
+.user-backlinks-table td:nth-child(6) {
+  width: 32%;
+}
+
+/* 7: Contribute – compact but readable */
+.user-backlinks-table th:nth-child(7),
+.user-backlinks-table td:nth-child(7) {
+  width: 10%;
+}
+ 
+/* 8: Actions – tiny */
+.user-backlinks-table th:nth-child(8),
+.user-backlinks-table td:nth-child(8) {
+  width: 8%;
+  text-align: center;
+}
+
+/* Make actions menu visible in UserBacklinks table */
+/* Compact actions menu positioned beside the dots in UserBacklinks */
+/* Compact actions menu positioned INSIDE table, left of the dots */
+.user-backlinks-table .actions-wrapper {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-backlinks-table .actions-icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+}
+.small-confirm-modal {
+  max-width: 360px;
+}
+.user-backlinks-table .actions-icon-btn:hover {
+  color: #1f2937;
+}
+.user-backlinks-table td {
+  line-height: 1.4;
+  vertical-align: middle;
+  color: #111827;           /* dark gray text */
+}
+
+.user-backlinks-table th {
+  font-weight: 500;
+  color: #6b7280;           /* lighter header text */
+}
+/* ============================
+   User Tools / Tool Collections
+   ============================ */
+
+.tool-card {
+  max-width: 700px;
+  margin: 15px 0 0 0;   /* top 15px, right 0, bottom 0, LEFT 0 */
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+  padding: 24px 32px 24px;
+}
+
+/* Header: "Add Tool" + subtitle */
+.tool-card-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #111827;
+}
+
+.tool-card-header p {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* Form layout reuses modal-field styles, but full width */
+.tool-form .modal-field {
+  margin-bottom: 18px;
+}
+
+.tool-form .modal-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.tool-form .modal-field label span {
+  color: #000000;   /* red star */
+}
+
+/* Inputs and textarea */
+.tool-form input[type="text"],
+.tool-form input[type="url"],
+.tool-form textarea {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 10px 14px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background-color: #f9fafb;
+}
+
+.tool-form textarea {
+  border-radius: 16px;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.tool-form input:focus,
+.tool-form textarea:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.35);
+  background-color: #ffffff;
+}
+
+/* Access type row */
+.tool-access-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.tool-access-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.tool-access-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+}
+
+/* Save button already uses .primary-btn */
+.tool-card .modal-actions {
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+/* Dedicated card style for Backlinks modal (UserProjects) */
+/* Dedicated card style for Backlinks modal (UserProjects & UserBacklinks) */
+.backlinks-modal-card {
+  max-width: 700px;      /* limit overall width */
+  width: 100%;           /* responsive on small screens */
+  max-height: 80vh;      /* don’t exceed viewport height */
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  padding: 18px 22px;
+  background: #ffffff;
+  overflow: hidden;      /* hide any overflow from inner scroll */
+}
+.backlinks-modal-card.small-confirm-modal {
+  max-width: 700px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+}
+/* Slightly roomier body with scroll if many backlinks */
+.backlinks-modal-body {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-top: 10px;
+  padding-bottom: 4px;
+}
+.backlinks-modal-card .modal-body {
+  max-height: 60vh;    /* leave space for header + footer */
+  overflow-y: auto;
+}
+/* Optional: tweak header inside this modal */
+.backlinks-modal-card .modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+/* Larger card for "Add New Backlink" modal */
+.backlinks-add-modal-card {
+  max-width: 800px;      /* wider */
+  width: 90%;
+  max-height: 80vh;
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  padding: 24px 28px;
+  background: #ffffff !important;  /* ensure not overridden */
+  overflow: hidden;
+}
+
+/* Make body scroll if content is tall */
+.backlinks-add-modal-card .modal-body {
+  max-height: 65vh;
+  overflow-y: auto;
+}
+/* In Add New Backlink modal, make URL inputs full width */
+.backlinks-add-modal-card .url-list-wrapper {
+  display: block;        /* single column */
+}
+
+.backlinks-add-modal-card .url-list-input {
+  width: 50%;           /* stretch across the card */
+  box-sizing: border-box;
+}
+
+.backlinks-modal-card .modal-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+/* Backlinks list inside UserProjects popup */
+.backlinks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.backlinks-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f9fafb;        /* light gray */
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.backlinks-list-item:hover {
+  background: #eef2ff;        /* very light indigo */
+  transform: translateY(-1px);
+}
+
+.backlinks-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #4f46e5;        /* indigo */
+  flex-shrink: 0;
+}
+
+.backlinks-url {
+  font-size: 13px;
+  color: #1f2937;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;           /* controls line length */
+}
+
+.backlinks-url:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+/* Contribution Details popup: allow it to grow with content, no scrollbars */
+.contribute-details-card {
+  max-width: 1100px;        /* wider so the table fits */
+  width: 95%;
+  max-height: none;         /* no fixed height limit */
+  overflow: visible;        /* let content expand the card */
+}
+/* In Contribution Details table, allow text to wrap so rows grow */
+.contribute-details-card .contribute-table td {
+  white-space: normal !important;  /* override any global nowrap */
+  word-break: break-word;          /* wrap long words/passwords */
+  overflow: visible;
+}
+.contribute-details-card .modal-body {
+  max-height: none;
+  overflow: visible;
+}
+/* Only URL column (1st) can truncate */
+
+/* Optional: avoid horizontal scrollbar even if something is long */
+.contribute-details-card .contribute-table {
+  width: 100%;
+  table-layout: fixed;      /* cells share width */
+}
+
+    /* or normal if you prefer wrapping */
+
+.social-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+/* The link input boxes */
+.social-row input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 13px;
+  color: #111827;
+  background-color: #f9fafb; /* same feel as backlinks list */
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+ 
+.social-row input::placeholder {
+  color: #9ca3af;
+}
+.social-row-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Row with underlined link + actions */
+.social-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+
+/* The clickable URL */
+.social-link-url {
+  flex: 1;
+  text-decoration: underline;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.social-link-url:hover {
+  color: #2563eb; /* blue on hover */
+}
+
+/* Copy / open / pencil buttons */
+.social-link-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.social-link-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+}
+
+.social-link-btn:hover {
+  color: #1f2937;
+}
+.social-row input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.16);
+}
+ 
+/* Round icon chips (you already have this partly) */
+.social-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+ 
+.social-icon.instagram {
+  background: radial-gradient(circle at 30% 30%, #feda77, #d62976, #962fbf);
+}
+ 
+.social-icon.facebook {
+  background: #1877f2;
+}
+ 
+.social-icon.twitter {
+  background: #111827;
+}
+.contribute-col {
+  text-align: center;
+}
+
+.contribute-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contribute-plus-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1d2a69; /* same blue as your buttons */
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.contribute-plus-btn:hover {
+  background-color: #111827;
+}
+
+.contribute-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.contribute-points {
+  font-size: 13px;
+  color: #111827;
+}
+
+.contribute-tick {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background-color: #10b981; /* green */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.contribute-meta {
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #4b5563; /* softer gray */
+  line-height: 1.5;
+}
+.contribute-meta span {
+  font-weight: 500; /* medium for label */
+}
+.contribute-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.contribute-table th,
+.contribute-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.contribute-table th {
+  font-weight: 600;
+  color: #4b5563;
+}
+.media-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.media-tab {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.media-tab.active {
+  color: #111827;
+  border-bottom: 2px solid #4f46e5;
+}
+
+.media-section {
+  margin-top: 16px;
+}
+
+.media-upload-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.media-upload-form input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.media-image-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f9fafb;
+}
+
+.media-image-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.media-image-title {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.image-menu-btn {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  border: none;
+  background: transparent;
+  color: #4b5563;      /* gray text */
+  cursor: pointer;
+  font-size: 18px;     /* just three dots */
+  padding: 0;
+}
+
+.media-image-card {
+  position: relative;
+}
+.media-section-header {
+  display: flex;
+  justify-content: flex-end;  /* button on the right side */
+  margin-bottom: 12px;
+}
+.media-tabs-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+/* Dedicated card for Project Media "Upload Images" popup */
+.media-upload-modal-card {
+  max-width: 480px;
+  width: 95%;
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 20px 24px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+}
+
+.media-upload-modal-card .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+/* Small, clean delete popup for media */
+.media-delete-modal-card {
+  max-width: 420px;
+  width: 95%;
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 18px 22px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+}
+
+.media-delete-modal-card .modal-body {
+  max-height: none;
+  overflow: visible;
+}
+
+/* Buttons: blue like other primary buttons */
+.media-delete-btn {
+  min-width: 80px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.media-delete-btn.primary {
+  background-color: #1d4ed8;  /* solid blue */
+  color: #ffffff;
+}
+
+.media-delete-btn.secondary {
+  background-color: transparent;
+  color: #1d4ed8;
+  border: 1px solid #1d4ed8;
+  margin-right: 8px;
+}
+.media-more-btn {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  color: #4b5563;           /* grey dots */
+  cursor: pointer;
+  font-size: 18px;          /* make dots visible */
+  padding: 0;               /* no padding box */
+  line-height: 1;
+}
+
+.media-more-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+  padding: 4px 0;
+  z-index: 20;
+}
+
+.media-more-item {
+  display: block;
+  width: 100%;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+  color: #111827;
+}
+.action-menu-btn {
+  background-color: #ffffff;  /* blue */
+  color: #000000;
+
+  border: none;
+  border-radius: 999px;       /* pill shape */
+  padding: 4px 14px;
+  font-size: 12px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-menu-btn:hover {
+  background-color: #bdbdbd;  /* darker blue on hover */
+  color: #000000;
+}
+
+.media-more-item:hover {
+  background: #eff6ff;
+}
+.url-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  position: relative; /* so the menu is anchored */
+}

@@ -1,0 +1,259 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Lato", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+/* PAGE */
+.login-page {
+  display: flex;
+  height: 100vh;
+  background-image: url("../assets/Adminpagebg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative; /* so footer absolute is anchored to this */
+}
+/* Override background for user login page */
+.user-login-page {
+  background-image: url("../assets/userloginimg.png");
+}
+/* LEFT SECTION */
+.left-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LOGO IMAGE */
+.main-logo {
+  width: 380px;
+  max-width: 100%;
+}
+
+/* RIGHT SECTION */
+.right-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LOGIN CARD */
+.login-card {
+  width: 500px;
+  height: 330px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  font-family: "poppins", serif;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* TITLE */
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* FIELD */
+.field {
+  margin-bottom: 18px;
+}
+
+.login-card label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* INPUT */
+.login-card input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+/* REMOVE DEFAULT BROWSER FOCUS OUTLINE */
+.login-card input:focus {
+  outline: none;                 /* removes black outline */
+  border: 1px solid #cfd3d8;     /* soft grey border (Figma-like) */
+  box-shadow: none;
+}
+.otp-row {
+  display: flex;
+  gap: 8px;
+}
+
+.otp-row input {
+  flex: 1;
+}
+
+.otp-send-btn {
+  white-space: nowrap;
+  padding-inline: 16px;
+}
+
+/* Heading same as login card heading */
+
+/* PASSWORD BOX */
+.password-box {
+  position: relative;
+}
+
+.password-box input {
+  padding-right: 44px; /* space for eye */
+}
+
+/* 👁️ EYE ICON — FIXED */
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.eye-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: #9aa0a6; /* light grey */
+}
+
+/* BUTTON */
+.login-btn {
+  width: 100%;
+  height: 46px;
+  margin-top: 20px;
+  background: #2f3b82;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background: #1f2965;
+}
+
+/* FORGOT PASSWORD */
+.forgot {
+  margin-top: 12px;
+  text-align: right;
+  font-size: 13px;
+  color: #2f3b82;
+  cursor: pointer;
+}
+/* Logo text under main logo */
+/* Wraps the logo image and overlay text */
+.logo-block {
+  position: relative;
+  display: inline-block;   /* shrink to image size */
+}
+
+/* Make sure the image defines the box */
+.main-logo {
+  display: block;
+  max-width: 320px;        /* adjust if you want smaller/bigger */
+}
+
+/* "by nextwebi" over the image, near the bottom of the word */
+.logo-subtitle {
+  position: absolute;
+  left: 55%;   
+  transform: translateX(-50%);             /* start under the "k" – tweak if needed */
+  bottom: 115px;      /* move up/down as you like */
+  margin-top: 8px;      
+  font-size: 24px;
+  color: #b91c1c;
+  font-weight:normal;
+}
+
+/* Footer at bottom center under the login card */
+.login-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.footer-link {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.footer-link:hover {
+  color: #111827;
+}
+
+.footer-separator {
+  color: #9ca3af;
+}
+
+.footer-copy {
+  white-space: nowrap;
+}
+.logo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+/* USER LOGIN: place logo at top-left */
+/* USER LOGIN: place logo at top-left */
+.user-login-page .left-section {
+  align-items: flex-start;      /* top */
+  justify-content: flex-start;  /* left */
+  padding-top: 32px;            /* distance from top */
+  padding-left: 40px;           /* distance from left */
+}
+
+/* USER LOGIN: keep simple vertical logo + subtitle */
+.user-login-page .logo-block {
+  position: relative;
+  display: inline-block;
+}
+.user-login-page .main-logo {
+  max-width: 220px;   /* tweak 200–240 as you like */
+  height: auto;
+}
+
+
+.user-login-page .logo-subtitle {
+  position: absolute;
+  top: 58%;        /* just under the logo image */
+  left: 30;
+  margin-top: 6px;  /* small gap between logo and text */
+  font-size: 20px;
+  color: #b91c1c;
+  font-weight: normal;
+  white-space:nowrap;
+}
+
+/* Optional: slightly smaller logo on user page */
+.user-login-page .main-logo {
+  max-width: 220px;   /* tweak 200–240 as you like */
+  height: auto;
+}
