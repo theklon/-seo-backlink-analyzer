@@ -786,7 +786,7 @@ function UserBacklinks() {
                     const totalPoints =
                       (item.contribute && item.contribute.points) ||
                       (item.contributions
-                        ? item.contributions.length * 95
+                        ? item.contributions.length 
                         : 0);
                     return (
                       <tr key={key}>
