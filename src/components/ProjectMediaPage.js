@@ -449,8 +449,24 @@ function ProjectMediaPage() {
             >
               Home
             </span>
-            {" > View Projects > "}
-            {projectName}
+            {" > "}
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/projects")}
+            >
+              View Projects
+            </span>
+            {" > "}
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                navigate(`/user/projects/${projectId}/backlinks`, {
+                  state: { projectName },
+                })
+              }
+            >
+              {projectName}
+            </span>
             {" > Media"}
           </div>
 

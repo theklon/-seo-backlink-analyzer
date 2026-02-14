@@ -209,7 +209,14 @@ function ProjectBacklinksPage() {
             >
               Home
             </span>
-            {" > View Projects > "}
+            {" > "}
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/projects")}
+            >
+              View Projects
+            </span>
+            {" > "}
             {projectName}
           </div>
 
