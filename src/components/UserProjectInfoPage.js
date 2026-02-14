@@ -38,31 +38,36 @@ function UserProjectInfoPage() {
 
   useEffect(() => {
     const fetchProject = async () => {
-      if (!projectId) return;
-      try {
+        if (!projectId) return;
+        try {
         setLoading(true);
         setLoadError("");
         setSaveSuccess("");
 
-        const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`);
+        // Fetch all projects and find the one matching projectId
+        const res = await fetch(`${API_BASE_URL}/api/projects`);
         if (!res.ok) {
-          throw new Error(`Failed to load project: ${res.status}`);
+            throw new Error(`Failed to load projects: ${res.status}`);
         }
         const data = await res.json();
-        setProject(data);
+        const found = data.find(
+            (p) => (p.id || p._id) === projectId
+        );
 
-        setInstagramUrl(data.instagramUrl || "");
-        setFacebookUrl(data.facebookUrl || "");
-        setTwitterUrl(data.twitterUrl || "");
-      } catch (err) {
+        setProject(found || null);
+
+        setInstagramUrl(found?.instagramUrl || "");
+        setFacebookUrl(found?.facebookUrl || "");
+        setTwitterUrl(found?.twitterUrl || "");
+        } catch (err) {
         setLoadError(err.message || "Error loading project");
-      } finally {
+        } finally {
         setLoading(false);
-      }
+        }
     };
 
     fetchProject();
-  }, [projectId]);
+    }, [projectId]);
 
   const handleSave = async () => {
     if (!projectId) return;
@@ -158,14 +163,14 @@ function UserProjectInfoPage() {
             </li>
 
             <li
-              className={`menu-item ${
-                location.pathname === "/user/projects" ? "active" : ""
-              }`}
-              onClick={() => navigate("/user/projects")}
-            >
-              <FaDesktop className="nav-icon" />
-              <span>View Projects</span>
-            </li>
+                className={`menu-item ${
+                    location.pathname.startsWith("/user/projects") ? "active" : ""
+                }`}
+                onClick={() => navigate("/user/projects")}
+                >
+                <FaDesktop className="nav-icon" />
+                <span>View Projects</span>
+                </li>
 
             <li
               className={`menu-item ${
