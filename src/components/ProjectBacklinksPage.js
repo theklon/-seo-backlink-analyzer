@@ -24,7 +24,7 @@ function ProjectBacklinksPage() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [adminUsers, setAdminUsers] = useState([]);
   // Filters
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDaRange, setSelectedDaRange] = useState("");
@@ -51,7 +51,20 @@ function ProjectBacklinksPage() {
       </a>
     );
   };
+  useEffect(() => {
+    const fetchAdminUsers = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/admin/users`);
+        if (!res.ok) return;
+        const data = await res.json();
+        setAdminUsers(data || []);
+      } catch (e) {
+        console.error("Failed to load admin users", e);
+      }
+    };
 
+    fetchAdminUsers();
+  }, []);
   useEffect(() => {
     const fetchBacklinks = async () => {
       setLoading(true);
@@ -148,9 +161,9 @@ function ProjectBacklinksPage() {
   );
   const userOptions = Array.from(
     new Set(
-      rows.flatMap((r) => (r.contributors ? r.contributors : []))
+      (adminUsers || []).map((u) => u.name).filter(Boolean)
     )
-  ).filter(Boolean);
+  );
 
   // Apply filters
   const filteredRows = rows.filter((row) => {
@@ -350,7 +363,7 @@ function ProjectBacklinksPage() {
               value={selectedUser}
               onChange={(e) => setSelectedUser(e.target.value)}
             >
-              <option value="">All Users</option>
+              <option value="">Users</option>
               {userOptions.map((u) => (
                 <option key={u} value={u}>
                   {u}
