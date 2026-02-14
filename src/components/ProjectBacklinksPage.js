@@ -295,7 +295,7 @@ function ProjectBacklinksPage() {
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              <option value="">All Categories</option>
+              <option value="">Categories</option>
               {categoryOptions.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -308,7 +308,7 @@ function ProjectBacklinksPage() {
               value={selectedDaRange}
               onChange={(e) => setSelectedDaRange(e.target.value)}
             >
-              <option value="">All DA</option>
+              <option value=""> DA</option>
               <option value="0-10">0–10</option>
               <option value="10-20">10–20</option>
               <option value="20-30">20–30</option>
@@ -326,7 +326,18 @@ function ProjectBacklinksPage() {
               value={selectedSs}
               onChange={(e) => setSelectedSs(e.target.value)}
             >
-              <option value="">All SS</option>
+              <option value="">SS</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
               {ssOptions.map((v) => (
                 <option key={v} value={v}>
                   {v}
