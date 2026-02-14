@@ -537,9 +537,6 @@ function UserBacklinks() {
       }
     }
 
-    if (selectedProject && (item.projectId || "") !== selectedProject) {
-      return false;
-    }
 
     if (selectedCategory && (item.categoryId || "") !== selectedCategory) {
       return false;
@@ -790,7 +787,13 @@ function UserBacklinks() {
                     return (
                       <tr key={key}>
                         <td>{item.domain}</td>
-                        <td>{item.projectId}</td>
+                        <td>
+                          {selectedProject
+                            ? (item.projectId || "") === selectedProject
+                              ? item.projectId
+                              : ""
+                            : item.projectId}
+                        </td>
                         <td>{item.categoryId}</td>
                         <td>
                           <span className="da-badge">{item.da}</span>
