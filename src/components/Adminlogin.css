@@ -53,7 +53,20 @@
   font-family: "poppins", serif;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
+/* Base user login card */
+.user-login-card {
+  /* overrides specifically for user login */
+}
 
+/* Step 1: email only */
+.user-login-card.step-email {
+  height: 260px; /* shorter for just email+button, adjust as you like */
+}
+
+/* Step 2: OTP entry */
+.user-login-card.step-otp {
+  height: 330px; /* similar to admin or whatever works */
+}
 /* TITLE */
 .login-card h2 {
   text-align: center;

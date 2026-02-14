@@ -105,6 +105,11 @@ function Userlogin() {
     }
   };
 
+  const cardClass =
+    step === 1
+      ? "login-card user-login-card step-email"
+      : "login-card user-login-card step-otp";
+
   return (
     <div className="login-page user-login-page">
       {/* LEFT SECTION */}
@@ -115,9 +120,9 @@ function Userlogin() {
         </div>
       </div>
 
-      {/* RIGHT SECTION */}
+      
       <div className="right-section">
-        <div className="login-card">
+        <div className="login-card user-login-card">
           <h2>User Login</h2>
 
           {error && (
