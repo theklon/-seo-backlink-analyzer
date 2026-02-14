@@ -130,6 +130,7 @@ async def request_otp(payload: dict):
     print("TEST OTP for", email, "=", otp)
     return {"message": "OTP sent"}
 
+
 @app.post("/api/auth/login-with-otp")
 async def login_with_otp(payload: dict):
     email = payload.get("email", "").strip().lower()
@@ -375,7 +376,9 @@ async def create_project(project: ProjectCreate):
         created["_id"] = str(created["_id"])
     return created
 
+
 # ==== PROJECT MEDIA ====
+
 
 @app.post(
     "/api/projects/{project_id}/media",
@@ -488,6 +491,8 @@ async def list_projects(
         if "_id" in p:
             p["_id"] = str(p["_id"])
     return projects
+
+
 # ==== CATEGORIES ====
 
 
@@ -621,7 +626,9 @@ async def set_backlink_contribution(backlink_id: str, payload: dict):
 
     sub_backlink_id = (payload.get("subBacklinkId") or "").strip()
     password = (payload.get("password") or "").strip()
-    sub_url = (payload.get("subUrl") or "").strip()  # NEW
+    sub_url = (payload.get("subUrl") or "").strip()
+    user_id = (payload.get("userId") or "").strip()
+    user_name = (payload.get("userName") or "").strip()
 
     doc = await backlinks_collection.find_one({"_id": ObjectId(backlink_id)})
     if not doc:
@@ -632,8 +639,10 @@ async def set_backlink_contribution(backlink_id: str, payload: dict):
     new_entry = {
         "subBacklinkId": sub_backlink_id,
         "password": password,
-        "subUrl": sub_url,                # NEW
+        "subUrl": sub_url,
         "createdAt": datetime.utcnow(),
+        "userId": user_id,
+        "userName": user_name,
     }
     contributions.append(new_entry)
 

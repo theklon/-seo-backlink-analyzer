@@ -87,12 +87,13 @@ class CategoryOut(CategoryBase):
 
 
 # ==== BACKLINK ====
-
 class ContributionEntry(BaseMongoModel):
     subBacklinkId: str
     password: str
     subUrl: Optional[str] = None
     createdAt: datetime
+    userId: Optional[str] = None       # NEW – id from users collection
+    userName: Optional[str] = None     # NEW – convenience for display
 
 class BacklinkBase(BaseMongoModel):
     projectId: str              # string id of project
