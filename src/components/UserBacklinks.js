@@ -466,7 +466,9 @@ function UserBacklinks() {
         subBacklinkId: contributeSubId.trim(),
         password: contributePassword.trim(),
         subUrl: contributeSubUrl.trim(),
-        points: 95,
+        points: 1,
+        userId,
+        userName,
       };
 
       const res = await fetch(
