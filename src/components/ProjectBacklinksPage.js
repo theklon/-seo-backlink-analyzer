@@ -51,11 +51,16 @@ function ProjectBacklinksPage() {
       setLoading(true);
       setError("");
       try {
-        // Filter using projectName, because in backlinks projectId = project name
+        const userId = localStorage.getItem("userId"); // from login
+
+        const params = new URLSearchParams();
+        params.append("projectId", projectName);
+        if (userId) {
+          params.append("ownerUserId", userId);
+        }
+
         const res = await fetch(
-          `${API_BASE_URL}/api/user/backlinks?projectId=${encodeURIComponent(
-            projectName
-          )}`
+          `${API_BASE_URL}/api/user/backlinks?${params.toString()}`
         );
         if (!res.ok) {
           throw new Error(`Failed to load backlinks: ${res.status}`);
@@ -198,7 +203,7 @@ function ProjectBacklinksPage() {
         <div className="main-content">
           {/* Breadcrumb */}
           <div className="breadcrumb">
-            Home &gt; View Projects &gt; {projectName}
+            Home &​gt; View Projects &​gt; {projectName}
           </div>
 
           {/* Title */}

@@ -624,7 +624,7 @@ function UserBacklinks() {
 
         {/* MAIN CONTENT */}
         <div className="main-content">
-          <div className="breadcrumb">Home &gt; Backlinks</div>
+          <div className="breadcrumb">Home &​gt; Backlinks</div>
 
           <div className="backlink-header">
             <h2 className="page-title">Backlinks</h2>
