@@ -40,7 +40,18 @@ function UserProjects() {
   const [editingInstagram, setEditingInstagram] = useState(false);
   const [editingFacebook, setEditingFacebook] = useState(false);
   const [editingTwitter, setEditingTwitter] = useState(false);
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && infoModalOpen) {
+        setInfoModalOpen(false);
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [infoModalOpen]);
   useEffect(() => {
     const fetchProjects = async () => {
       try {

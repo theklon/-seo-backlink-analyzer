@@ -134,6 +134,28 @@ function UserBacklinks() {
   };
   // Load data
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (isModalOpen) setIsModalOpen(false);
+        if (showEditModal) setShowEditModal(false);
+        if (contributeModalOpen) setContributeModalOpen(false);
+        if (contributeViewModalOpen) setContributeViewModalOpen(false);
+        if (showDeleteModal) setShowDeleteModal(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [
+    isModalOpen,
+    showEditModal,
+    contributeModalOpen,
+    contributeViewModalOpen,
+    showDeleteModal,
+  ]);
+  useEffect(() => {
     const fetchBacklinks = async () => {
       try {
         setLoading(true);

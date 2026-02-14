@@ -75,7 +75,19 @@ function Adminuser() {
       setLoadingStats(false);
     }
   };
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (showCreateUser) setShowCreateUser(false);
+        if (showEditModal) setShowEditModal(false);
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showCreateUser, showEditModal]);
   useEffect(() => {
     const fetchUsers = async () => {
       try {

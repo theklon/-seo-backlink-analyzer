@@ -43,7 +43,23 @@ function Adminproject() {
     localStorage.removeItem("isAdminLoggedIn");
     navigate("/login");
   };
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (showCreateProject) {
+          setShowCreateProject(false);
+        }
+        if (showEditModal) {
+          setShowEditModal(false);
+        }
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showCreateProject, showEditModal]);
   // Load existing projects on mount
   useEffect(() => {
     const fetchProjects = async () => {

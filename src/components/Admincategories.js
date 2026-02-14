@@ -35,7 +35,23 @@ function Admincategories() {
   const [editCategoryName, setEditCategoryName] = useState("");
   const [editCategoryDescription, setEditCategoryDescription] = useState("");
   const [editCategoryError, setEditCategoryError] = useState("");
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (showCreateCategory) {
+          setShowCreateCategory(false);
+        }
+        if (showEditModal) {
+          setShowEditModal(false);
+        }
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showCreateCategory, showEditModal]);
   const handleLogout = () => {
     localStorage.removeItem("isAdminLoggedIn");
     navigate("/login");

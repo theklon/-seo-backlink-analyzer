@@ -63,7 +63,20 @@ function ProjectMediaPage() {
 
   const [videoDeleteTarget, setVideoDeleteTarget] = useState(null);
   const [fileDeleteTarget, setFileDeleteTarget] = useState(null);
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (imageModalOpen) setImageModalOpen(false);
+        if (videoModalOpen) setVideoModalOpen(false);
+        if (fileModalOpen) setFileModalOpen(false);
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [imageModalOpen, videoModalOpen, fileModalOpen]);
   // Load already-saved media for this project
   useEffect(() => {
     const loadMedia = async () => {
