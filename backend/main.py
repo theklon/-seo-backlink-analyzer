@@ -573,7 +573,11 @@ async def create_backlink(backlink: BacklinkCreate):
 
 
 @app.get("/api/user/backlinks", response_model=List[BacklinkOut])
-async def list_backlinks(projectId: str | None = None, categoryId: str | None = None):
+async def list_backlinks(
+    projectId: str | None = None,
+    categoryId: str | None = None,
+    ownerUserId: str | None = None,
+):
     query: dict = {}
     if projectId:
         query["projectId"] = projectId
@@ -581,6 +585,7 @@ async def list_backlinks(projectId: str | None = None, categoryId: str | None = 
         query["categoryId"] = categoryId
     if ownerUserId:
         query["ownerUserId"] = ownerUserId
+
     links = await backlinks_collection.find(query).to_list(length=1000)
     for l in links:
         if "_id" in l:
