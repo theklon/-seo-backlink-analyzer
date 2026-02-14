@@ -129,6 +129,7 @@ async def request_otp(payload: dict):
 
     print("TEST OTP for", email, "=", otp)
     return {"message": "OTP sent"}
+
 @app.post("/api/auth/login-with-otp")
 async def login_with_otp(payload: dict):
     email = payload.get("email", "").strip().lower()
@@ -472,17 +473,21 @@ async def delete_project(project_id: str):
 
 
 @app.get("/api/projects", response_model=List[ProjectOut])
-async def list_projects(search: str | None = None):
-    query = {}
+async def list_projects(
+    search: str | None = None,
+    ownerUserId: str | None = None,
+):
+    query: dict = {}
     if search:
         query["name"] = {"$regex": search, "$options": "i"}
+    if ownerUserId:
+        query["ownerUserId"] = ownerUserId
+
     projects = await projects_collection.find(query).to_list(length=1000)
     for p in projects:
         if "_id" in p:
             p["_id"] = str(p["_id"])
     return projects
-
-
 # ==== CATEGORIES ====
 
 
@@ -574,7 +579,8 @@ async def list_backlinks(projectId: str | None = None, categoryId: str | None = 
         query["projectId"] = projectId
     if categoryId:
         query["categoryId"] = categoryId
-
+    if ownerUserId:
+        query["ownerUserId"] = ownerUserId
     links = await backlinks_collection.find(query).to_list(length=1000)
     for l in links:
         if "_id" in l:
