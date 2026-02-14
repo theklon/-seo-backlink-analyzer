@@ -430,7 +430,15 @@ function ProjectMediaPage() {
         {/* MAIN CONTENT – Media */}
         <div className="main-content">
           <div className="breadcrumb">
-            Home &gt; View Projects &gt; {projectName} &gt; Media
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/dashboard")}
+            >
+              Home
+            </span>
+            {" > View Projects > "}
+            {projectName}
+            {" > Media"}
           </div>
 
           <h2 className="page-title">{projectName} – Media</h2>
