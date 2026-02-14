@@ -74,9 +74,6 @@ function ProjectBacklinksPage() {
 
         const params = new URLSearchParams();
         params.append("projectId", projectName);
-        if (userId) {
-          params.append("ownerUserId", userId);
-        }
 
         const res = await fetch(
           `${API_BASE_URL}/api/user/backlinks?${params.toString()}`
