@@ -305,7 +305,15 @@ function Adminproject() {
         {/* MAIN CONTENT */}
         <div className="main-content project-page">
           {/* BREADCRUMB */}
-          <div className="breadcrumb">Home &gt; Projects</div>
+          <div className="breadcrumb">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/admin/dashboard")}  // or "/admin/dashboard" in admin pages
+            >
+              Home
+            </span>
+            {" > Projects"}
+          </div>
 
           {/* TITLE + BUTTON IN ONE LINE */}
           <div className="page-header">
