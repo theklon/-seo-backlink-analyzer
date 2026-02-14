@@ -122,7 +122,7 @@ function Userlogin() {
 
       
       <div className="right-section">
-        <div className="login-card user-login-card">
+        <div className={cardClass}>
           <h2>User Login</h2>
 
           {error && (
