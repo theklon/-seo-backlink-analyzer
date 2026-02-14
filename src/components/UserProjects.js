@@ -74,7 +74,6 @@ function UserProjects() {
         setLoadingProjects(false);
       }
     };
-    
 
     fetchProjects();
   }, []);
