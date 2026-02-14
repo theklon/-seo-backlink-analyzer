@@ -25,6 +25,12 @@ function ProjectBacklinksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Filters
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDaRange, setSelectedDaRange] = useState("");
+  const [selectedSs, setSelectedSs] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
+
   const handleCopyUrl = async (url) => {
     try {
       await navigator.clipboard.writeText(url);
@@ -68,7 +74,7 @@ function ProjectBacklinksPage() {
         const data = await res.json();
         console.log("Backlinks for project", projectName, data);
 
-        // GROUP BY domain + category + project, collect multiple URLs
+        // GROUP BY domain + category + project, collect multiple URLs and sublinks
         const groupedMap = data.reduce((acc, b) => {
           const key = `${b.domain}__${b.categoryId}__${b.projectId || ""}`;
 
@@ -81,6 +87,7 @@ function ProjectBacklinksPage() {
               ss: b.ss,
               urls: [],
               subUrls: [],
+              contributors: new Set(),
             };
           }
 
@@ -89,21 +96,33 @@ function ProjectBacklinksPage() {
             acc[key].urls.push(b.url);
           }
 
-          // contributions on this document – add once
+          // contributions on this document – add once per subUrl
           if (b.contributions && b.contributions.length) {
-            const extraSubs = b.contributions
-              .map((c) => c.subUrl)
-              .filter(Boolean);
-            acc[key].subUrls.push(...extraSubs);
+            b.contributions.forEach((c) => {
+              if (c.subUrl) {
+                acc[key].subUrls.push({
+                  url: c.subUrl,
+                  userName: c.userName || "", // adjust to your real field
+                });
+                if (c.userName) {
+                  acc[key].contributors.add(c.userName);
+                }
+              }
+            });
           }
 
           return acc;
         }, {});
 
-        // Convert map to array and dedupe subUrls per domain
+        // Convert map to array and dedupe subUrls, flatten contributors
         const mapped = Object.values(groupedMap).map((row) => ({
           ...row,
-          subUrls: Array.from(new Set(row.subUrls)),
+          subUrls: Array.from(
+            new Map(
+              row.subUrls.map((su) => [su.url, su]) // dedupe by URL
+            ).values()
+          ),
+          contributors: Array.from(row.contributors || []),
         }));
 
         setRows(mapped);
@@ -119,6 +138,49 @@ function ProjectBacklinksPage() {
       fetchBacklinks();
     }
   }, [projectName]);
+
+  // Derived options for filters
+  const categoryOptions = Array.from(
+    new Set(rows.map((r) => r.category).filter(Boolean))
+  );
+  const ssOptions = Array.from(new Set(rows.map((r) => r.ss))).sort(
+    (a, b) => a - b
+  );
+  const userOptions = Array.from(
+    new Set(
+      rows.flatMap((r) => (r.contributors ? r.contributors : []))
+    )
+  ).filter(Boolean);
+
+  // Apply filters
+  const filteredRows = rows.filter((row) => {
+    if (selectedCategory && row.category !== selectedCategory) {
+      return false;
+    }
+
+    if (selectedDaRange) {
+      const [minStr, maxStr] = selectedDaRange.split("-");
+      const min = Number(minStr);
+      const max = Number(maxStr);
+      const daValue = Number(row.da ?? 0);
+      if (!(daValue >= min && daValue <= max)) {
+        return false;
+      }
+    }
+
+    if (selectedSs && Number(row.ss ?? 0) !== Number(selectedSs)) {
+      return false;
+    }
+
+    if (selectedUser) {
+      const contributors = row.contributors || [];
+      if (!contributors.includes(selectedUser)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 
   return (
     <div className="dashboard-root user-dashboard">
@@ -223,6 +285,69 @@ function ProjectBacklinksPage() {
           {/* Title */}
           <h2 className="page-title">{projectName}</h2>
 
+          {/* Filters */}
+          <div
+            className="backlink-filters"
+            style={{ marginTop: 12, marginBottom: 12 }}
+          >
+            <select
+              className="filter-select"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {categoryOptions.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="filter-select"
+              value={selectedDaRange}
+              onChange={(e) => setSelectedDaRange(e.target.value)}
+            >
+              <option value="">All DA</option>
+              <option value="0-10">0–10</option>
+              <option value="10-20">10–20</option>
+              <option value="20-30">20–30</option>
+              <option value="30-40">30–40</option>
+              <option value="40-50">40–50</option>
+              <option value="50-60">50–60</option>
+              <option value="60-70">60–70</option>
+              <option value="70-80">70–80</option>
+              <option value="80-90">80–90</option>
+              <option value="90-100">90–100</option>
+            </select>
+
+            <select
+              className="filter-select"
+              value={selectedSs}
+              onChange={(e) => setSelectedSs(e.target.value)}
+            >
+              <option value="">All SS</option>
+              {ssOptions.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="filter-select"
+              value={selectedUser}
+              onChange={(e) => setSelectedUser(e.target.value)}
+            >
+              <option value="">All Users</option>
+              {userOptions.map((u) => (
+                <option key={u} value={u}>
+                  {u}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Table section */}
           {loading && <p>Loading backlinks...</p>}
           {error && <p style={{ color: "red" }}>{error}</p>}
@@ -237,12 +362,17 @@ function ProjectBacklinksPage() {
                   <tr>
                     <th>Domain Name</th>
                     <th>Category</th>
-                    <th>
+                    {/* DA and SS order kept the same, just less padding between them */}
+                    <th
+                      style={{ paddingRight: 8 }}
+                    >
                       <span className="sortable-header">
                         DA <LuArrowUpDown className="sort-icon" />
                       </span>
                     </th>
-                    <th>
+                    <th
+                      style={{ paddingLeft: 8 }}
+                    >
                       <span className="sortable-header">
                         SS <LuArrowUpDown className="sort-icon" />
                       </span>
@@ -252,21 +382,25 @@ function ProjectBacklinksPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.length === 0 ? (
+                  {filteredRows.length === 0 ? (
                     <tr>
                       <td colSpan={6} style={{ textAlign: "center" }}>
                         No backlinks found for this project.
                       </td>
                     </tr>
                   ) : (
-                    rows.map((row, index) => (
+                    filteredRows.map((row, index) => (
                       <tr key={row.id || `${row.domain}-${index}`}>
                         <td>{row.domain}</td>
                         <td>{row.category}</td>
-                        <td>
+                        <td
+                          style={{ paddingRight: 8 }}
+                        >
                           <span className="da-badge">{row.da}</span>
                         </td>
-                        <td>
+                        <td
+                          style={{ paddingLeft: 8 }}
+                        >
                           <span className="ss-badge">{row.ss}</span>
                         </td>
                         <td>
@@ -302,7 +436,18 @@ function ProjectBacklinksPage() {
                             row.subUrls.map((su, idx) => (
                               <div key={idx} className="url-row">
                                 <span className="url-text">
-                                  {renderUrlCell(su)}
+                                  {renderUrlCell(su.url)}
+                                  {su.userName && (
+                                    <span
+                                      style={{
+                                        marginLeft: 4,
+                                        color: "#6b7280",
+                                        fontSize: 12,
+                                      }}
+                                    >
+                                      ({su.userName})
+                                    </span>
+                                  )}
                                 </span>
                               </div>
                             ))
