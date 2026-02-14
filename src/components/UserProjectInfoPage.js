@@ -49,6 +49,13 @@ function UserProjectInfoPage() {
   const [twitterFollowers, setTwitterFollowers] = useState("");
   const [twitterFollowing, setTwitterFollowing] = useState("");
 
+  // per-platform loading for metrics
+  const [metricsLoading, setMetricsLoading] = useState({
+    instagram: false,
+    facebook: false,
+    twitter: false,
+  });
+
   const projectNameFromState = location.state?.projectName;
 
   useEffect(() => {
@@ -123,6 +130,45 @@ function UserProjectInfoPage() {
 
     fetchProject();
   }, [projectId]);
+
+  const fetchSocialMetrics = async (platform, url) => {
+    if (!url || !url.trim()) return;
+
+    try {
+      setMetricsLoading((prev) => ({ ...prev, [platform]: true }));
+
+      const res = await fetch(`${API_BASE_URL}/api/social/metrics`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ platform, url }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch ${platform} metrics: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (platform === "instagram") {
+        setInstagramPosts(String(data.posts ?? ""));
+        setInstagramFollowers(String(data.followers ?? ""));
+        setInstagramFollowing(String(data.following ?? ""));
+      } else if (platform === "facebook") {
+        setFacebookPosts(String(data.posts ?? ""));
+        setFacebookFollowers(String(data.followers ?? ""));
+        setFacebookFollowing(String(data.following ?? ""));
+      } else if (platform === "twitter") {
+        setTwitterPosts(String(data.posts ?? ""));
+        setTwitterFollowers(String(data.followers ?? ""));
+        setTwitterFollowing(String(data.following ?? ""));
+      }
+    } catch (err) {
+      console.error(err);
+      // optional: setSaveError(err.message || "Error fetching social metrics");
+    } finally {
+      setMetricsLoading((prev) => ({ ...prev, [platform]: false }));
+    }
+  };
 
   const handleSave = async () => {
     if (!projectId) return;
@@ -286,268 +332,291 @@ function UserProjectInfoPage() {
           {loading && <div>Loading project...</div>}
 
           {!loading && project && (
-            <div className="project-info-container">
-              {/* Basic project info */}
-              <div className="project-info-card">
-                <h3>Basic Details</h3>
-                <p>
-                  <strong>Name: </strong>
-                  {project.name}
-                </p>
-                {project.url && (
-                  <p>
-                    <strong>Website: </strong>
-                    <a
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {project.url}
-                    </a>
-                  </p>
-                )}
-              </div>
-
-              {/* Instagram Card */}
-              <div className="project-info-card">
-                <h3>
-                  <FaInstagram style={{ marginRight: 8 }} />
-                  Instagram
-                </h3>
-
-                <div className="social-row-content">
-                  <label className="field-label">Profile URL</label>
-                  <input
-                    type="url"
-                    placeholder="Instagram profile URL"
-                    value={instagramUrl}
-                    onChange={(e) => setInstagramUrl(e.target.value)}
-                  />
-                  {instagramUrl.trim() && (
-                    <div className="social-link-row">
+            <div>
+              {/* Basic project info card, reusing stats-card styling */}
+              <div className="stats-row" style={{ marginBottom: 24 }}>
+                <div className="stats-card">
+                  <p>Project Name</p>
+                  <h3>{project.name}</h3>
+                  {project.url && (
+                    <p>
                       <a
-                        href={instagramUrl}
+                        href={project.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="social-link-url"
                       >
-                        {instagramUrl}
+                        {project.url}
                       </a>
-                      <div className="social-link-actions">
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          onClick={async () => {
-                            try {
-                              await navigator.clipboard.writeText(
-                                instagramUrl
-                              );
-                            } catch (e) {
-                              console.error("Copy failed", e);
-                            }
-                          }}
-                        >
-                          <FiCopy />
-                        </button>
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Social cards using Adminuser stats-card CSS */}
+              <div className="stats-row">
+                {/* Instagram Card */}
+                <div className="stats-card">
+                  <p>
+                    <FaInstagram style={{ marginRight: 8 }} />
+                    Instagram
+                  </p>
+
+                  <div className="social-row-content" style={{ marginTop: 8 }}>
+                    <label className="field-label">Profile URL</label>
+                    <input
+                      type="url"
+                      placeholder="Instagram profile URL"
+                      value={instagramUrl}
+                      onChange={(e) => setInstagramUrl(e.target.value)}
+                      onBlur={() =>
+                        fetchSocialMetrics("instagram", instagramUrl)
+                      }
+                    />
+                    {metricsLoading.instagram && (
+                      <div style={{ fontSize: 12, marginTop: 4 }}>
+                        Fetching Instagram stats...
+                      </div>
+                    )}
+                    {instagramUrl.trim() && (
+                      <div className="social-link-row">
                         <a
                           href={instagramUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="social-link-btn"
+                          className="social-link-url"
                         >
-                          <HiOutlineExternalLink />
+                          {instagramUrl}
                         </a>
+                        <div className="social-link-actions">
+                          <button
+                            type="button"
+                            className="social-link-btn"
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(
+                                  instagramUrl
+                                );
+                              } catch (e) {
+                                console.error("Copy failed", e);
+                              }
+                            }}
+                          >
+                            <FiCopy />
+                          </button>
+                          <a
+                            href={instagramUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link-btn"
+                          >
+                            <HiOutlineExternalLink />
+                          </a>
+                        </div>
                       </div>
+                    )}
+                  </div>
+
+                  <div className="counts-row">
+                    <div className="count-field">
+                      <label className="field-label">Posts</label>
+                      <input
+                        type="number"
+                        value={instagramPosts}
+                        onChange={(e) => setInstagramPosts(e.target.value)}
+                      />
                     </div>
-                  )}
-                </div>
-
-                <div className="counts-row">
-                  <div className="count-field">
-                    <label className="field-label">Posts</label>
-                    <input
-                      type="number"
-                      value={instagramPosts}
-                      onChange={(e) => setInstagramPosts(e.target.value)}
-                    />
-                  </div>
-                  <div className="count-field">
-                    <label className="field-label">Followers</label>
-                    <input
-                      type="number"
-                      value={instagramFollowers}
-                      onChange={(e) => setInstagramFollowers(e.target.value)}
-                    />
-                  </div>
-                  <div className="count-field">
-                    <label className="field-label">Following</label>
-                    <input
-                      type="number"
-                      value={instagramFollowing}
-                      onChange={(e) => setInstagramFollowing(e.target.value)}
-                    />
+                    <div className="count-field">
+                      <label className="field-label">Followers</label>
+                      <input
+                        type="number"
+                        value={instagramFollowers}
+                        onChange={(e) => setInstagramFollowers(e.target.value)}
+                      />
+                    </div>
+                    <div className="count-field">
+                      <label className="field-label">Following</label>
+                      <input
+                        type="number"
+                        value={instagramFollowing}
+                        onChange={(e) => setInstagramFollowing(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Facebook Card */}
-              <div className="project-info-card">
-                <h3>
-                  <FaFacebookSquare style={{ marginRight: 8 }} />
-                  Facebook
-                </h3>
+                {/* Facebook Card */}
+                <div className="stats-card">
+                  <p>
+                    <FaFacebookSquare style={{ marginRight: 8 }} />
+                    Facebook
+                  </p>
 
-                <div className="social-row-content">
-                  <label className="field-label">Page URL</label>
-                  <input
-                    type="url"
-                    placeholder="Facebook page URL"
-                    value={facebookUrl}
-                    onChange={(e) => setFacebookUrl(e.target.value)}
-                  />
-                  {facebookUrl.trim() && (
-                    <div className="social-link-row">
-                      <a
-                        href={facebookUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link-url"
-                      >
-                        {facebookUrl}
-                      </a>
-                      <div className="social-link-actions">
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          onClick={async () => {
-                            try {
-                              await navigator.clipboard.writeText(
-                                facebookUrl
-                              );
-                            } catch (e) {
-                              console.error("Copy failed", e);
-                            }
-                          }}
-                        >
-                          <FiCopy />
-                        </button>
+                  <div className="social-row-content" style={{ marginTop: 8 }}>
+                    <label className="field-label">Page URL</label>
+                    <input
+                      type="url"
+                      placeholder="Facebook page URL"
+                      value={facebookUrl}
+                      onChange={(e) => setFacebookUrl(e.target.value)}
+                      onBlur={() => fetchSocialMetrics("facebook", facebookUrl)}
+                    />
+                    {metricsLoading.facebook && (
+                      <div style={{ fontSize: 12, marginTop: 4 }}>
+                        Fetching Facebook stats...
+                      </div>
+                    )}
+                    {facebookUrl.trim() && (
+                      <div className="social-link-row">
                         <a
                           href={facebookUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="social-link-btn"
+                          className="social-link-url"
                         >
-                          <HiOutlineExternalLink />
+                          {facebookUrl}
                         </a>
+                        <div className="social-link-actions">
+                          <button
+                            type="button"
+                            className="social-link-btn"
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(
+                                  facebookUrl
+                                );
+                              } catch (e) {
+                                console.error("Copy failed", e);
+                              }
+                            }}
+                          >
+                            <FiCopy />
+                          </button>
+                          <a
+                            href={facebookUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link-btn"
+                          >
+                            <HiOutlineExternalLink />
+                          </a>
+                        </div>
                       </div>
+                    )}
+                  </div>
+
+                  <div className="counts-row">
+                    <div className="count-field">
+                      <label className="field-label">Posts</label>
+                      <input
+                        type="number"
+                        value={facebookPosts}
+                        onChange={(e) => setFacebookPosts(e.target.value)}
+                      />
                     </div>
-                  )}
-                </div>
-
-                <div className="counts-row">
-                  <div className="count-field">
-                    <label className="field-label">Posts</label>
-                    <input
-                      type="number"
-                      value={facebookPosts}
-                      onChange={(e) => setFacebookPosts(e.target.value)}
-                    />
-                  </div>
-                  <div className="count-field">
-                    <label className="field-label">Followers</label>
-                    <input
-                      type="number"
-                      value={facebookFollowers}
-                      onChange={(e) => setFacebookFollowers(e.target.value)}
-                    />
-                  </div>
-                  <div className="count-field">
-                    <label className="field-label">Following</label>
-                    <input
-                      type="number"
-                      value={facebookFollowing}
-                      onChange={(e) => setFacebookFollowing(e.target.value)}
-                    />
+                    <div className="count-field">
+                      <label className="field-label">Followers</label>
+                      <input
+                        type="number"
+                        value={facebookFollowers}
+                        onChange={(e) => setFacebookFollowers(e.target.value)}
+                      />
+                    </div>
+                    <div className="count-field">
+                      <label className="field-label">Following</label>
+                      <input
+                        type="number"
+                        value={facebookFollowing}
+                        onChange={(e) => setFacebookFollowing(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Twitter / X Card */}
-              <div className="project-info-card">
-                <h3>
-                  <FaSquareTwitter style={{ marginRight: 8 }} />
-                  Twitter / X
-                </h3>
+                {/* Twitter / X Card */}
+                <div className="stats-card">
+                  <p>
+                    <FaSquareTwitter style={{ marginRight: 8 }} />
+                    Twitter / X
+                  </p>
 
-                <div className="social-row-content">
-                  <label className="field-label">Profile URL</label>
-                  <input
-                    type="url"
-                    placeholder="Twitter / X profile URL"
-                    value={twitterUrl}
-                    onChange={(e) => setTwitterUrl(e.target.value)}
-                  />
-                  {twitterUrl.trim() && (
-                    <div className="social-link-row">
-                      <a
-                        href={twitterUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link-url"
-                      >
-                        {twitterUrl}
-                      </a>
-                      <div className="social-link-actions">
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          onClick={async () => {
-                            try {
-                              await navigator.clipboard.writeText(twitterUrl);
-                            } catch (e) {
-                              console.error("Copy failed", e);
-                            }
-                          }}
-                        >
-                          <FiCopy />
-                        </button>
+                  <div className="social-row-content" style={{ marginTop: 8 }}>
+                    <label className="field-label">Profile URL</label>
+                    <input
+                      type="url"
+                      placeholder="Twitter / X profile URL"
+                      value={twitterUrl}
+                      onChange={(e) => setTwitterUrl(e.target.value)}
+                      onBlur={() => fetchSocialMetrics("twitter", twitterUrl)}
+                    />
+                    {metricsLoading.twitter && (
+                      <div style={{ fontSize: 12, marginTop: 4 }}>
+                        Fetching Twitter stats...
+                      </div>
+                    )}
+                    {twitterUrl.trim() && (
+                      <div className="social-link-row">
                         <a
                           href={twitterUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="social-link-btn"
+                          className="social-link-url"
                         >
-                          <HiOutlineExternalLink />
+                          {twitterUrl}
                         </a>
+                        <div className="social-link-actions">
+                          <button
+                            type="button"
+                            className="social-link-btn"
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(
+                                  twitterUrl
+                                );
+                              } catch (e) {
+                                console.error("Copy failed", e);
+                              }
+                            }}
+                          >
+                            <FiCopy />
+                          </button>
+                          <a
+                            href={twitterUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link-btn"
+                          >
+                            <HiOutlineExternalLink />
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                <div className="counts-row">
-                  <div className="count-field">
-                    <label className="field-label">Posts</label>
-                    <input
-                      type="number"
-                      value={twitterPosts}
-                      onChange={(e) => setTwitterPosts(e.target.value)}
-                    />
-                  </div>
-                  <div className="count-field">
-                    <label className="field-label">Followers</label>
-                    <input
-                      type="number"
-                      value={twitterFollowers}
-                      onChange={(e) => setTwitterFollowers(e.target.value)}
-                    />
-                  </div>
-                  <div className="count-field">
-                    <label className="field-label">Following</label>
-                    <input
-                      type="number"
-                      value={twitterFollowing}
-                      onChange={(e) => setTwitterFollowing(e.target.value)}
-                    />
+                  <div className="counts-row">
+                    <div className="count-field">
+                      <label className="field-label">Posts</label>
+                      <input
+                        type="number"
+                        value={twitterPosts}
+                        onChange={(e) => setTwitterPosts(e.target.value)}
+                      />
+                    </div>
+                    <div className="count-field">
+                      <label className="field-label">Followers</label>
+                      <input
+                        type="number"
+                        value={twitterFollowers}
+                        onChange={(e) => setTwitterFollowers(e.target.value)}
+                      />
+                    </div>
+                    <div className="count-field">
+                      <label className="field-label">Following</label>
+                      <input
+                        type="number"
+                        value={twitterFollowing}
+                        onChange={(e) => setTwitterFollowing(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
