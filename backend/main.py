@@ -121,17 +121,14 @@ async def request_otp(payload: dict):
             }
         },
     )
-     
-try:
-    send_otp_email(email, otp)
-except Exception as e:
-    print("Failed to send OTP email:", e)
 
+    try:
+        send_otp_email(email, otp)
+    except Exception as e:
+        print("Failed to send OTP email:", e)
 
     print("TEST OTP for", email, "=", otp)
     return {"message": "OTP sent"}
-
-
 @app.post("/api/auth/login-with-otp")
 async def login_with_otp(payload: dict):
     email = payload.get("email", "").strip().lower()
