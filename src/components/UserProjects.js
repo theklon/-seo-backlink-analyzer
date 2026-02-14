@@ -8,16 +8,10 @@ import logo from "../assets/klonlogo.png";
 import { HiOutlineHome } from "react-icons/hi";
 import { FaLink, FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
-import { HiOutlinePencilAlt } from "react-icons/hi";
-import { FiCopy } from "react-icons/fi";
-import { HiOutlineExternalLink } from "react-icons/hi";
 import { LuCalendar } from "react-icons/lu";
 import { FiBell } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoMdSearch } from "react-icons/io";
-import { FaInstagram } from "react-icons/fa";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaSquareTwitter } from "react-icons/fa6";
 
 function UserProjects() {
   const navigate = useNavigate();
@@ -27,39 +21,13 @@ function UserProjects() {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [projectsError, setProjectsError] = useState("");
 
-  // Info (social links) modal state
-  const [infoModalOpen, setInfoModalOpen] = useState(false);
-  const [infoProject, setInfoProject] = useState(null);
-  const [instagramUrl, setInstagramUrl] = useState("");
-  const [facebookUrl, setFacebookUrl] = useState("");
-  const [twitterUrl, setTwitterUrl] = useState("");
-  const [infoSaving, setInfoSaving] = useState(false);
-  const [infoError, setInfoError] = useState("");
-
-  // per-field edit toggles: when true, show input even if URL exists
-  const [editingInstagram, setEditingInstagram] = useState(false);
-  const [editingFacebook, setEditingFacebook] = useState(false);
-  const [editingTwitter, setEditingTwitter] = useState(false);
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      console.log("UserProjects keydown:", e.key);
-      if (e.key === "Escape" && infoModalOpen) {
-        setInfoModalOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [infoModalOpen]);
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         setLoadingProjects(true);
         setProjectsError("");
 
-        // remove ownerUserId filter; show all projects
+        // Show all projects
         const url = `${API_BASE_URL}/api/projects`;
 
         const res = await fetch(url);
@@ -77,72 +45,6 @@ function UserProjects() {
 
     fetchProjects();
   }, []);
-
-  // INFO modal handlers
-  const openInfoModal = (project) => {
-    setInfoProject(project);
-    setInstagramUrl(project.instagramUrl || "");
-    setFacebookUrl(project.facebookUrl || "");
-    setTwitterUrl(project.twitterUrl || "");
-    setInfoError("");
-    // when opening, not in "editing" mode: show inputs only if empty
-    setEditingInstagram(false);
-    setEditingFacebook(false);
-    setEditingTwitter(false);
-    setInfoModalOpen(true);
-  };
-
-  const closeInfoModal = () => {
-    setInfoModalOpen(false);
-    setInfoProject(null);
-    setInstagramUrl("");
-    setFacebookUrl("");
-    setTwitterUrl("");
-    setInfoError("");
-    setEditingInstagram(false);
-    setEditingFacebook(false);
-    setEditingTwitter(false);
-  };
-
-  const handleSaveProjectInfo = async () => {
-    if (!infoProject) return;
-    try {
-      setInfoSaving(true);
-      setInfoError("");
-
-      const projectId = infoProject.id || infoProject._id;
-
-      const body = {
-        instagramUrl: instagramUrl.trim(),
-        facebookUrl: facebookUrl.trim(),
-        twitterUrl: twitterUrl.trim(),
-      };
-
-      const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to update project info: ${res.status}`);
-      }
-
-      const updated = await res.json();
-
-      setProjects((prev) =>
-        prev.map((p) =>
-          (p.id || p._id) === (updated.id || updated._id) ? updated : p
-        )
-      );
-
-      closeInfoModal();
-    } catch (err) {
-      setInfoError(err.message || "Error saving project info");
-    } finally {
-      setInfoSaving(false);
-    }
-  };
 
   return (
     <div className="dashboard-root user-dashboard">
@@ -229,7 +131,7 @@ function UserProjects() {
           <div className="breadcrumb">
             <span
               style={{ cursor: "pointer" }}
-              onClick={() => navigate("/user/dashboard")}  // or "/admin/dashboard" in admin pages
+              onClick={() => navigate("/user/dashboard")}
             >
               Home
             </span>
@@ -330,227 +232,6 @@ function UserProjects() {
           </div>
         </div>
       </div>
-
-      {/* PROJECT INFO (SOCIAL LINKS) MODAL */}
-      {infoModalOpen && infoProject && (
-        <div className="modal-overlay">
-          <div className="modal-card backlinks-modal-card">
-            <div className="modal-header">
-              <h3>Project Info – {infoProject.name}</h3>
-              <span className="modal-close" onClick={closeInfoModal}>
-                ×
-              </span>
-            </div>
-
-            <div className="modal-body backlinks-modal-body">
-              {infoError && (
-                <div style={{ color: "red", marginBottom: 8 }}>{infoError}</div>
-              )}
-
-              {/* Instagram */}
-              <div className="social-row">
-                <div className="social-icon instagram">
-                  <FaInstagram />
-                </div>
-
-                <div className="social-row-content">
-                  {(editingInstagram || !instagramUrl.trim()) && (
-                    <input
-                      type="url"
-                      placeholder="Instagram profile URL"
-                      value={instagramUrl}
-                      onChange={(e) => setInstagramUrl(e.target.value)}
-                    />
-                  )}
-
-                  {instagramUrl.trim() && !editingInstagram && (
-                    <div className="social-link-row">
-                      <a
-                        href={instagramUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link-url"
-                      >
-                        {instagramUrl}
-                      </a>
-                      <div className="social-link-actions">
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          onClick={async () => {
-                            try {
-                              await navigator.clipboard.writeText(
-                                instagramUrl
-                              );
-                            } catch (e) {
-                              console.error("Copy failed", e);
-                            }
-                          }}
-                        >
-                          <FiCopy />
-                        </button>
-                        <a
-                          href={instagramUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="social-link-btn"
-                        >
-                          <HiOutlineExternalLink />
-                        </a>
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          title="Edit link"
-                          onClick={() => setEditingInstagram(true)}
-                        >
-                          <HiOutlinePencilAlt />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Facebook */}
-              <div className="social-row">
-                <div className="social-icon facebook">
-                  <FaFacebookSquare />
-                </div>
-
-                <div className="social-row-content">
-                  {(editingFacebook || !facebookUrl.trim()) && (
-                    <input
-                      type="url"
-                      placeholder="Facebook page URL"
-                      value={facebookUrl}
-                      onChange={(e) => setFacebookUrl(e.target.value)}
-                    />
-                  )}
-
-                  {facebookUrl.trim() && !editingFacebook && (
-                    <div className="social-link-row">
-                      <a
-                        href={facebookUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link-url"
-                      >
-                        {facebookUrl}
-                      </a>
-                      <div className="social-link-actions">
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          onClick={async () => {
-                            try {
-                              await navigator.clipboard.writeText(
-                                facebookUrl
-                              );
-                            } catch (e) {
-                              console.error("Copy failed", e);
-                            }
-                          }}
-                        >
-                          <FiCopy />
-                        </button>
-                        <a
-                          href={facebookUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="social-link-btn"
-                        >
-                          <HiOutlineExternalLink />
-                        </a>
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          title="Edit link"
-                          onClick={() => setEditingFacebook(true)}
-                        >
-                          <HiOutlinePencilAlt />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Twitter / X */}
-              <div className="social-row">
-                <div className="social-icon twitter">
-                  <FaSquareTwitter />
-                </div>
-
-                <div className="social-row-content">
-                  {(editingTwitter || !twitterUrl.trim()) && (
-                    <input
-                      type="url"
-                      placeholder="Twitter / X profile URL"
-                      value={twitterUrl}
-                      onChange={(e) => setTwitterUrl(e.target.value)}
-                    />
-                  )}
-
-                  {twitterUrl.trim() && !editingTwitter && (
-                    <div className="social-link-row">
-                      <a
-                        href={twitterUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link-url"
-                      >
-                        {twitterUrl}
-                      </a>
-                      <div className="social-link-actions">
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          onClick={async () => {
-                            try {
-                              await navigator.clipboard.writeText(twitterUrl);
-                            } catch (e) {
-                              console.error("Copy failed", e);
-                            }
-                          }}
-                        >
-                          <FiCopy />
-                        </button>
-                        <a
-                          href={twitterUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="social-link-btn"
-                        >
-                          <HiOutlineExternalLink />
-                        </a>
-                        <button
-                          type="button"
-                          className="social-link-btn"
-                          title="Edit link"
-                          onClick={() => setEditingTwitter(true)}
-                        >
-                          <HiOutlinePencilAlt />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={handleSaveProjectInfo}
-                  disabled={infoSaving}
-                >
-                  {infoSaving ? "Saving..." : "Save"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
