@@ -1917,7 +1917,79 @@ th, td {
   padding: 4px 0;
   z-index: 20;
 }
+/* Container: three big cards next to each other */
+.social-cards-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+  flex-wrap: nowrap;
+}
 
+/* Single large social card */
+.social-card-large {
+  flex: 1 1 0;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  padding: 20px 22px;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Title line with icon */
+.social-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* URL + link row area */
+.social-row-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.social-metric-loading {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Counts row at bottom of card */
+.social-counts-row {
+  display: flex;
+  gap: 12px;
+  margin-top: auto; /* push counts to bottom if card grows */
+}
+
+.social-count-field {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Reuse existing input styling; if needed: */
+.social-card-large input[type="url"],
+.social-card-large input[type="number"] {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+}
+
+.social-card-large input[type="url"]:focus,
+.social-card-large input[type="number"]:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb1a;
+}
 .media-more-item {
   display: block;
   width: 100%;

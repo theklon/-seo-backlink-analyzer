@@ -164,7 +164,6 @@ function UserProjectInfoPage() {
       }
     } catch (err) {
       console.error(err);
-      // optional: setSaveError(err.message || "Error fetching social metrics");
     } finally {
       setMetricsLoading((prev) => ({ ...prev, [platform]: false }));
     }
@@ -217,7 +216,7 @@ function UserProjectInfoPage() {
 
   return (
     <div className="dashboard-root user-dashboard">
-      {/* TOP BAR – same as other user pages */}
+      {/* TOP BAR */}
       <div className="topbar">
         <div className="topbar-left">
           <img src={logo} alt="Klon" className="topbar-logo" />
@@ -333,13 +332,13 @@ function UserProjectInfoPage() {
 
           {!loading && project && (
             <div>
-              {/* Basic project info card, reusing stats-card styling */}
-              <div className="stats-row" style={{ marginBottom: 24 }}>
-                <div className="stats-card">
-                  <p>Project Name</p>
+              {/* Project name card */}
+              <div className="social-cards-row" style={{ marginBottom: 24 }}>
+                <div className="social-card-large">
+                  <p className="social-card-title">Project Name</p>
                   <h3>{project.name}</h3>
                   {project.url && (
-                    <p>
+                    <p style={{ marginTop: 8 }}>
                       <a
                         href={project.url}
                         target="_blank"
@@ -352,16 +351,16 @@ function UserProjectInfoPage() {
                 </div>
               </div>
 
-              {/* Social cards using Adminuser stats-card CSS */}
-              <div className="stats-row">
-                {/* Instagram Card */}
-                <div className="stats-card">
-                  <p>
+              {/* 3 social cards */}
+              <div className="social-cards-row">
+                {/* Instagram */}
+                <div className="social-card-large">
+                  <p className="social-card-title">
                     <FaInstagram style={{ marginRight: 8 }} />
                     Instagram
                   </p>
 
-                  <div className="social-row-content" style={{ marginTop: 8 }}>
+                  <div className="social-row-content">
                     <label className="field-label">Profile URL</label>
                     <input
                       type="url"
@@ -373,7 +372,7 @@ function UserProjectInfoPage() {
                       }
                     />
                     {metricsLoading.instagram && (
-                      <div style={{ fontSize: 12, marginTop: 4 }}>
+                      <div className="social-metric-loading">
                         Fetching Instagram stats...
                       </div>
                     )}
@@ -416,8 +415,8 @@ function UserProjectInfoPage() {
                     )}
                   </div>
 
-                  <div className="counts-row">
-                    <div className="count-field">
+                  <div className="social-counts-row">
+                    <div className="social-count-field">
                       <label className="field-label">Posts</label>
                       <input
                         type="number"
@@ -425,7 +424,7 @@ function UserProjectInfoPage() {
                         onChange={(e) => setInstagramPosts(e.target.value)}
                       />
                     </div>
-                    <div className="count-field">
+                    <div className="social-count-field">
                       <label className="field-label">Followers</label>
                       <input
                         type="number"
@@ -433,35 +432,39 @@ function UserProjectInfoPage() {
                         onChange={(e) => setInstagramFollowers(e.target.value)}
                       />
                     </div>
-                    <div className="count-field">
+                    <div className="social-count-field">
                       <label className="field-label">Following</label>
                       <input
                         type="number"
                         value={instagramFollowing}
-                        onChange={(e) => setInstagramFollowing(e.target.value)}
+                        onChange={(e) =>
+                          setInstagramFollowing(e.target.value)
+                        }
                       />
                     </div>
                   </div>
                 </div>
 
-                {/* Facebook Card */}
-                <div className="stats-card">
-                  <p>
+                {/* Facebook */}
+                <div className="social-card-large">
+                  <p className="social-card-title">
                     <FaFacebookSquare style={{ marginRight: 8 }} />
                     Facebook
                   </p>
 
-                  <div className="social-row-content" style={{ marginTop: 8 }}>
+                  <div className="social-row-content">
                     <label className="field-label">Page URL</label>
                     <input
                       type="url"
                       placeholder="Facebook page URL"
                       value={facebookUrl}
                       onChange={(e) => setFacebookUrl(e.target.value)}
-                      onBlur={() => fetchSocialMetrics("facebook", facebookUrl)}
+                      onBlur={() =>
+                        fetchSocialMetrics("facebook", facebookUrl)
+                      }
                     />
                     {metricsLoading.facebook && (
-                      <div style={{ fontSize: 12, marginTop: 4 }}>
+                      <div className="social-metric-loading">
                         Fetching Facebook stats...
                       </div>
                     )}
@@ -504,8 +507,8 @@ function UserProjectInfoPage() {
                     )}
                   </div>
 
-                  <div className="counts-row">
-                    <div className="count-field">
+                  <div className="social-counts-row">
+                    <div className="social-count-field">
                       <label className="field-label">Posts</label>
                       <input
                         type="number"
@@ -513,7 +516,7 @@ function UserProjectInfoPage() {
                         onChange={(e) => setFacebookPosts(e.target.value)}
                       />
                     </div>
-                    <div className="count-field">
+                    <div className="social-count-field">
                       <label className="field-label">Followers</label>
                       <input
                         type="number"
@@ -521,7 +524,7 @@ function UserProjectInfoPage() {
                         onChange={(e) => setFacebookFollowers(e.target.value)}
                       />
                     </div>
-                    <div className="count-field">
+                    <div className="social-count-field">
                       <label className="field-label">Following</label>
                       <input
                         type="number"
@@ -532,14 +535,14 @@ function UserProjectInfoPage() {
                   </div>
                 </div>
 
-                {/* Twitter / X Card */}
-                <div className="stats-card">
-                  <p>
+                {/* Twitter / X */}
+                <div className="social-card-large">
+                  <p className="social-card-title">
                     <FaSquareTwitter style={{ marginRight: 8 }} />
                     Twitter / X
                   </p>
 
-                  <div className="social-row-content" style={{ marginTop: 8 }}>
+                  <div className="social-row-content">
                     <label className="field-label">Profile URL</label>
                     <input
                       type="url"
@@ -549,7 +552,7 @@ function UserProjectInfoPage() {
                       onBlur={() => fetchSocialMetrics("twitter", twitterUrl)}
                     />
                     {metricsLoading.twitter && (
-                      <div style={{ fontSize: 12, marginTop: 4 }}>
+                      <div className="social-metric-loading">
                         Fetching Twitter stats...
                       </div>
                     )}
@@ -592,8 +595,8 @@ function UserProjectInfoPage() {
                     )}
                   </div>
 
-                  <div className="counts-row">
-                    <div className="count-field">
+                  <div className="social-counts-row">
+                    <div className="social-count-field">
                       <label className="field-label">Posts</label>
                       <input
                         type="number"
@@ -601,7 +604,7 @@ function UserProjectInfoPage() {
                         onChange={(e) => setTwitterPosts(e.target.value)}
                       />
                     </div>
-                    <div className="count-field">
+                    <div className="social-count-field">
                       <label className="field-label">Followers</label>
                       <input
                         type="number"
@@ -609,7 +612,7 @@ function UserProjectInfoPage() {
                         onChange={(e) => setTwitterFollowers(e.target.value)}
                       />
                     </div>
-                    <div className="count-field">
+                    <div className="social-count-field">
                       <label className="field-label">Following</label>
                       <input
                         type="number"
