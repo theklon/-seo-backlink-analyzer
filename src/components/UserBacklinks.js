@@ -462,6 +462,8 @@ function UserBacklinks() {
       setContributeError("");
 
       const backlinkId = contributeTarget.id;
+      const userId = localStorage.getItem("userId") || "";
+      const userName = localStorage.getItem("userName") || "";
       const body = {
         subBacklinkId: contributeSubId.trim(),
         password: contributePassword.trim(),
