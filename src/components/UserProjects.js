@@ -290,9 +290,11 @@ function UserProjects() {
                       <td className="user-projects-actions-col">
                         <div className="user-projects-actions">
                           <button
-                            className="user-project-btn user-project-btn-info"
-                            type="button"
-                            onClick={() => openInfoModal(p)}
+                            onClick={() =>
+                              navigate(`/user/projects/${project.id || project._id}/info`, {
+                                state: { projectName: project.name },
+                              })
+                            }
                           >
                             Info
                           </button>

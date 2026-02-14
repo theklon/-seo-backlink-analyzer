@@ -11,6 +11,7 @@ import Userlogin from "./components/Userlogin";
 import UserDashboard from "./components/UserDashboard";
 import UserBacklinks from "./components/UserBacklinks";
 import UserProjects from "./components/UserProjects";
+import UserProjectInfoPage from "./components/UserProjectInfoPage";
 import ProjectBacklinksPage from "./components/ProjectBacklinksPage";
 import ProjectMediaPage from "./components/ProjectMediaPage";
 import UserTools from "./components/usertool";
@@ -85,6 +86,14 @@ function App() {
             <UserProtectedRoute>
               <UserProjects />
             </UserProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/projects/:projectId/info"
+          element={
+            <ProtectedRoute>
+              <UserProjectInfoPage />
+            </ProtectedRoute>
           }
         />
         <Route
