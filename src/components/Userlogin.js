@@ -96,6 +96,9 @@ function Userlogin() {
       localStorage.setItem("isUserLoggedIn", "true");
       localStorage.setItem("userEmail", data.email || email.trim().toLowerCase());
       localStorage.setItem("userRole", data.role || "user");
+      // NEW:
+      localStorage.setItem("userId", data.userId || "");
+      localStorage.setItem("userName", data.name || "");
 
       navigate("/user/dashboard");
     } catch (err) {
