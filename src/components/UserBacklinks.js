@@ -230,7 +230,7 @@ function UserBacklinks() {
       const trimmedProject = project.trim();
       const validUrls = urls.map((u) => u.trim()).filter((u) => u !== "");
 
-      if (!trimmedDomain || !trimmedCategory || !trimmedProject) {
+      if (!trimmedDomain || !trimmedCategory ) {
         return;
       }
 
@@ -921,7 +921,6 @@ function UserBacklinks() {
                     className="modal-select"
                     value={project}
                     onChange={(e) => setProject(e.target.value)}
-                    required
                   >
                     <option value="">Select Project</option>
                     {projects.map((p) => (
