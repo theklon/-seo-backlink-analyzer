@@ -132,7 +132,46 @@ function UserBacklinks() {
       </a>
     );
   };
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        // Add Backlink
+        if (isModalOpen) {
+          closeModal();
+        }
+        // Edit Backlink
+        if (showEditModal) {
+          setShowEditModal(false);
+        }
+        // Contribute modals
+        if (contributeModalOpen) {
+          closeContributeModal();
+        }
+        if (contributeViewModalOpen) {
+          closeContributeViewModal();
+        }
+        // Delete confirm
+        if (showDeleteModal) {
+          handleCancelDelete();
+        }
+      }
+    };
 
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [
+    isModalOpen,
+    showEditModal,
+    contributeModalOpen,
+    contributeViewModalOpen,
+    showDeleteModal,
+    closeModal,
+    closeContributeModal,
+    closeContributeViewModal,
+    handleCancelDelete,
+  ]);
   // Load data
   useEffect(() => {
     const fetchBacklinks = async () => {
@@ -624,7 +663,15 @@ function UserBacklinks() {
 
         {/* MAIN CONTENT */}
         <div className="main-content">
-          <div className="breadcrumb">Home &​gt; Backlinks</div>
+          <div className="breadcrumb">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/dashboard")}
+            >
+              Home
+            </span>
+            {" > Backlinks"}
+          </div>
 
           <div className="backlink-header">
             <h2 className="page-title">Backlinks</h2>

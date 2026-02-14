@@ -126,7 +126,15 @@ function UserTools() {
 
         {/* MAIN CONTENT – Tool Collections */}
         <div className="main-content">
-          <div className="breadcrumb">Home &gt; Tool Collections</div>
+          <div className="breadcrumb">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/dashboard")}  // or "/admin/dashboard" in admin pages
+            >
+              Home
+            </span>
+            {" > Tool Collections"}
+          </div>
 
           <h2 className="page-title">Tool Collections</h2>
 

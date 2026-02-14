@@ -283,7 +283,15 @@ function Admincategories() {
         {/* MAIN CONTENT */}
         <div className="main-content category-page">
           {/* BREADCRUMB */}
-          <div className="breadcrumb">Home &gt; Categories</div>
+          <div className="breadcrumb">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/admin/dashboard")}  // or "/admin/dashboard" in admin pages
+            >
+              Home
+            </span>
+            {" > Categories"}
+          </div>
 
           {/* HEADER + BUTTON IN ONE LINE */}
           <div className="page-header">

@@ -203,7 +203,14 @@ function ProjectBacklinksPage() {
         <div className="main-content">
           {/* Breadcrumb */}
           <div className="breadcrumb">
-            Home &​gt; View Projects &​gt; {projectName}
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/dashboard")}
+            >
+              Home
+            </span>
+            {" > View Projects > "}
+            {projectName}
           </div>
 
           {/* Title */}

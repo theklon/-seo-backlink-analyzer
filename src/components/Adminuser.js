@@ -349,7 +349,15 @@ function Adminuser() {
         {/* MAIN CONTENT */}
         <div className="main-content">
           {/* BREADCRUMB */}
-          <div className="breadcrumb">Home &gt; Users</div>
+          <div className="breadcrumb">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/admin/dashboard")}  // or "/admin/dashboard" in admin pages
+            >
+              Home
+            </span>
+            {" > Users"}
+          </div>
 
           <h2 className="page-title">Users</h2>
 

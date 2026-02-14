@@ -46,7 +46,13 @@ function UserProjects() {
       try {
         setLoadingProjects(true);
         setProjectsError("");
-        const res = await fetch(`${API_BASE_URL}/api/projects`);
+
+        const userId = localStorage.getItem("userId"); // set in Userlogin after OTP login
+        const url = userId
+          ? `${API_BASE_URL}/api/projects?ownerUserId=${encodeURIComponent(userId)}`
+          : `${API_BASE_URL}/api/projects`;
+
+        const res = await fetch(url);
         if (!res.ok) {
           throw new Error(`Failed to load projects: ${res.status}`);
         }
@@ -210,7 +216,15 @@ function UserProjects() {
         {/* MAIN CONTENT – View Projects */}
         <div className="main-content">
           {/* Breadcrumb */}
-          <div className="breadcrumb">Home &​gt; View Projects</div>
+          <div className="breadcrumb">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/dashboard")}  // or "/admin/dashboard" in admin pages
+            >
+              Home
+            </span>
+            {" > View Projects"}
+          </div>
 
           {/* Title */}
           <h2 className="page-title">View Projects</h2>
