@@ -42,6 +42,7 @@ function UserProjects() {
   const [editingTwitter, setEditingTwitter] = useState(false);
   useEffect(() => {
     const handleKeyDown = (e) => {
+      console.log("UserProjects keydown:", e.key);
       if (e.key === "Escape" && infoModalOpen) {
         setInfoModalOpen(false);
       }

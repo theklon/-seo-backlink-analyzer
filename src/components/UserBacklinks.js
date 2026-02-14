@@ -135,6 +135,7 @@ function UserBacklinks() {
   // Load data
   useEffect(() => {
     const handleKeyDown = (e) => {
+      console.log("UserBacklinks keydown:", e.key);   // 
       if (e.key === "Escape") {
         if (isModalOpen) setIsModalOpen(false);
         if (showEditModal) setShowEditModal(false);
