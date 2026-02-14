@@ -915,7 +915,7 @@ function UserBacklinks() {
               <div className="modal-field-row">
                 <div className="modal-field small-field">
                   <label>
-                    Project <span>*</span>
+                    Project
                   </label>
                   <select
                     className="modal-select"
