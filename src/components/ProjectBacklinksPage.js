@@ -70,8 +70,6 @@ function ProjectBacklinksPage() {
       setLoading(true);
       setError("");
       try {
-        const userId = localStorage.getItem("userId"); // from login
-
         const params = new URLSearchParams();
         params.append("projectId", projectName);
 
