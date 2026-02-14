@@ -121,6 +121,11 @@ async def request_otp(payload: dict):
             }
         },
     )
+     
+try:
+    send_otp_email(email, otp)
+except Exception as e:
+    print("Failed to send OTP email:", e)
 
 
     print("TEST OTP for", email, "=", otp)
