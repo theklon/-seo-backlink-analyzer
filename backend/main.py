@@ -646,7 +646,7 @@ async def set_backlink_contribution(backlink_id: str, payload: dict):
     }
     contributions.append(new_entry)
 
-    total_points = 95 * len(contributions)
+    total_points = len(contributions)
 
     update_fields = {
         "contributions": contributions,
