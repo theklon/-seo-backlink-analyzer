@@ -59,10 +59,8 @@ function UserProjects() {
         setLoadingProjects(true);
         setProjectsError("");
 
-        const userId = localStorage.getItem("userId"); // set in Userlogin after OTP login
-        const url = userId
-          ? `${API_BASE_URL}/api/projects?ownerUserId=${encodeURIComponent(userId)}`
-          : `${API_BASE_URL}/api/projects`;
+        // remove ownerUserId filter; show all projects
+        const url = `${API_BASE_URL}/api/projects`;
 
         const res = await fetch(url);
         if (!res.ok) {
@@ -76,6 +74,7 @@ function UserProjects() {
         setLoadingProjects(false);
       }
     };
+    
 
     fetchProjects();
   }, []);
