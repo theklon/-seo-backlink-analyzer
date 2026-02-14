@@ -291,8 +291,8 @@ function UserProjects() {
                         <div className="user-projects-actions">
                           <button
                             onClick={() =>
-                              navigate(`/user/projects/${project.id || project._id}/info`, {
-                                state: { projectName: project.name },
+                              navigate(`/user/projects/${p.id || p._id}/info`, {
+                                state: { projectName: p.name },
                               })
                             }
                           >
