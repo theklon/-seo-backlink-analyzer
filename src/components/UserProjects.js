@@ -189,7 +189,7 @@ function UserProjects() {
                         </div>
                       </td>
                       <td className="user-projects-actions-col">
-                        <div className="user-project-btn user-project-btn-info">
+                        <div className="user-projects-actions">
                           <button
                             onClick={() =>
                               navigate(`/user/projects/${p.id || p._id}/info`, {
