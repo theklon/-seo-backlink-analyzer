@@ -191,6 +191,7 @@ function UserProjects() {
                       <td className="user-projects-actions-col">
                         <div className="user-projects-actions">
                           <button
+                            className="user-project-btn user-project-btn-info"
                             onClick={() =>
                               navigate(`/user/projects/${p.id || p._id}/info`, {
                                 state: { projectName: p.name },
