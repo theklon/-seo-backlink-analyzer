@@ -14,8 +14,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from bson import ObjectId
 from passlib.hash import bcrypt
 from fastapi import APIRouter
-import httpx  # or requests
-
 from .models import (
     users_collection,
     projects_collection,
