@@ -43,7 +43,10 @@ function UserProjectInfoPage() {
   const [facebookPosts, setFacebookPosts] = useState("");
   const [facebookFollowers, setFacebookFollowers] = useState("");
   const [facebookFollowing, setFacebookFollowing] = useState("");
-
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [linkedinPosts, setLinkedinPosts] = useState("");
+  const [linkedinFollowers, setLinkedinFollowers] = useState("");
+  const [linkedinFollowing, setLinkedinFollowing] = useState("");
   // Twitter counts
   const [twitterPosts, setTwitterPosts] = useState("");
   const [twitterFollowers, setTwitterFollowers] = useState("");
@@ -54,6 +57,7 @@ function UserProjectInfoPage() {
     instagram: false,
     facebook: false,
     twitter: false,
+    linkedin: false,
   });
 
   const projectNameFromState = location.state?.projectName;
@@ -79,6 +83,7 @@ function UserProjectInfoPage() {
         setInstagramUrl(found?.instagramUrl || "");
         setFacebookUrl(found?.facebookUrl || "");
         setTwitterUrl(found?.twitterUrl || "");
+        setLinkedinUrl(found?.linkedinUrl || "");
 
         setInstagramPosts(
           found?.instagramPosts !== undefined ? String(found.instagramPosts) : ""
@@ -121,6 +126,15 @@ function UserProjectInfoPage() {
             ? String(found.twitterFollowing)
             : ""
         );
+        setLinkedinPosts(
+          found?.linkedinPosts !== undefined ? String(found.linkedinPosts) : ""
+        );
+        setLinkedinFollowers(
+          found?.linkedinFollowers !== undefined ? String(found.linkedinFollowers) : ""
+        );
+        setLinkedinFollowing(
+          found?.linkedinFollowing !== undefined ? String(found.linkedinFollowing) : ""
+        );
       } catch (err) {
         setLoadError(err.message || "Error loading project");
       } finally {
@@ -161,6 +175,10 @@ function UserProjectInfoPage() {
         setTwitterPosts(String(data.posts ?? ""));
         setTwitterFollowers(String(data.followers ?? ""));
         setTwitterFollowing(String(data.following ?? ""));
+      } else if (platform === "linkedin") {
+        setLinkedinPosts(String(data.posts ?? ""));
+        setLinkedinFollowers(String(data.followers ?? ""));
+        setLinkedinFollowing(String(data.following ?? ""));
       }
     } catch (err) {
       console.error(err);
@@ -189,6 +207,10 @@ function UserProjectInfoPage() {
         twitterPosts: Number(twitterPosts) || 0,
         twitterFollowers: Number(twitterFollowers) || 0,
         twitterFollowing: Number(twitterFollowing) || 0,
+        linkedinUrl: linkedinUrl.trim(),
+        linkedinPosts: Number(linkedinPosts) || 0,
+        linkedinFollowers: Number(linkedinFollowers) || 0,
+        linkedinFollowing: Number(linkedinFollowing) || 0,
       };
 
       const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
@@ -604,7 +626,85 @@ function UserProjectInfoPage() {
                   </div>
                 </div>
               </div>
+              <div className="social-card-large">
+                <p className="social-card-title">LinkedIn</p>
 
+                <div className="social-row-content">
+                  <label className="field-label">Profile URL</label>
+                  <input
+                    type="url"
+                    placeholder="LinkedIn company/profile URL"
+                    value={linkedinUrl}
+                    onChange={(e) => setLinkedinUrl(e.target.value)}
+                    onBlur={() => fetchSocialMetrics("linkedin", linkedinUrl)}
+                  />
+                  {metricsLoading.linkedin && (
+                    <div className="social-metric-loading">Fetching LinkedIn stats...</div>
+                  )}
+                  {linkedinUrl.trim() && (
+                    <div className="social-link-row">
+                      <a
+                        href={linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-link-url"
+                      >
+                        {linkedinUrl}
+                      </a>
+                      <div className="social-link-actions">
+                        <button
+                          type="button"
+                          className="social-link-btn"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(linkedinUrl);
+                            } catch (e) {
+                              console.error("Copy failed", e);
+                            }
+                          }}
+                        >
+                          <FiCopy />
+                        </button>
+                        <a
+                          href={linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="social-link-btn"
+                        >
+                          <HiOutlineExternalLink />
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="social-counts-row">
+                  <div className="social-count-field">
+                    <label className="field-label">Posts</label>
+                    <input
+                      type="number"
+                      value={linkedinPosts}
+                      onChange={(e) => setLinkedinPosts(e.target.value)}
+                    />
+                  </div>
+                  <div className="social-count-field">
+                    <label className="field-label">Followers</label>
+                    <input
+                      type="number"
+                      value={linkedinFollowers}
+                      onChange={(e) => setLinkedinFollowers(e.target.value)}
+                    />
+                  </div>
+                  <div className="social-count-field">
+                    <label className="field-label">Following</label>
+                    <input
+                      type="number"
+                      value={linkedinFollowing}
+                      onChange={(e) => setLinkedinFollowing(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="modal-actions" style={{ marginTop: 16 }}>
                 <button
                   type="button"
