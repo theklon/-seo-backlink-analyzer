@@ -647,6 +647,8 @@ async def get_social_metrics(payload: dict):
                 metrics = await scrape_facebook(page)
             elif platform == "twitter":
                 metrics = await scrape_twitter(page)
+            elif platform == "linkedin":
+                metrics = await scrape_linkedin(page)
             else:
                 await browser.close()
                 raise HTTPException(status_code=400, detail="Unsupported platform")
@@ -660,6 +662,27 @@ async def get_social_metrics(payload: dict):
         raise HTTPException(
             status_code=500, detail=f"Failed to fetch social metrics: {str(e)}"
         )
+async def _parse_compact_number(s: str) -> int:
+    """Helper to parse 1.2K / 3.4M / 1,234 style numbers."""
+    s = (s or "").strip()
+    if not s:
+        return 0
+    s = s.replace(",", "")
+    import re
+ 
+    m = re.match(r"([\d.]+)\s*([KkMm])?", s)
+    if not m:
+        try:
+            return int(s)
+        except ValueError:
+            return 0
+    num = float(m.group(1))
+    suffix = m.group(2)
+    if suffix in ("K", "k"):
+        num *= 1_000
+    elif suffix in ("M", "m"):
+        num *= 1_000_000
+    return int(num)
 
 
 async def scrape_instagram(page):
@@ -686,54 +709,89 @@ async def scrape_instagram(page):
     posts_match = re.search(r"([\d,.]+)\s+posts", content, re.I)
 
     if followers_match:
-        followers = int(followers_match.group(1).replace(",", "").replace(".", ""))
+        followers = await _parse_compact_number(followers_match.group(1))
     if following_match:
-        following = int(following_match.group(1).replace(",", "").replace(".", ""))
+        following = await _parse_compact_number(following_match.group(1))
     if posts_match:
-        posts = int(posts_match.group(1).replace(",", "").replace(".", ""))
-
+        posts = await _parse_compact_number(posts_match.group(1))
+ 
     return {"posts": posts, "followers": followers, "following": following}
 
-
+ 
 async def scrape_facebook(page):
-    await page.wait_for_timeout(3000)
+    """
+    Heuristic scraping of a public Facebook page. Often only followers is reliable.
+    """
+    await page.wait_for_timeout(4000)
     content = await page.content()
     import re
-
+ 
     followers = 0
     following = 0
     posts = 0
-
-    followers_match = re.search(r"([\d,.]+)\s+followers", content, re.I)
+ 
+    followers_match = re.search(r"([\d.,KkMm]+)\s+followers", content, re.I)
     if followers_match:
-        followers = int(followers_match.group(1).replace(",", "").replace(".", ""))
-
-    # Facebook doesn't expose "following" or "posts" consistently without login,
-    # so you might just return 0 or some best-effort value.
-    return {"posts": posts, "followers": followers, "following": following}
-
-
-async def scrape_twitter(page):
-    await page.wait_for_timeout(3000)
-    content = await page.content()
-    import re
-
-    followers = 0
-    following = 0
-    posts = 0
-
-    # Example naive patterns; you'll need to view the HTML source and tune this.
-    followers_match = re.search(r"([\d,.]+)\s+Followers", content, re.I)
-    following_match = re.search(r"([\d,.]+)\s+Following", content, re.I)
-    posts_match = re.search(r"([\d,.]+)\s+Posts", content, re.I)
-
-    if followers_match:
-        followers = int(followers_match.group(1).replace(",", "").replace(".", ""))
-    if following_match:
-        following = int(following_match.group(1).replace(",", "").replace(".", ""))
+        followers = await _parse_compact_number(followers_match.group(1))
+ 
+    # If you see a posts count in the HTML, tweak this regex accordingly.
+    posts_match = re.search(r"([\d.,KkMm]+)\s+posts", content, re.I)
     if posts_match:
-        posts = int(posts_match.group(1).replace(",", "").replace(".", ""))
-
+        posts = await _parse_compact_number(posts_match.group(1))
+ 
+    # "Following" is usually not exposed for pages; leave 0 unless you discover a pattern.
+    return {"posts": posts, "followers": followers, "following": following}
+ 
+ 
+async def scrape_twitter(page):
+    """
+    Heuristic scraping for X (Twitter). Very brittle, depends on public profile HTML.
+    """
+    await page.wait_for_timeout(5000)
+ 
+    followers = 0
+    following = 0
+    posts = 0
+ 
+    try:
+        # These selectors are guesses – inspect x.com DOM for your profile
+        followers_text = await page.locator(
+            'a[href$="/followers"] span span'
+        ).first.text_content()
+        following_text = await page.locator(
+            'a[href$="/following"] span span'
+        ).first.text_content()
+        posts_text = await page.locator(
+            'a[href$="/posts"] span span'
+        ).first.text_content()
+ 
+        followers = await _parse_compact_number(followers_text)
+        following = await _parse_compact_number(following_text)
+        posts = await _parse_compact_number(posts_text)
+    except Exception:
+        # If selectors fail, keep 0s
+        pass
+ 
+    return {"posts": posts, "followers": followers, "following": following}
+ 
+ 
+async def scrape_linkedin(page):
+    """
+    Basic LinkedIn scraper. Many pages show 'X followers'.
+    """
+    await page.wait_for_timeout(4000)
+    content = await page.content()
+    import re
+ 
+    followers = 0
+    following = 0
+    posts = 0
+ 
+    followers_match = re.search(r"([\d.,KkMm]+)\s+followers", content, re.I)
+    if followers_match:
+        followers = await _parse_compact_number(followers_match.group(1))
+ 
+    # If you later find reliable patterns for posts/following, add regexes here.
     return {"posts": posts, "followers": followers, "following": following}
 @app.put("/api/user/backlinks/{backlink_id}/contribute")
 async def set_backlink_contribution(backlink_id: str, payload: dict):
