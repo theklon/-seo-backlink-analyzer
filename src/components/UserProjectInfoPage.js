@@ -332,25 +332,6 @@ function UserProjectInfoPage() {
 
           {!loading && project && (
             <div>
-              {/* Project name card */}
-              <div className="social-cards-row" style={{ marginBottom: 24 }}>
-                <div className="social-card-large">
-                  <p className="social-card-title">Project Name</p>
-                  <h3>{project.name}</h3>
-                  {project.url && (
-                    <p style={{ marginTop: 8 }}>
-                      <a
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {project.url}
-                      </a>
-                    </p>
-                  )}
-                </div>
-              </div>
-
               {/* 3 social cards */}
               <div className="social-cards-row">
                 {/* Instagram */}
