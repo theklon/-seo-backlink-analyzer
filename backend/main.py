@@ -13,6 +13,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from bson import ObjectId
 from passlib.hash import bcrypt
+from fastapi import APIRouter
+import httpx  # or requests
 
 from .models import (
     users_collection,
@@ -618,7 +620,122 @@ async def update_backlink(backlink_id: str, backlink: BacklinkCreate):
     res["_id"] = str(res["_id"])
     return res
 
+ 
+from playwright.async_api import async_playwright
 
+@app.post("/api/social/metrics")
+async def get_social_metrics(payload: dict):
+    platform = (payload.get("platform") or "").lower().strip()
+    url = (payload.get("url") or "").strip()
+
+    if not platform or not url:
+        raise HTTPException(status_code=400, detail="platform and url are required")
+
+    # basic safety to avoid SSRF
+    if not (url.startswith("http://") or url.startswith("https://")):
+        raise HTTPException(status_code=400, detail="Invalid URL")
+
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            page = await browser.new_page()
+
+            await page.goto(url, wait_until="networkidle")
+
+            if platform == "instagram":
+                metrics = await scrape_instagram(page)
+            elif platform == "facebook":
+                metrics = await scrape_facebook(page)
+            elif platform == "twitter":
+                metrics = await scrape_twitter(page)
+            else:
+                await browser.close()
+                raise HTTPException(status_code=400, detail="Unsupported platform")
+
+            await browser.close()
+            return metrics
+    except HTTPException:
+        raise
+    except Exception as e:
+        # log e in real code
+        raise HTTPException(
+            status_code=500, detail=f"Failed to fetch social metrics: {str(e)}"
+        )
+
+
+async def scrape_instagram(page):
+    """
+    Example-only: Instagram HTML changes often and many pages require login,
+    so you will have to adapt selectors / logic and possibly handle login.
+    """
+    # Wait for some text that usually contains counts, e.g. profile header
+    # Adjust selector based on real page HTML you see in devtools.
+    await page.wait_for_timeout(3000)
+
+    content = await page.content()
+
+    # VERY naive regex-based extraction; you will need to customize:
+    import re
+
+    followers = 0
+    following = 0
+    posts = 0
+
+    # Example patterns like '1,234 followers', '567 following', '89 posts'
+    followers_match = re.search(r"([\d,.]+)\s+followers", content, re.I)
+    following_match = re.search(r"([\d,.]+)\s+following", content, re.I)
+    posts_match = re.search(r"([\d,.]+)\s+posts", content, re.I)
+
+    if followers_match:
+        followers = int(followers_match.group(1).replace(",", "").replace(".", ""))
+    if following_match:
+        following = int(following_match.group(1).replace(",", "").replace(".", ""))
+    if posts_match:
+        posts = int(posts_match.group(1).replace(",", "").replace(".", ""))
+
+    return {"posts": posts, "followers": followers, "following": following}
+
+
+async def scrape_facebook(page):
+    await page.wait_for_timeout(3000)
+    content = await page.content()
+    import re
+
+    followers = 0
+    following = 0
+    posts = 0
+
+    followers_match = re.search(r"([\d,.]+)\s+followers", content, re.I)
+    if followers_match:
+        followers = int(followers_match.group(1).replace(",", "").replace(".", ""))
+
+    # Facebook doesn't expose "following" or "posts" consistently without login,
+    # so you might just return 0 or some best-effort value.
+    return {"posts": posts, "followers": followers, "following": following}
+
+
+async def scrape_twitter(page):
+    await page.wait_for_timeout(3000)
+    content = await page.content()
+    import re
+
+    followers = 0
+    following = 0
+    posts = 0
+
+    # Example naive patterns; you'll need to view the HTML source and tune this.
+    followers_match = re.search(r"([\d,.]+)\s+Followers", content, re.I)
+    following_match = re.search(r"([\d,.]+)\s+Following", content, re.I)
+    posts_match = re.search(r"([\d,.]+)\s+Posts", content, re.I)
+
+    if followers_match:
+        followers = int(followers_match.group(1).replace(",", "").replace(".", ""))
+    if following_match:
+        following = int(following_match.group(1).replace(",", "").replace(".", ""))
+    if posts_match:
+        posts = int(posts_match.group(1).replace(",", "").replace(".", ""))
+
+    return {"posts": posts, "followers": followers, "following": following}
 @app.put("/api/user/backlinks/{backlink_id}/contribute")
 async def set_backlink_contribution(backlink_id: str, payload: dict):
     if not ObjectId.is_valid(backlink_id):
