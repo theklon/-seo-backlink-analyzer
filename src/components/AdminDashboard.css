@@ -1922,12 +1922,12 @@ th, td {
   display: flex;
   gap: 24px;
   margin-top: 24px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 /* Single large social card */
 .social-card-large {
-  flex: 1 1 0;
+  flex: 1 1 240px;
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
