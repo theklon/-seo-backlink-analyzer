@@ -5,70 +5,97 @@ import klonLogo from "../assets/klonlogo.png";
 import { API_BASE_URL } from "../api";
 
 function Adminlogin() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [otpStep, setOtpStep] = useState(false);
-  const [otp, setOtp] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState(1); // 1 = email, 2 = otp
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSendOtp = async (e) => {
     e.preventDefault();
     setError("");
+    setMessage("");
+
+    if (!email.trim()) {
+      setError("Please enter Email");
+      return;
+    }
 
     try {
       setLoading(true);
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+        }),
+      });
 
-      if (!otpStep) {
-        // Step 1: username + password -> request OTP
-        const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.detail || "Invalid username or password");
-        }
-
-        const data = await res.json();
-        if (data.otp_required) {
-          setOtpStep(true);
-        }
-      } else {
-        // Step 2: verify OTP
-        const res = await fetch(`${API_BASE_URL}/api/admin/verify-otp`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ otp }),
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.detail || "OTP verification failed");
-        }
-
-        await res.json();
-
-        // Mark admin as logged in (used by ProtectedRoute)
-        localStorage.setItem("isAdminLoggedIn", "true");
-        navigate("/admin/dashboard");
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (err) {
+        throw new Error("Invalid server response");
       }
+
+      if (!res.ok) {
+        throw new Error(data.detail || "Failed to send OTP");
+      }
+
+      setMessage("OTP sent to your admin email. Please check your inbox.");
+      setStep(2);
     } catch (err) {
-      setError(err.message || "Error during login");
+      setError(err.message || "Error sending OTP");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleVerifyOtpAndLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+
+    if (!otp.trim()) {
+      setError("Please enter OTP");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_BASE_URL}/api/admin/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          otp: otp.trim(),
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.detail || "OTP verification failed");
+      }
+
+      localStorage.setItem("isAdminLoggedIn", "true");
+      navigate("/admin/dashboard");
+    } catch (err) {
+      setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cardClass =
+    step === 1
+      ? "login-card user-login-card step-email"
+      : "login-card user-login-card step-otp";
+
   return (
-    <div className="login-page">
-      {/* LEFT SECTION */}
+    <div className="login-page user-login-page">
       <div className="left-section">
         <div className="logo-block">
           <img src={klonLogo} alt="Klon Logo" className="main-logo" />
@@ -76,9 +103,8 @@ function Adminlogin() {
         </div>
       </div>
 
-      {/* RIGHT SECTION */}
       <div className="right-section">
-        <div className="login-card">
+        <div className={cardClass}>
           <h2>Admin Login</h2>
 
           {error && (
@@ -93,88 +119,87 @@ function Adminlogin() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
-            {!otpStep ? (
-              <>
-                <div className="field">
-                  <label>Username</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </div>
-
-                <div className="field">
-                  <label>Password</label>
-                  <div className="password-box">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    {/* Eye Icon */}
-                    <span
-                      className="eye-icon"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#546270"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M4 12s3.2-5 8-5 8 5 8 5-3.2 5-8 5-8-5-8-5z" />
-                        <circle cx="12" cy="12" r="2" />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <p style={{ marginBottom: "8px", fontSize: "13px" }}>
-                  An OTP has been sent to{" "}
-                  <strong>ajay@nextwebi.com</strong>. Please enter it below.
-                </p>
-
-                <div className="field">
-                  <label>Enter OTP</label>
-                  <input
-                    type="text"
-                    placeholder="6-digit code"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-
-            <button
-              className="login-btn"
-              type="submit"
-              disabled={loading}
-              style={{ marginTop: "10px" }}
+          {message && (
+            <div
+              style={{
+                color: "#15803d",
+                fontSize: "13px",
+                marginBottom: "10px",
+              }}
             >
-              {loading
-                ? "Please wait..."
-                : !otpStep
-                ? "Send OTP"
-                : "Verify OTP"}
-            </button>
-          </form>
+              {message}
+            </div>
+          )}
 
-          {!otpStep && <div className="forgot">Forgot Password?</div>}
+          {step === 1 && (
+            <form onSubmit={handleSendOtp}>
+              <div className="field">
+                <label>Email</label>
+                <input
+                  type="email"
+                  placeholder="Enter admin Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <button className="login-btn" type="submit" disabled={loading}>
+                {loading ? "Sending OTP..." : "Send OTP"}
+              </button>
+            </form>
+          )}
+
+          {step === 2 && (
+            <form onSubmit={handleVerifyOtpAndLogin}>
+              <div className="field">
+                <label>OTP</label>
+                <input
+                  type="text"
+                  placeholder="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  maxLength={6}
+                  required
+                />
+              </div>
+
+              <button className="login-btn" type="submit" disabled={loading}>
+                {loading ? "Verifying..." : "Verify & Login"}
+              </button>
+
+              <div
+                style={{
+                  marginTop: "10px",
+                  fontSize: "13px",
+                }}
+              >
+                Wrong email?
+                <button
+                  type="button"
+                  style={{
+                    border: "none",
+                    background: "none",
+                    color: "#4f46e5",
+                    cursor: "pointer",
+                    padding: 0,
+                    marginLeft: 4,
+                  }}
+                  onClick={() => {
+                    setStep(1);
+                    setOtp("");
+                    setError("");
+                    setMessage("");
+                  }}
+                >
+                  Go back
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
 
-      {/* FOOTER */}
       <div className="login-footer">
         <span className="footer-link">Privacy Policy</span>
         <span className="footer-separator">|</span>

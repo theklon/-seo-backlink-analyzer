@@ -293,17 +293,17 @@ async def login(payload: dict):
 @app.post("/api/admin/login")
 async def admin_login(payload: dict):
     """
-    Step 1 – Admin username/password check.
-    If OK, generate OTP and email it to ajay@nextwebi.com.
+    Step 1 – Admin email check.
+    If OK, generate OTP and email it to ADMIN_OTP_EMAIL.
     """
-    username = (payload.get("username") or "").strip()
-    password = (payload.get("password") or "").strip()
+    email = (payload.get("email") or "").strip().lower()
 
-    if not (username and password):
-        raise HTTPException(status_code=400, detail="Missing fields")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email required")
 
-    if username != ADMIN_USERNAME or password != ADMIN_PASSWORD:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    # Optional: ensure only the configured admin email is accepted
+    if email != ADMIN_OTP_EMAIL.lower():
+        raise HTTPException(status_code=401, detail="Unauthorized email")
 
     otp_code = generate_otp()
     expires_at = datetime.utcnow() + timedelta(minutes=5)
