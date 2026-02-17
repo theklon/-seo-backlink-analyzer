@@ -190,6 +190,21 @@ function UserProjects() {
                       </td>
                       <td className="user-projects-actions-col">
                         <div className="user-projects-actions">
+                          {/* Info page (domain/bio/contact/custom attributes) */}
+                          <button
+                            className="user-project-btn user-project-btn-info"
+                            onClick={() =>
+                              navigate(
+                                `/user/projects/${p.id || p._id}/info`,
+                                {
+                                  state: { projectName: p.name },
+                                }
+                              )
+                            }
+                          >
+                            Info
+                          </button>
+
                           {/* Social (Instagram) page */}
                           <button
                             className="user-project-btn user-project-btn-info"

@@ -338,8 +338,10 @@ async def list_users():
 async def update_project_info(project_id: str, payload: dict):
     update_fields = {
         "instagramUrl": payload.get("instagramUrl", "").strip(),
-        "facebookUrl": payload.get("facebookUrl", "").strip(),
-        "twitterUrl": payload.get("twitterUrl", "").strip(),
+        "infoDomain": payload.get("infoDomain", "").strip(),
+        "infoBio": payload.get("infoBio", "").strip(),
+        "infoContact": payload.get("infoContact", "").strip(),
+        "infoExtraFields": payload.get("infoExtraFields", []),
     }
 
     await projects_collection.update_one(

@@ -11,6 +11,7 @@ import Userlogin from "./components/Userlogin";
 import UserDashboard from "./components/UserDashboard";
 import UserBacklinks from "./components/UserBacklinks";
 import UserProjects from "./components/UserProjects";
+import UserProjectSocialPage from "./components/UserProjectSocialPage";
 import UserProjectInfoPage from "./components/UserProjectInfoPage";
 import ProjectBacklinksPage from "./components/ProjectBacklinksPage";
 import ProjectMediaPage from "./components/ProjectMediaPage";
@@ -88,11 +89,22 @@ function App() {
             </UserProtectedRoute>
           }
         />
+        {/* Project Info (domain/bio/contact/custom attributes) */}
         <Route
           path="/user/projects/:projectId/info"
           element={
             <ProtectedRoute>
               <UserProjectInfoPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Project Social (Instagram only) */}
+        <Route
+          path="/user/projects/:projectId/social"
+          element={
+            <ProtectedRoute>
+              <UserProjectSocialPage />
             </ProtectedRoute>
           }
         />
