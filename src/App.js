@@ -23,12 +23,15 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Admin Login */}
-        <Route path="/" element={<Adminlogin />} />
-        <Route path="/login" element={<Adminlogin />} />
-
-        {/* User Login */}
+        {/* User Login as default */}
+        <Route path="/" element={<Userlogin />} />
         <Route path="/user/login" element={<Userlogin />} />
+
+        {/* Admin Login (explicit path) */}
+        <Route path="/admin/login" element={<Adminlogin />} />
+
+        {/* Optional: keep /login but send to user login */}
+        <Route path="/login" element={<Navigate to="/user/login" replace />} />
 
         {/* Admin Protected Routes */}
         <Route
@@ -93,9 +96,9 @@ function App() {
         <Route
           path="/user/projects/:projectId/info"
           element={
-            <ProtectedRoute>
+            <UserProtectedRoute>
               <UserProjectInfoPage />
-            </ProtectedRoute>
+            </UserProtectedRoute>
           }
         />
 
@@ -103,26 +106,26 @@ function App() {
         <Route
           path="/user/projects/:projectId/social"
           element={
-            <ProtectedRoute>
+            <UserProtectedRoute>
               <UserProjectSocialPage />
-            </ProtectedRoute>
+            </UserProtectedRoute>
           }
         />
         <Route
           path="/user/projects/:projectId/backlinks"
           element={
-            <ProtectedRoute>
+            <UserProtectedRoute>
               <ProjectBacklinksPage />
-            </ProtectedRoute>
+            </UserProtectedRoute>
           }
         />
          
         <Route
           path="/user/projects/:projectId/media"
           element={
-            <ProtectedRoute>
+            <UserProtectedRoute>
               <ProjectMediaPage />
-            </ProtectedRoute>
+            </UserProtectedRoute>
           }
         />
         <Route

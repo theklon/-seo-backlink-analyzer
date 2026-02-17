@@ -3,17 +3,17 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 import os
 from dotenv import load_dotenv
-
 import random
 import string
 import smtplib
+from email.mime.text import MIMEText
 from email.message import EmailMessage
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from bson import ObjectId
 from passlib.hash import bcrypt
-from fastapi import APIRouter
+
 from .models import (
     users_collection,
     projects_collection,
@@ -21,13 +21,12 @@ from .models import (
     backlinks_collection,
     project_media_collection,
 )
-#new
 from .schemas import (
     UserCreate,
     UserOut,
     ProjectCreate,
     ProjectOut,
-    ProjectMediaCreate,        # NEW
+    ProjectMediaCreate,
     ProjectMediaOut,
     CategoryCreate,
     CategoryOut,
@@ -66,6 +65,34 @@ SMTP_FROM = os.getenv("SMTP_FROM")
 if not all([SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM]):
     raise RuntimeError("SMTP environment variables are not fully set")
 
+# Admin credentials (can override via .env)
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+
+# Admin OTP store and email
+ADMIN_OTP_EMAIL = "ajay@nextwebi.com"
+admin_otp_store = {
+    # "ajay@nextwebi.com": {"code": "123456", "expires_at": datetime(...) }
+}
+
+
+def send_admin_otp_email(to_email: str, otp_code: str):
+    """Send admin login OTP to fixed email."""
+    smtp_host = os.getenv("SMTP_HOST", "email-smtp.us-east-1.amazonaws.com")
+    smtp_port = int(os.getenv("SMTP_PORT", "587"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_PASS")
+
+    msg = MIMEText(f"Your admin login OTP is: {otp_code}")
+    msg["Subject"] = "Klon Admin Login OTP"
+    msg["From"] = smtp_user
+    msg["To"] = to_email
+
+    with smtplib.SMTP(smtp_host, smtp_port) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+
 
 def generate_otp(length: int = 6) -> str:
     """Generate numeric OTP like '123456'."""
@@ -73,7 +100,7 @@ def generate_otp(length: int = 6) -> str:
 
 
 def send_otp_email(to_email: str, otp: str) -> None:
-    """Send OTP email via SMTP."""
+    """Send user OTP email via SMTP."""
     msg = EmailMessage()
     msg["Subject"] = "Your OTP Code"
     msg["From"] = SMTP_FROM
@@ -91,11 +118,14 @@ async def health():
     return {"status": "ok"}
 
 
-# ================= AUTH: OTP + LOGIN =================
+# ================= AUTH: ROOT =================
+
 @app.get("/")
 async def root():
     return {"status": "ok"}
 
+
+# ================= USER AUTH: OTP + LOGIN =================
 
 @app.post("/api/auth/request-otp")
 async def request_otp(payload: dict):
@@ -228,7 +258,7 @@ async def verify_otp_set_password(payload: dict):
 @app.post("/api/auth/login")
 async def login(payload: dict):
     """
-    Login:
+    User login:
     - Only emails created by admin & verified (OTP + password set) can log in.
     """
     email = payload.get("email", "").strip().lower()
@@ -258,8 +288,69 @@ async def login(payload: dict):
     }
 
 
-# ==== USERS (for Admin Users page) ====
+# ================= ADMIN LOGIN WITH EMAIL OTP =================
 
+@app.post("/api/admin/login")
+async def admin_login(payload: dict):
+    """
+    Step 1 – Admin username/password check.
+    If OK, generate OTP and email it to ajay@nextwebi.com.
+    """
+    username = (payload.get("username") or "").strip()
+    password = (payload.get("password") or "").strip()
+
+    if not (username and password):
+        raise HTTPException(status_code=400, detail="Missing fields")
+
+    if username != ADMIN_USERNAME or password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    otp_code = generate_otp()
+    expires_at = datetime.utcnow() + timedelta(minutes=5)
+
+    admin_otp_store[ADMIN_OTP_EMAIL] = {
+        "code": otp_code,
+        "expires_at": expires_at,
+    }
+
+    try:
+        send_admin_otp_email(ADMIN_OTP_EMAIL, otp_code)
+    except Exception as e:
+        print("Failed to send admin OTP email:", e)
+
+    print("ADMIN OTP for", ADMIN_OTP_EMAIL, "=", otp_code)
+    return {"otp_required": True}
+
+
+@app.post("/api/admin/verify-otp")
+async def verify_admin_otp(payload: dict):
+    """
+    Step 2 – Admin submits OTP received on email.
+    Frontend will treat success as 'admin logged in'.
+    """
+    otp = (payload.get("otp") or "").strip()
+
+    if not otp:
+        raise HTTPException(status_code=400, detail="OTP required")
+
+    record = admin_otp_store.get(ADMIN_OTP_EMAIL)
+    if not record:
+        raise HTTPException(status_code=400, detail="No OTP pending")
+
+    if datetime.utcnow() > record["expires_at"]:
+        del admin_otp_store[ADMIN_OTP_EMAIL]
+        raise HTTPException(status_code=400, detail="OTP expired")
+
+    if otp != record["code"]:
+        raise HTTPException(status_code=400, detail="Invalid OTP")
+
+    del admin_otp_store[ADMIN_OTP_EMAIL]
+
+    # No token system yet – frontend uses localStorage flag.
+    return {"message": "Admin OTP verified", "admin": True}
+
+
+# ==== USERS (for Admin Users page) ====
 
 @app.post("/api/admin/users", response_model=UserOut)
 async def create_user(user: UserCreate):
@@ -333,11 +424,13 @@ async def list_users():
 
 # ==== PROJECTS (social links update) ====
 
-
 @app.put("/api/projects/{project_id}")
 async def update_project_info(project_id: str, payload: dict):
     update_fields = {
         "instagramUrl": payload.get("instagramUrl", "").strip(),
+        "instagramPosts": payload.get("instagramPosts", 0),
+        "instagramFollowers": payload.get("instagramFollowers", 0),
+        "instagramFollowing": payload.get("instagramFollowing", 0),
         "infoDomain": payload.get("infoDomain", "").strip(),
         "infoBio": payload.get("infoBio", "").strip(),
         "infoContact": payload.get("infoContact", "").strip(),
@@ -360,7 +453,6 @@ async def update_project_info(project_id: str, payload: dict):
 
 # ==== PROJECTS (Admin + User View) ====
 
-
 @app.post("/api/admin/projects", response_model=ProjectOut)
 async def create_project(project: ProjectCreate):
     now = datetime.utcnow()
@@ -381,7 +473,6 @@ async def create_project(project: ProjectCreate):
 
 
 # ==== PROJECT MEDIA ====
-
 
 @app.post(
     "/api/projects/{project_id}/media",
@@ -498,7 +589,6 @@ async def list_projects(
 
 # ==== CATEGORIES ====
 
-
 @app.post("/api/admin/categories", response_model=CategoryOut)
 async def create_category(cat: CategoryCreate):
     now = datetime.utcnow()
@@ -563,7 +653,6 @@ async def list_categories():
 
 # ==== BACKLINKS (User Backlinks page) ====
 
-
 @app.post("/api/user/backlinks", response_model=BacklinkOut)
 async def create_backlink(backlink: BacklinkCreate):
     now = datetime.utcnow()
@@ -621,8 +710,9 @@ async def update_backlink(backlink_id: str, backlink: BacklinkCreate):
     res["_id"] = str(res["_id"])
     return res
 
- 
+
 from playwright.async_api import async_playwright
+
 
 @app.post("/api/social/metrics")
 async def get_social_metrics(payload: dict):
@@ -660,10 +750,11 @@ async def get_social_metrics(payload: dict):
     except HTTPException:
         raise
     except Exception as e:
-        # log e in real code
         raise HTTPException(
             status_code=500, detail=f"Failed to fetch social metrics: {str(e)}"
         )
+
+
 async def _parse_compact_number(s: str) -> int:
     """Helper to parse 1.2K / 3.4M / 1,234 style numbers."""
     s = (s or "").strip()
@@ -671,7 +762,7 @@ async def _parse_compact_number(s: str) -> int:
         return 0
     s = s.replace(",", "")
     import re
- 
+
     m = re.match(r"([\d.]+)\s*([KkMm])?", s)
     if not m:
         try:
@@ -692,20 +783,16 @@ async def scrape_instagram(page):
     Example-only: Instagram HTML changes often and many pages require login,
     so you will have to adapt selectors / logic and possibly handle login.
     """
-    # Wait for some text that usually contains counts, e.g. profile header
-    # Adjust selector based on real page HTML you see in devtools.
     await page.wait_for_timeout(3000)
 
     content = await page.content()
 
-    # VERY naive regex-based extraction; you will need to customize:
     import re
 
     followers = 0
     following = 0
     posts = 0
 
-    # Example patterns like '1,234 followers', '567 following', '89 posts'
     followers_match = re.search(r"([\d,.]+)\s+followers", content, re.I)
     following_match = re.search(r"([\d,.]+)\s+following", content, re.I)
     posts_match = re.search(r"([\d,.]+)\s+posts", content, re.I)
@@ -716,10 +803,10 @@ async def scrape_instagram(page):
         following = await _parse_compact_number(following_match.group(1))
     if posts_match:
         posts = await _parse_compact_number(posts_match.group(1))
- 
+
     return {"posts": posts, "followers": followers, "following": following}
 
- 
+
 async def scrape_facebook(page):
     """
     Heuristic scraping of a public Facebook page. Often only followers is reliable.
@@ -727,36 +814,33 @@ async def scrape_facebook(page):
     await page.wait_for_timeout(4000)
     content = await page.content()
     import re
- 
+
     followers = 0
     following = 0
     posts = 0
- 
+
     followers_match = re.search(r"([\d.,KkMm]+)\s+followers", content, re.I)
     if followers_match:
         followers = await _parse_compact_number(followers_match.group(1))
- 
-    # If you see a posts count in the HTML, tweak this regex accordingly.
+
     posts_match = re.search(r"([\d.,KkMm]+)\s+posts", content, re.I)
     if posts_match:
         posts = await _parse_compact_number(posts_match.group(1))
- 
-    # "Following" is usually not exposed for pages; leave 0 unless you discover a pattern.
+
     return {"posts": posts, "followers": followers, "following": following}
- 
- 
+
+
 async def scrape_twitter(page):
     """
     Heuristic scraping for X (Twitter). Very brittle, depends on public profile HTML.
     """
     await page.wait_for_timeout(5000)
- 
+
     followers = 0
     following = 0
     posts = 0
- 
+
     try:
-        # These selectors are guesses – inspect x.com DOM for your profile
         followers_text = await page.locator(
             'a[href$="/followers"] span span'
         ).first.text_content()
@@ -766,17 +850,16 @@ async def scrape_twitter(page):
         posts_text = await page.locator(
             'a[href$="/posts"] span span'
         ).first.text_content()
- 
+
         followers = await _parse_compact_number(followers_text)
         following = await _parse_compact_number(following_text)
         posts = await _parse_compact_number(posts_text)
     except Exception:
-        # If selectors fail, keep 0s
         pass
- 
+
     return {"posts": posts, "followers": followers, "following": following}
- 
- 
+
+
 async def scrape_linkedin(page):
     """
     Basic LinkedIn scraper. Many pages show 'X followers'.
@@ -784,17 +867,20 @@ async def scrape_linkedin(page):
     await page.wait_for_timeout(4000)
     content = await page.content()
     import re
- 
+
     followers = 0
     following = 0
     posts = 0
- 
+
     followers_match = re.search(r"([\d.,KkMm]+)\s+followers", content, re.I)
     if followers_match:
         followers = await _parse_compact_number(followers_match.group(1))
- 
-    # If you later find reliable patterns for posts/following, add regexes here.
+
     return {"posts": posts, "followers": followers, "following": following}
+
+
+# ==== BACKLINKS CONTRIBUTIONS & DELETE ====
+
 @app.put("/api/user/backlinks/{backlink_id}/contribute")
 async def set_backlink_contribution(backlink_id: str, payload: dict):
     if not ObjectId.is_valid(backlink_id):
@@ -857,7 +943,6 @@ async def delete_backlink(backlink_id: str):
 
 
 # ==== DASHBOARD STATS ====
-
 
 @app.get("/api/admin/stats")
 async def admin_stats():
