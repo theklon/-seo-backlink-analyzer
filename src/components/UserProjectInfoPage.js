@@ -25,9 +25,6 @@ function UserProjectInfoPage() {
   const [bio, setBio] = useState("");
   const [contact, setContact] = useState("");
 
-  // extra attributes: [{ id, label, value }]
-  const [extraFields, setExtraFields] = useState([]);
-
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
@@ -59,17 +56,6 @@ function UserProjectInfoPage() {
         setDomain(domainVal);
         setBio(bioVal);
         setContact(contactVal);
-
-        const extra = Array.isArray(found?.infoExtraFields)
-          ? found.infoExtraFields
-          : [];
-        setExtraFields(
-          extra.map((f, idx) => ({
-            id: `${idx}-${Date.now()}`,
-            label: f.label || "",
-            value: f.value || "",
-          }))
-        );
       } catch (err) {
         setLoadError(err.message || "Error loading project");
       } finally {
@@ -80,23 +66,6 @@ function UserProjectInfoPage() {
     fetchProject();
   }, [projectId]);
 
-  const handleAddExtraField = () => {
-    setExtraFields((prev) => [
-      ...prev,
-      { id: `${Date.now()}`, label: "", value: "" },
-    ]);
-  };
-
-  const handleChangeExtraField = (id, key, value) => {
-    setExtraFields((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, [key]: value } : f))
-    );
-  };
-
-  const handleRemoveExtraField = (id) => {
-    setExtraFields((prev) => prev.filter((f) => f.id !== id));
-  };
-
   const handleSave = async () => {
     if (!projectId) return;
     try {
@@ -104,18 +73,10 @@ function UserProjectInfoPage() {
       setSaveError("");
       setSaveSuccess("");
 
-      const cleanedExtra = extraFields
-        .filter((f) => f.label.trim() || f.value.trim())
-        .map((f) => ({
-          label: f.label.trim(),
-          value: f.value.trim(),
-        }));
-
       const body = {
         infoDomain: domain.trim(),
         infoBio: bio.trim(),
         infoContact: contact.trim(),
-        infoExtraFields: cleanedExtra,
       };
 
       const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
@@ -293,64 +254,6 @@ function UserProjectInfoPage() {
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
                   />
-                </div>
-
-                <div className="modal-field">
-                  <label>Additional Attributes</label>
-                  <div
-                    style={{ display: "flex", flexDirection: "column", gap: 8 }}
-                  >
-                    {extraFields.map((field) => (
-                      <div
-                        key={field.id}
-                        style={{
-                          display: "flex",
-                          gap: 8,
-                          alignItems: "center",
-                        }}
-                      >
-                        <input
-                          type="text"
-                          placeholder="Label (e.g. Industry)"
-                          value={field.label}
-                          onChange={(e) =>
-                            handleChangeExtraField(
-                              field.id,
-                              "label",
-                              e.target.value
-                            )
-                          }
-                        />
-                        <input
-                          type="text"
-                          placeholder="Value (e.g. SaaS)"
-                          value={field.value}
-                          onChange={(e) =>
-                            handleChangeExtraField(
-                              field.id,
-                              "value",
-                              e.target.value
-                            )
-                          }
-                        />
-                        <button
-                          type="button"
-                          className="secondary-btn"
-                          onClick={() => handleRemoveExtraField(field.id)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ))}
-
-                    <button
-                      type="button"
-                      className="secondary-btn"
-                      onClick={handleAddExtraField}
-                    >
-                      + Add Attribute
-                    </button>
-                  </div>
                 </div>
 
                 <div

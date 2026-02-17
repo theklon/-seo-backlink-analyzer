@@ -270,7 +270,7 @@ function UserProjectSocialPage() {
             <div>
               <div className="social-cards-row">
                 {/* Instagram only */}
-                <div className="social-card-large">
+                <div className="social-card-large social-card-instagram">
                   <p className="social-card-title">
                     <FaInstagram style={{ marginRight: 8 }} />
                     Instagram

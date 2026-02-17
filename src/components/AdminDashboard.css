@@ -2128,11 +2128,13 @@ th, td {
   color: #111827;
 }
 /* Make Instagram card more square */
+/* Make Instagram card fixed square */
 .social-card-instagram {
-  flex: 0 0 260px;      /* fixed-ish width */
-  width: 260px;
-  min-height: 260px;    /* same as height to look square */
+  flex: 0 0 260px !important;  /* fixed width in flex row */
+  width: 260px !important;
   max-width: 260px;
+  height: 260px;               /* square: same as width */
+  overflow-y: auto;            /* if content is taller, scroll inside */
 }
 .saved-tool-menu {
   position: absolute;
