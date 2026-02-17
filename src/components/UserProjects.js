@@ -207,7 +207,7 @@ function UserProjects() {
 
                           {/* Social (Instagram) page */}
                           <button
-                            className="user-project-btn user-project-btn-info"
+                            className="user-project-btn user-project-btn-social"
                             onClick={() =>
                               navigate(
                                 `/user/projects/${p.id || p._id}/social`,
