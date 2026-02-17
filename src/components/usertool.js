@@ -9,14 +9,16 @@ import { FaLink, FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
 
 import { LuCalendar } from "react-icons/lu";
-import { FiBell, FiInfo } from "react-icons/fi";
+import { FiBell, FiInfo, FiMoreVertical } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
+
 function getShortUrl(url) {
   if (!url) return "-";
   const maxLen = 25; // adjust length as you like
   if (url.length <= maxLen) return url;
   return url.slice(0, maxLen) + "...";
 }
+
 function UserTools() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,12 +29,18 @@ function UserTools() {
   const [accessType, setAccessType] = useState("paid"); // "paid" | "free" | "trial"
   const [error, setError] = useState("");
 
-  // local list of saved tools (for now, in-memory only)
+  // local list of saved tools
   const [savedTools, setSavedTools] = useState([]);
 
   // for popup
   const [selectedTool, setSelectedTool] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // for actions
+  const [menuOpenId, setMenuOpenId] = useState(null); // which tool's 3-dots menu is open
+  const [editingId, setEditingId] = useState(null); // which tool is being edited
+
+  // Load from localStorage on first mount
   useEffect(() => {
     const stored = localStorage.getItem("userTools");
     if (stored) {
@@ -46,6 +54,8 @@ function UserTools() {
       }
     }
   }, []);
+
+  // Close modal on ESC
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -62,9 +72,12 @@ function UserTools() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isModalOpen]);
+
+  // Persist tools to localStorage
   useEffect(() => {
     localStorage.setItem("userTools", JSON.stringify(savedTools));
   }, [savedTools]);
+
   const handleSaveTool = (e) => {
     e.preventDefault();
     if (!toolName.trim() || !link.trim()) {
@@ -72,25 +85,72 @@ function UserTools() {
       return;
     }
 
-    const newTool = {
-      id: Date.now(),
-      toolName: toolName.trim(),
-      link: link.trim(),
-      benefits: benefits.trim(),
-      accessType,
-    };
+    if (editingId) {
+      // update existing tool
+      setSavedTools((prev) =>
+        prev.map((t) =>
+          t.id === editingId
+            ? {
+                ...t,
+                toolName: toolName.trim(),
+                link: link.trim(),
+                benefits: benefits.trim(),
+                accessType,
+              }
+            : t
+        )
+      );
+    } else {
+      // create new
+      const newTool = {
+        id: Date.now(),
+        toolName: toolName.trim(),
+        link: link.trim(),
+        benefits: benefits.trim(),
+        accessType,
+      };
 
-    // TODO: POST to backend when a tools API exists.
-    console.log("Saving tool:", newTool);
+      // TODO: POST to backend when a tools API exists.
+      console.log("Saving tool:", newTool);
 
-    // update local list so it shows on the right
-    setSavedTools((prev) => [newTool, ...prev]);
+      // update local list so it shows on the right
+      setSavedTools((prev) => [newTool, ...prev]);
+    }
 
     setError("");
     setToolName("");
     setLink("");
     setBenefits("");
     setAccessType("paid");
+    setEditingId(null);
+  };
+
+  const handleEditTool = (tool) => {
+    setToolName(tool.toolName);
+    setLink(tool.link);
+    setBenefits(tool.benefits || "");
+    setAccessType(tool.accessType || "paid");
+    setEditingId(tool.id);
+    setMenuOpenId(null);
+  };
+
+  const handleDeleteTool = (id) => {
+    const toDelete = savedTools.find((t) => t.id === id);
+    if (!toDelete) return;
+
+    const ok = window.confirm(
+      `Are you sure you want to delete "${toDelete.toolName}"?`
+    );
+    if (!ok) return;
+
+    setSavedTools((prev) => prev.filter((t) => t.id !== id));
+
+    if (editingId === id) setEditingId(null);
+    if (menuOpenId === id) setMenuOpenId(null);
+    if (selectedTool && selectedTool.id === id) {
+      setIsModalOpen(false);
+      setSelectedTool(null);
+    }
   };
 
   return (
@@ -187,10 +247,10 @@ function UserTools() {
 
           {/* Two‑column layout: left card, right scrollable list */}
           <div className="tool-page">
-            {/* LEFT: Add Tool card */}
+            {/* LEFT: Add / Edit Tool card */}
             <div className="tool-form-card tool-card">
               <div className="tool-card-header">
-                <h3>Add Tool</h3>
+                <h3>{editingId ? "Edit Tool" : "Add Tool"}</h3>
                 <p>Add tool details for reference and tracking.</p>
               </div>
 
@@ -276,7 +336,7 @@ function UserTools() {
                   style={{ justifyContent: "flex-end" }}
                 >
                   <button className="primary-btn" type="submit">
-                    Save Tool
+                    {editingId ? "Update Tool" : "Save Tool"}
                   </button>
                 </div>
               </form>
@@ -296,7 +356,7 @@ function UserTools() {
                 {savedTools.map((tool) => (
                   <div key={tool.id} className="saved-tool-item">
                     <div className="saved-tool-header">
-                      {/* Tool name as clickable hidden link */}
+                      {/* LEFT: tool name as clickable hidden link */}
                       <button
                         type="button"
                         className="saved-tool-name-button"
@@ -317,18 +377,54 @@ function UserTools() {
                         </span>
                       </button>
 
-                      {/* Info icon opens popup */}
-                      <button
-                        type="button"
-                        className="saved-tool-info-btn"
-                        onClick={() => {
-                          setSelectedTool(tool);
-                          setIsModalOpen(true);
-                        }}
-                        aria-label="View tool details"
-                      >
-                        <FiInfo />
-                      </button>
+                      {/* RIGHT: info icon + 3-dots menu */}
+                      <div className="saved-tool-actions">
+                        <button
+                          type="button"
+                          className="saved-tool-info-btn"
+                          onClick={() => {
+                            setSelectedTool(tool);
+                            setIsModalOpen(true);
+                          }}
+                          aria-label="View tool details"
+                        >
+                          <FiInfo />
+                        </button>
+
+                        <div className="saved-tool-menu-wrapper">
+                          <button
+                            type="button"
+                            className="saved-tool-menu-btn"
+                            onClick={() =>
+                              setMenuOpenId(
+                                menuOpenId === tool.id ? null : tool.id
+                              )
+                            }
+                            aria-label="More actions"
+                          >
+                            <FiMoreVertical />
+                          </button>
+
+                          {menuOpenId === tool.id && (
+                            <div className="saved-tool-menu">
+                              <button
+                                type="button"
+                                className="saved-tool-menu-item"
+                                onClick={() => handleEditTool(tool)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                className="saved-tool-menu-item delete"
+                                onClick={() => handleDeleteTool(tool.id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -374,7 +470,7 @@ function UserTools() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                         {getShortUrl(selectedTool.link)}
+                        {getShortUrl(selectedTool.link)}
                       </a>
                     ) : (
                       <span>-</span>

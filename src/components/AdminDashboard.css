@@ -2097,6 +2097,58 @@ th, td {
 .saved-tool-name-button:hover .saved-tool-link-hint {
   opacity: 1;
 }
+.saved-tool-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.saved-tool-menu-wrapper {
+  position: relative;
+}
+.saved-tool-menu-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.saved-tool-menu-btn:hover {
+  color: #111827;
+}
+ 
+.saved-tool-menu {
+  position: absolute;
+  right: 0;
+  top: 24px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+  padding: 4px 0;
+  z-index: 20;
+  min-width: 110px;
+}
+ 
+.saved-tool-menu-item {
+  width: 100%;
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+}
+ 
+.saved-tool-menu-item:hover {
+  background: #f3f4f6;
+}
+ 
+.saved-tool-menu-item.delete {
+  color: #b91c1c;
+}
 
 /* Info icon button */
 .saved-tool-info-btn {
