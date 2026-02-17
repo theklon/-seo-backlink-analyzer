@@ -2086,6 +2086,12 @@ th, td {
   justify-content: flex-start; /* icons then name */
   gap: 8px;
 }
+.saved-tools-list {
+  margin-top: 8px;
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  overflow-x: visible;          /* important so menu can show outside card width */
+}
 .saved-tool-link-hint {
   display: inline-block;
   margin-left: 8px;
@@ -2135,10 +2141,12 @@ th, td {
 }
 /* Big card that holds all saved tools */
 .saved-tools-card {
+  position: relative;           /* make it a stacking/positioning context */
   background: #ffffff;
   border-radius: 12px;
   padding: 8px 16px;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  overflow: visible;            /* do NOT cut off the dropdown */
 }
 
 /* Each tool row inside the card */
