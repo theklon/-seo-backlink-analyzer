@@ -45,7 +45,9 @@ function UserTools() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isModalOpen]);
-
+  useEffect(() => {
+    localStorage.setItem("userTools", JSON.stringify(savedTools));
+  }, [savedTools]);
   const handleSaveTool = (e) => {
     e.preventDefault();
     if (!toolName.trim() || !link.trim()) {
