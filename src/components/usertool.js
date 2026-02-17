@@ -33,7 +33,19 @@ function UserTools() {
   // for popup
   const [selectedTool, setSelectedTool] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  useEffect(() => {
+    const stored = localStorage.getItem("userTools");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setSavedTools(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to parse stored tools", e);
+      }
+    }
+  }, []);
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
