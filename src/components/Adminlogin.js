@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Adminlogin.css";
 import klonLogo from "../assets/klonlogo.png";
 import { API_BASE_URL } from "../api";
+
 
 function Adminlogin() {
   const navigate = useNavigate();
@@ -13,6 +14,19 @@ function Adminlogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  useEffect(() => {
+    document.title = "CEO Login of Klon";
+
+    const description = "Klon Squad Manager Access";
+
+    let metaTag = document.querySelector('meta[name="description"]');
+    if (!metaTag) {
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("name", "description");
+      document.head.appendChild(metaTag);
+    }
+    metaTag.setAttribute("content", description);
+  }, []);
 
   const handleSendOtp = async (e) => {
     e.preventDefault();

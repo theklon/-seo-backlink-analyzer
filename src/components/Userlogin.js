@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Adminlogin.css";
 import klonLogo from "../assets/klonlogo.png";
@@ -13,7 +13,21 @@ function Userlogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  useEffect(() => {
+    document.title = "Klon Team APP – Performance Mode Activated";
 
+    const description =
+      "Klon AI Real-time SEO, ads, and AI analytics insights built for speed, focus, and domination. Track it. Optimize it. Scale it.";
+
+    let metaTag = document.querySelector('meta[name="description"]');
+    if (!metaTag) {
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("name", "description");
+      document.head.appendChild(metaTag);
+    }
+    metaTag.setAttribute("content", description);
+  }, []);
+  
   // Step 1: send OTP
   const handleSendOtp = async (e) => {
     e.preventDefault();
