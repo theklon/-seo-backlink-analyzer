@@ -348,78 +348,90 @@ function UserTools() {
 
               <div className="saved-tools-list">
                 {savedTools.length === 0 && (
-                  <div className="saved-tool-item">
-                    <div>No tools saved yet. Add a tool on the left.</div>
+                  <div className="saved-tools-empty">
+                    No tools saved yet. Add a tool on the left.
                   </div>
                 )}
 
-                {savedTools.map((tool) => (
-                  <div key={tool.id} className="saved-tool-item">
-                    <div className="saved-tool-header">
-                      {/* LEFT: info icon + 3-dots menu */}
-                      <div className="saved-tool-actions">
-                        <button
-                          type="button"
-                          className="saved-tool-info-btn"
-                          onClick={() => {
-                            setSelectedTool(tool);
-                            setIsModalOpen(true);
-                          }}
-                          aria-label="View tool details"
-                        >
-                          <FiInfo />
-                        </button>
-
-                        <div className="saved-tool-menu-wrapper">
+                {savedTools.length > 0 && (
+                  <div className="saved-tools-card">
+                    {savedTools.map((tool) => (
+                      <div key={tool.id} className="saved-tool-row">
+                        <div className="saved-tool-header">
+                          {/* LEFT: tool name as clickable hidden link */}
                           <button
                             type="button"
-                            className="saved-tool-menu-btn"
-                            onClick={() =>
-                              setMenuOpenId(menuOpenId === tool.id ? null : tool.id)
-                            }
-                            aria-label="More actions"
+                            className="saved-tool-name-button"
+                            title={tool.link}
+                            onClick={() => {
+                              if (tool.link) {
+                                window.open(
+                                  tool.link,
+                                  "_blank",
+                                  "noopener,noreferrer"
+                                );
+                              }
+                            }}
                           >
-                            <FiMoreVertical />
+                            {tool.toolName}
+                            <span className="saved-tool-link-hint">
+                              Open link
+                            </span>
                           </button>
 
-                          {menuOpenId === tool.id && (
-                            <div className="saved-tool-menu">
+                          {/* RIGHT: info icon + 3-dots menu */}
+                          <div className="saved-tool-actions">
+                            <button
+                              type="button"
+                              className="saved-tool-info-btn"
+                              onClick={() => {
+                                setSelectedTool(tool);
+                                setIsModalOpen(true);
+                              }}
+                              aria-label="View tool details"
+                            >
+                              <FiInfo />
+                            </button>
+
+                            <div className="saved-tool-menu-wrapper">
                               <button
                                 type="button"
-                                className="saved-tool-menu-item"
-                                onClick={() => handleEditTool(tool)}
+                                className="saved-tool-menu-btn"
+                                onClick={() =>
+                                  setMenuOpenId(
+                                    menuOpenId === tool.id ? null : tool.id
+                                  )
+                                }
+                                aria-label="More actions"
                               >
-                                Edit
+                                <FiMoreVertical />
                               </button>
-                              <button
-                                type="button"
-                                className="saved-tool-menu-item delete"
-                                onClick={() => handleDeleteTool(tool.id)}
-                              >
-                                Delete
-                              </button>
+
+                              {menuOpenId === tool.id && (
+                                <div className="saved-tool-menu">
+                                  <button
+                                    type="button"
+                                    className="saved-tool-menu-item"
+                                    onClick={() => handleEditTool(tool)}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="saved-tool-menu-item delete"
+                                    onClick={() => handleDeleteTool(tool.id)}
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
                             </div>
-                          )}
+                          </div>
                         </div>
                       </div>
-
-                      {/* RIGHT: tool name as clickable hidden link */}
-                      <button
-                        type="button"
-                        className="saved-tool-name-button"
-                        title={tool.link}
-                        onClick={() => {
-                          if (tool.link) {
-                            window.open(tool.link, "_blank", "noopener,noreferrer");
-                          }
-                        }}
-                      >
-                        {tool.toolName}
-                        <span className="saved-tool-link-hint">Open link</span>
-                      </button>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
