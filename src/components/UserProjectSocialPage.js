@@ -249,7 +249,7 @@ function UserProjectSocialPage() {
 
           {/* Title */}
           <h2 className="page-title">
-            Project Social – {displayProjectName}
+            Project  – {displayProjectName}
           </h2>
 
           {loadError && (

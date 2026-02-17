@@ -28,6 +28,7 @@ function UserProjectInfoPage() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
+  const [isEditing, setIsEditing] = useState(true); // first time allow editing
 
   const projectNameFromState = location.state?.projectName;
 
@@ -92,6 +93,7 @@ function UserProjectInfoPage() {
       const updated = await res.json();
       setProject(updated);
       setSaveSuccess("Project info saved successfully.");
+      setIsEditing(false); // switch to view mode after save
     } catch (err) {
       setSaveError(err.message || "Error saving project info");
     } finally {
@@ -219,52 +221,91 @@ function UserProjectInfoPage() {
           {loading && <div>Loading project...</div>}
 
           {!loading && project && (
-            <div className="tool-card">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSave();
+            <div>
+              {/* Edit/View toggle (you can replace text with a pencil icon later) */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginBottom: 8,
                 }}
               >
-                <div className="modal-field">
-                  <label>Project Domain Name</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. example.com"
-                    value={domain}
-                    onChange={(e) => setDomain(e.target.value)}
-                  />
-                </div>
-
-                <div className="modal-field">
-                  <label>Project Bio</label>
-                  <textarea
-                    rows={4}
-                    placeholder="Describe this project..."
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                  />
-                </div>
-
-                <div className="modal-field">
-                  <label>Contact</label>
-                  <input
-                    type="text"
-                    placeholder="Email / phone / contact URL"
-                    value={contact}
-                    onChange={(e) => setContact(e.target.value)}
-                  />
-                </div>
-
-                <div
-                  className="modal-actions"
-                  style={{ justifyContent: "flex-end", marginTop: 16 }}
+                <button
+                  type="button"
+                  className="secondary-btn"
+                  onClick={() => setIsEditing((prev) => !prev)}
                 >
-                  <button className="primary-btn" type="submit" disabled={saving}>
-                    {saving ? "Saving..." : "Save"}
-                  </button>
-                </div>
-              </form>
+                  {isEditing ? "View" : "Edit"}
+                </button>
+              </div>
+
+              <div className="tool-card">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSave();
+                  }}
+                >
+                  <div className="modal-field">
+                    <label>Project Domain Name</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        placeholder="e.g. example.com"
+                        value={domain}
+                        onChange={(e) => setDomain(e.target.value)}
+                      />
+                    ) : (
+                      <div>{domain || "-"}</div>
+                    )}
+                  </div>
+
+                  <div className="modal-field">
+                    <label>Project Bio</label>
+                    {isEditing ? (
+                      <textarea
+                        rows={6} // bigger box
+                        placeholder="Describe this project..."
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                      />
+                    ) : (
+                      <div style={{ whiteSpace: "pre-wrap" }}>
+                        {bio || "-"}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="modal-field">
+                    <label>Contact</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        placeholder="Email / phone / contact URL"
+                        value={contact}
+                        onChange={(e) => setContact(e.target.value)}
+                      />
+                    ) : (
+                      <div>{contact || "-"}</div>
+                    )}
+                  </div>
+
+                  {isEditing && (
+                    <div
+                      className="modal-actions"
+                      style={{ justifyContent: "flex-end", marginTop: 16 }}
+                    >
+                      <button
+                        className="primary-btn"
+                        type="submit"
+                        disabled={saving}
+                      >
+                        {saving ? "Saving..." : "Save"}
+                      </button>
+                    </div>
+                  )}
+                </form>
+              </div>
             </div>
           )}
         </div>
