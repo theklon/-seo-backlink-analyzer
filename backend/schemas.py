@@ -105,7 +105,7 @@ class ContributionEntry(BaseMongoModel):
     userName: Optional[str] = None     # NEW – convenience for display
 
 
-    # NEW: additional info fields so they are returned in /api/projects
+    
     infoDomain: Optional[str] = None
     infoBio: Optional[str] = None
     infoContact: Optional[str] = None

@@ -28,7 +28,7 @@ function UserProjectInfoPage() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
-  const [isEditing, setIsEditing] = useState(true); // first time allow editing
+  const [isEditing, setIsEditing] = useState(false); // default: view mode
 
   const projectNameFromState = location.state?.projectName;
 
@@ -50,13 +50,21 @@ function UserProjectInfoPage() {
 
         setProject(found || null);
 
-        const domainVal = found?.infoDomain ?? found?.domain ?? "";
-        const bioVal = found?.infoBio ?? found?.bio ?? found?.description ?? "";
-        const contactVal = found?.infoContact ?? found?.contact ?? "";
+        // Only use the dedicated info* fields; if they don't exist, start empty
+        const domainVal = found?.infoDomain ?? "";
+        const bioVal = found?.infoBio ?? "";
+        const contactVal = found?.infoContact ?? "";
 
         setDomain(domainVal);
         setBio(bioVal);
         setContact(contactVal);
+
+        // If nothing is saved yet, open in edit mode; otherwise view mode
+        if (!domainVal && !bioVal && !contactVal) {
+          setIsEditing(true);
+        } else {
+          setIsEditing(false);
+        }
       } catch (err) {
         setLoadError(err.message || "Error loading project");
       } finally {
