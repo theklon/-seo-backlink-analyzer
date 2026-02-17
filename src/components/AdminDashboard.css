@@ -2072,12 +2072,19 @@ th, td {
   color: #111827;
   cursor: pointer;
   position: relative;
+  flex: 1;                /* take remaining space */
+  text-align: left;
 }
 
 .saved-tool-name-button:hover {
   text-decoration: underline;
 }
-
+/* header for one saved tool row */
+.saved-tool-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;  /* name left, icon right */
+}
 .saved-tool-link-hint {
   display: inline-block;
   margin-left: 8px;
@@ -2101,6 +2108,7 @@ th, td {
   color: #6b7280;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .saved-tool-info-btn:hover {

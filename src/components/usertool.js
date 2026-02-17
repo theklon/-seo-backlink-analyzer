@@ -357,7 +357,7 @@ function UserTools() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {selectedTool.link}
+                         {getShortUrl(selectedTool.link)}
                       </a>
                     ) : (
                       <span>-</span>
