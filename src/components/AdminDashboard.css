@@ -811,7 +811,17 @@ th, td {
   background-color: #1d61d0;   /* same blue as before */
   color: #ffffff;
 }
+/* Social button – light red */
+.user-project-btn-social {
+  background-color: #ffe5e5;      /* light red background */
+  color: #b03030;                 /* darker red text */
+  border: 1px solid #f5b5b5;
+}
  
+.user-project-btn-social:hover {
+  background-color: #ffcccc;      /* slightly stronger red on hover */
+  border-color: #e08a8a;
+}
 /* Media = old light orange design */
 .user-dashboard .user-project-btn-media {
   background-color: #ffdcb1;   /* light orange */
