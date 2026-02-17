@@ -2123,9 +2123,9 @@ th, td {
  
 .saved-tool-menu {
   position: absolute;
-  right: 0;                /* anchor to the three-dots button */
-  top: 50%;                /* vertically align near the icon */
-  transform: translateY(-50%);
+  right: 0;                 /* align with the three dots horizontally */
+  bottom: 100%;             /* place it directly above the button */
+  margin-bottom: 6px;       /* small gap between dots and menu */
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
