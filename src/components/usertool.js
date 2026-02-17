@@ -11,7 +11,12 @@ import { VscTools } from "react-icons/vsc";
 import { LuCalendar } from "react-icons/lu";
 import { FiBell, FiInfo } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
-
+function getShortUrl(url) {
+  if (!url) return "-";
+  const maxLen = 25; // adjust length as you like
+  if (url.length <= maxLen) return url;
+  return url.slice(0, maxLen) + "...";
+}
 function UserTools() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,7 +33,7 @@ function UserTools() {
   // for popup
   const [selectedTool, setSelectedTool] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
