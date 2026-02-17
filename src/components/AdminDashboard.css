@@ -2260,3 +2260,24 @@ th, td {
   font-weight: 600;
   min-width: 100px;
 }
+/* Project Info – organize label + value layout */
+.tool-card .modal-field {
+  margin-bottom: 20px;          /* space between each field group */
+}
+
+.tool-card .modal-field label {
+  display: block;               /* label on its own line */
+  font-weight: 500;
+  margin-bottom: 6px;           /* small gap between label and value/input */
+}
+
+/* Both edit (inputs) and view (plain text) should align nicely */
+.tool-card .modal-field input,
+.tool-card .modal-field textarea {
+  width: 100%;
+  margin-bottom: 4px;           /* little space below input/textarea */
+}
+
+.tool-card .modal-field > div {
+  margin-bottom: 4px;           /* space below value in view mode */
+}

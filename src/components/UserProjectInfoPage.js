@@ -253,6 +253,7 @@ function UserProjectInfoPage() {
                   handleSave();
                 }}
               >
+                {/* Project Domain Name */}
                 <div className="modal-field">
                   <label>Project Domain Name</label>
                   {isEditing ? (
@@ -267,6 +268,7 @@ function UserProjectInfoPage() {
                   )}
                 </div>
 
+                {/* Project Bio */}
                 <div className="modal-field">
                   <label>Project Bio</label>
                   {isEditing ? (
@@ -284,6 +286,7 @@ function UserProjectInfoPage() {
                   )}
                 </div>
 
+                {/* Contact */}
                 <div className="modal-field">
                   <label>Contact</label>
                   {isEditing ? (
