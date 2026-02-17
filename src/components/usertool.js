@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminDashboard.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -9,7 +9,7 @@ import { FaLink, FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
 
 import { LuCalendar } from "react-icons/lu";
-import { FiBell } from "react-icons/fi";
+import { FiBell, FiInfo } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
 
 function UserTools() {
@@ -24,6 +24,27 @@ function UserTools() {
 
   // local list of saved tools (for now, in-memory only)
   const [savedTools, setSavedTools] = useState([]);
+
+  // for popup
+  const [selectedTool, setSelectedTool] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setIsModalOpen(false);
+        setSelectedTool(null);
+      }
+    };
+
+    if (isModalOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalOpen]);
 
   const handleSaveTool = (e) => {
     e.preventDefault();
@@ -256,33 +277,111 @@ function UserTools() {
                 {savedTools.map((tool) => (
                   <div key={tool.id} className="saved-tool-item">
                     <div className="saved-tool-header">
-                      <span className="saved-tool-name">
+                      {/* Tool name as clickable hidden link */}
+                      <button
+                        type="button"
+                        className="saved-tool-name-button"
+                        title={tool.link}
+                        onClick={() => {
+                          if (tool.link) {
+                            window.open(
+                              tool.link,
+                              "_blank",
+                              "noopener,noreferrer"
+                            );
+                          }
+                        }}
+                      >
                         {tool.toolName}
-                      </span>
-                      <span className="saved-tool-tag">
-                        {tool.accessType.charAt(0).toUpperCase() +
-                          tool.accessType.slice(1)}
-                      </span>
+                        <span className="saved-tool-link-hint">
+                          Open link
+                        </span>
+                      </button>
+
+                      {/* Info icon opens popup */}
+                      <button
+                        type="button"
+                        className="saved-tool-info-btn"
+                        onClick={() => {
+                          setSelectedTool(tool);
+                          setIsModalOpen(true);
+                        }}
+                        aria-label="View tool details"
+                      >
+                        <FiInfo />
+                      </button>
                     </div>
-
-                    <a
-                      href={tool.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="saved-tool-link"
-                    >
-                      {tool.link}
-                    </a>
-
-                    {tool.benefits && (
-                      <p className="saved-tool-benefits">{tool.benefits}</p>
-                    )}
                   </div>
                 ))}
               </div>
             </div>
           </div>
           {/* end .tool-page */}
+
+          {/* MODAL for tool details */}
+          {isModalOpen && selectedTool && (
+            <div
+              className="tool-modal-backdrop"
+              onClick={() => {
+                setIsModalOpen(false);
+                setSelectedTool(null);
+              }}
+            >
+              <div
+                className="tool-modal"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="tool-modal-header">
+                  <h4>{selectedTool.toolName}</h4>
+                  <button
+                    type="button"
+                    className="tool-modal-close"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setSelectedTool(null);
+                    }}
+                    aria-label="Close"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="tool-modal-body">
+                  <div className="tool-modal-row">
+                    <span className="tool-modal-label">URL:</span>
+                    {selectedTool.link ? (
+                      <a
+                        href={selectedTool.link}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {selectedTool.link}
+                      </a>
+                    ) : (
+                      <span>-</span>
+                    )}
+                  </div>
+
+                  <div className="tool-modal-row">
+                    <span className="tool-modal-label">Access Type:</span>
+                    <span>
+                      {selectedTool.accessType
+                        ? selectedTool.accessType
+                            .charAt(0)
+                            .toUpperCase() +
+                          selectedTool.accessType.slice(1)
+                        : "-"}
+                    </span>
+                  </div>
+
+                  <div className="tool-modal-row">
+                    <span className="tool-modal-label">Description:</span>
+                    <span>{selectedTool.benefits || "-"}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

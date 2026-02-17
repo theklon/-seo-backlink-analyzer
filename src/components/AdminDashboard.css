@@ -2063,3 +2063,96 @@ th, td {
   margin-bottom: 8px;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
+/* Saved tool name behaves like link with hidden hint */
+.saved-tool-name-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #111827;
+  cursor: pointer;
+  position: relative;
+}
+
+.saved-tool-name-button:hover {
+  text-decoration: underline;
+}
+
+.saved-tool-link-hint {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 11px;
+  color: #6b7280;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.saved-tool-name-button:hover .saved-tool-link-hint {
+  opacity: 1;
+}
+
+/* Info icon button */
+.saved-tool-info-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+.saved-tool-info-btn:hover {
+  color: #111827;
+}
+
+/* Modal styles */
+.tool-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.tool-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+}
+
+.tool-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tool-modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.tool-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-modal-row {
+  display: flex;
+  gap: 8px;
+}
+
+.tool-modal-label {
+  font-weight: 600;
+  min-width: 100px;
+}
