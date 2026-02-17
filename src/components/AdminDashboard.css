@@ -2130,14 +2130,16 @@ th, td {
  
 .saved-tool-menu {
   position: absolute;
-  right: 0;                 /* align with the three dots horizontally */
-  bottom: 100%;             /* place it directly above the button */
-  margin-bottom: 6px;       /* small gap between dots and menu */
+  left: 100%;           /* place menu to the right of the wrapper (three dots) */
+  top: 50%;             /* vertically center relative to the dots */
+  transform: translateY(-50%);
+  margin-left: 8px;     /* small gap between dots and menu */
+ 
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
   padding: 4px 0;
-  z-index: 20;
+  z-index: 500;         /* keep above card */
   min-width: 110px;
 }
 /* Big card that holds all saved tools */
