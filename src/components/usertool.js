@@ -22,6 +22,9 @@ function UserTools() {
   const [accessType, setAccessType] = useState("paid"); // "paid" | "free" | "trial"
   const [error, setError] = useState("");
 
+  // local list of saved tools (for now, in-memory only)
+  const [savedTools, setSavedTools] = useState([]);
+
   const handleSaveTool = (e) => {
     e.preventDefault();
     if (!toolName.trim() || !link.trim()) {
@@ -29,7 +32,8 @@ function UserTools() {
       return;
     }
 
-    const payload = {
+    const newTool = {
+      id: Date.now(),
       toolName: toolName.trim(),
       link: link.trim(),
       benefits: benefits.trim(),
@@ -37,7 +41,10 @@ function UserTools() {
     };
 
     // TODO: POST to backend when a tools API exists.
-    console.log("Saving tool:", payload);
+    console.log("Saving tool:", newTool);
+
+    // update local list so it shows on the right
+    setSavedTools((prev) => [newTool, ...prev]);
 
     setError("");
     setToolName("");
@@ -48,7 +55,7 @@ function UserTools() {
 
   return (
     <div className="dashboard-root user-dashboard">
-      {/* TOP BAR (same as other user pages) */}
+      {/* TOP BAR */}
       <div className="topbar">
         <div className="topbar-left">
           <img src={logo} alt="Klon" className="topbar-logo" />
@@ -129,7 +136,7 @@ function UserTools() {
           <div className="breadcrumb">
             <span
               style={{ cursor: "pointer" }}
-              onClick={() => navigate("/user/dashboard")}  // or "/admin/dashboard" in admin pages
+              onClick={() => navigate("/user/dashboard")} // or "/admin/dashboard" in admin pages
             >
               Home
             </span>
@@ -138,96 +145,144 @@ function UserTools() {
 
           <h2 className="page-title">Tool Collections</h2>
 
-          <div className="tool-card">
-            <div className="tool-card-header">
-              <h3>Add Tool</h3>
-              <p>Add tool details for reference and tracking.</p>
+          {/* Two‑column layout: left card, right scrollable list */}
+          <div className="tool-page">
+            {/* LEFT: Add Tool card */}
+            <div className="tool-form-card tool-card">
+              <div className="tool-card-header">
+                <h3>Add Tool</h3>
+                <p>Add tool details for reference and tracking.</p>
+              </div>
+
+              <form className="tool-form" onSubmit={handleSaveTool}>
+                {error && (
+                  <div style={{ color: "red", marginBottom: 8 }}>{error}</div>
+                )}
+
+                <div className="modal-field">
+                  <label>
+                    Tool Name <span>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="eg: Ahrefs"
+                    value={toolName}
+                    onChange={(e) => setToolName(e.target.value)}
+                  />
+                </div>
+
+                <div className="modal-field">
+                  <label>
+                    Links <span>*</span>
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://toolwebsite.com"
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                  />
+                </div>
+
+                <div className="modal-field">
+                  <label>Benefits</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Describe how this tool helps with backlinks"
+                    value={benefits}
+                    onChange={(e) => setBenefits(e.target.value)}
+                  />
+                </div>
+
+                <div className="modal-field">
+                  <label>Access Type</label>
+                  <div className="tool-access-row">
+                    <label className="tool-access-option">
+                      <input
+                        type="radio"
+                        name="accessType"
+                        value="paid"
+                        checked={accessType === "paid"}
+                        onChange={(e) => setAccessType(e.target.value)}
+                      />
+                      <span>Paid</span>
+                    </label>
+
+                    <label className="tool-access-option">
+                      <input
+                        type="radio"
+                        name="accessType"
+                        value="free"
+                        checked={accessType === "free"}
+                        onChange={(e) => setAccessType(e.target.value)}
+                      />
+                      <span>Free</span>
+                    </label>
+
+                    <label className="tool-access-option">
+                      <input
+                        type="radio"
+                        name="accessType"
+                        value="trial"
+                        checked={accessType === "trial"}
+                        onChange={(e) => setAccessType(e.target.value)}
+                      />
+                      <span>Trial</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div
+                  className="modal-actions"
+                  style={{ justifyContent: "flex-end" }}
+                >
+                  <button className="primary-btn" type="submit">
+                    Save Tool
+                  </button>
+                </div>
+              </form>
             </div>
 
-            <form className="tool-form" onSubmit={handleSaveTool}>
-              {error && (
-                <div style={{ color: "red", marginBottom: 8 }}>{error}</div>
-              )}
+            {/* RIGHT: Scrollable list of saved tools */}
+            <div className="saved-tools-panel">
+              <h3 className="admin-section-title">Saved Tools</h3>
 
-              <div className="modal-field">
-                <label>
-                  Tool Name <span>*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="eg: Ahrefs"
-                  value={toolName}
-                  onChange={(e) => setToolName(e.target.value)}
-                />
+              <div className="saved-tools-list">
+                {savedTools.length === 0 && (
+                  <div className="saved-tool-item">
+                    <div>No tools saved yet. Add a tool on the left.</div>
+                  </div>
+                )}
+
+                {savedTools.map((tool) => (
+                  <div key={tool.id} className="saved-tool-item">
+                    <div className="saved-tool-header">
+                      <span className="saved-tool-name">
+                        {tool.toolName}
+                      </span>
+                      <span className="saved-tool-tag">
+                        {tool.accessType.charAt(0).toUpperCase() +
+                          tool.accessType.slice(1)}
+                      </span>
+                    </div>
+
+                    <a
+                      href={tool.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="saved-tool-link"
+                    >
+                      {tool.link}
+                    </a>
+
+                    {tool.benefits && (
+                      <p className="saved-tool-benefits">{tool.benefits}</p>
+                    )}
+                  </div>
+                ))}
               </div>
-
-              <div className="modal-field">
-                <label>
-                  Links <span>*</span>
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://toolwebsite.com"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                />
-              </div>
-
-              <div className="modal-field">
-                <label>Benefits</label>
-                <textarea
-                  rows={4}
-                  placeholder="Describe how this tool helps with backlinks"
-                  value={benefits}
-                  onChange={(e) => setBenefits(e.target.value)}
-                />
-              </div>
-
-              <div className="modal-field">
-                <label>Access Type</label>
-                <div className="tool-access-row">
-                  <label className="tool-access-option">
-                    <input
-                      type="radio"
-                      name="accessType"
-                      value="paid"
-                      checked={accessType === "paid"}
-                      onChange={(e) => setAccessType(e.target.value)}
-                    />
-                    <span>Paid</span>
-                  </label>
-
-                  <label className="tool-access-option">
-                    <input
-                      type="radio"
-                      name="accessType"
-                      value="free"
-                      checked={accessType === "free"}
-                      onChange={(e) => setAccessType(e.target.value)}
-                    />
-                    <span>Free</span>
-                  </label>
-
-                  <label className="tool-access-option">
-                    <input
-                      type="radio"
-                      name="accessType"
-                      value="trial"
-                      checked={accessType === "trial"}
-                      onChange={(e) => setAccessType(e.target.value)}
-                    />
-                    <span>Trial</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="modal-actions" style={{ justifyContent: "flex-end" }}>
-                <button className="primary-btn" type="submit">
-                  Save Tool
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
+          {/* end .tool-page */}
         </div>
       </div>
     </div>

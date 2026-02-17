@@ -2029,3 +2029,37 @@ th, td {
   gap: 4px;
   position: relative; /* so the menu is anchored */
 }
+.tool-page {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;              /* space between card and list */
+}
+
+/* Left card: fixed-ish width, does not scroll */
+.tool-form-card {
+  flex: 0 0 520px;        /* adjust width to match your design */
+}
+
+/* Right column container */
+.saved-tools-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* This is the ONLY element that scrolls */
+.saved-tools-list {
+  margin-top: 8px;
+  max-height: calc(100vh - 220px);  /* tune this based on your header height */
+  overflow-y: auto;
+  padding-right: 8px;               /* for scrollbar space */
+}
+
+/* Optional styling for items */
+.saved-tool-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
