@@ -190,26 +190,37 @@ function UserProjects() {
                       </td>
                       <td className="user-projects-actions-col">
                         <div className="user-projects-actions">
+                          {/* Social (Instagram) page */}
                           <button
                             className="user-project-btn user-project-btn-info"
                             onClick={() =>
-                              navigate(`/user/projects/${p.id || p._id}/info`, {
-                                state: { projectName: p.name },
-                              })
+                              navigate(
+                                `/user/projects/${p.id || p._id}/social`,
+                                {
+                                  state: { projectName: p.name },
+                                }
+                              )
                             }
                           >
-                            Info
+                            Social
                           </button>
+
+                          {/* Media page */}
                           <button
                             className="user-project-btn user-project-btn-media"
                             onClick={() =>
-                              navigate(`/user/projects/${p.id || p._id}/media`, {
-                                state: { projectName: p.name },
-                              })
+                              navigate(
+                                `/user/projects/${p.id || p._id}/media`,
+                                {
+                                  state: { projectName: p.name },
+                                }
+                              )
                             }
                           >
                             Media
                           </button>
+
+                          {/* Backlink page */}
                           <button
                             className="user-project-btn user-project-btn-backlinks"
                             type="button"
