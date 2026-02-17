@@ -2083,7 +2083,8 @@ th, td {
 .saved-tool-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;  /* name left, icon right */
+  justify-content: flex-start; /* icons then name */
+  gap: 8px;
 }
 .saved-tool-link-hint {
   display: inline-block;
@@ -2122,8 +2123,9 @@ th, td {
  
 .saved-tool-menu {
   position: absolute;
-  right: 0;
-  top: 24px;
+  right: 0;                /* anchor to the three-dots button */
+  top: 50%;                /* vertically align near the icon */
+  transform: translateY(-50%);
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);

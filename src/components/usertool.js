@@ -356,28 +356,7 @@ function UserTools() {
                 {savedTools.map((tool) => (
                   <div key={tool.id} className="saved-tool-item">
                     <div className="saved-tool-header">
-                      {/* LEFT: tool name as clickable hidden link */}
-                      <button
-                        type="button"
-                        className="saved-tool-name-button"
-                        title={tool.link}
-                        onClick={() => {
-                          if (tool.link) {
-                            window.open(
-                              tool.link,
-                              "_blank",
-                              "noopener,noreferrer"
-                            );
-                          }
-                        }}
-                      >
-                        {tool.toolName}
-                        <span className="saved-tool-link-hint">
-                          Open link
-                        </span>
-                      </button>
-
-                      {/* RIGHT: info icon + 3-dots menu */}
+                      {/* LEFT: info icon + 3-dots menu */}
                       <div className="saved-tool-actions">
                         <button
                           type="button"
@@ -396,9 +375,7 @@ function UserTools() {
                             type="button"
                             className="saved-tool-menu-btn"
                             onClick={() =>
-                              setMenuOpenId(
-                                menuOpenId === tool.id ? null : tool.id
-                              )
+                              setMenuOpenId(menuOpenId === tool.id ? null : tool.id)
                             }
                             aria-label="More actions"
                           >
@@ -425,6 +402,21 @@ function UserTools() {
                           )}
                         </div>
                       </div>
+
+                      {/* RIGHT: tool name as clickable hidden link */}
+                      <button
+                        type="button"
+                        className="saved-tool-name-button"
+                        title={tool.link}
+                        onClick={() => {
+                          if (tool.link) {
+                            window.open(tool.link, "_blank", "noopener,noreferrer");
+                          }
+                        }}
+                      >
+                        {tool.toolName}
+                        <span className="saved-tool-link-hint">Open link</span>
+                      </button>
                     </div>
                   </div>
                 ))}
