@@ -94,7 +94,22 @@ class ContributionEntry(BaseMongoModel):
     createdAt: datetime
     userId: Optional[str] = None       # NEW – id from users collection
     userName: Optional[str] = None     # NEW – convenience for display
+class ProjectBase(BaseMongoModel):
+    name: str
+    url: str
+    description: Optional[str] = None
+    ownerUserId: Optional[str] = None  # store as string id
+    status: str = "active"
 
+    # NEW: additional info fields so they are returned in /api/projects
+    infoDomain: Optional[str] = None
+    infoBio: Optional[str] = None
+    infoContact: Optional[str] = None
+    instagramUrl: Optional[str] = None
+    instagramPosts: Optional[int] = None
+    instagramFollowers: Optional[int] = None
+    instagramFollowing: Optional[int] = None
+    infoExtraFields: Optional[list] = None  # if you keep using it later
 class BacklinkBase(BaseMongoModel):
     projectId: str              # string id of project
     createdByUserId: str        # string id of user

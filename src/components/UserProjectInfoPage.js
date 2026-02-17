@@ -232,7 +232,7 @@ function UserProjectInfoPage() {
               >
                 <button
                   type="button"
-                  className="secondary-btn"
+                  className="user-project-btn user-project-btn-backlinks"
                   onClick={() => setIsEditing((prev) => !prev)}
                 >
                   {isEditing ? "View" : "Edit"}
