@@ -1091,7 +1091,14 @@ th, td {
   gap: 6px;                      /* space between icon and text */
   /* keep your existing padding, colors, etc. */
 }
+.contribute-meta {
+  margin-bottom: 12px;        /* space below the pair */
+}
 
+.contribute-meta .modal-subtitle {
+  margin: 0;                  /* remove large gaps between domain & category */
+  line-height: 1.4;
+}
 /* Optional: control icon size explicitly */
 .new-backlink-btn svg {
   font-size: 18px;               /* or whatever matches your design */
