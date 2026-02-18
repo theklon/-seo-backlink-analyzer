@@ -1186,6 +1186,8 @@ th, td {
   border: 1px solid #e5e7eb;
   gap: 12px;
   margin-bottom: 16px;
+  display:flex;
+  align-items: center;
 }
 .backlink-filters .search-box {
     align-items: center;
