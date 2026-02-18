@@ -31,8 +31,6 @@ function ProjectBacklinksPage() {
   const [selectedDaRange, setSelectedDaRange] = useState("");
   const [selectedSs, setSelectedSs] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
-  const [projectSearch, setProjectSearch] = useState("");
-  const [categorySearch, setCategorySearch] = useState("");
 
   // Modal for "+N More urls"
   const [urlModalOpen, setUrlModalOpen] = useState(false);
@@ -166,7 +164,7 @@ function ProjectBacklinksPage() {
     if (projectName) {
       fetchBacklinks();
     }
-  }, [projectId, projectName, projectName]);
+  }, [projectId, projectName]);
 
   // Derived options for filters
   const categoryOptions = Array.from(
@@ -308,6 +306,7 @@ function ProjectBacklinksPage() {
             {" > "}
             {projectName}
           </div>
+
           <div className="main-wrapper">
             {/* Title */}
             <h2 className="page-title">{projectName}</h2>
@@ -317,23 +316,18 @@ function ProjectBacklinksPage() {
               className="backlink-filters"
               style={{ marginTop: 12, marginBottom: 12 }}
             >
-              {/* Searchable Categories dropdown */}
-              <input
-                list="projectCategoryOptions"
+              <select
                 className="filter-select"
-                placeholder="Categories"
-                value={categorySearch}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setCategorySearch(value);
-                  setSelectedCategory(value || "");
-                }}
-              />
-              <datalist id="projectCategoryOptions">
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">Categories</option>
                 {categoryOptions.map((c) => (
-                  <option key={c} value={c} />
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
                 ))}
-              </datalist>
+              </select>
 
               <select
                 className="filter-select"
