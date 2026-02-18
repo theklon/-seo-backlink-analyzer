@@ -1008,7 +1008,7 @@ function UserBacklinks() {
                       Category <span>*</span>
                     </label>
                     <Select
-                      className="modal-select react-select"
+                      className="react-select"
                       classNamePrefix="react-select"
                       placeholder="Select Category"
                       isClearable
@@ -1217,7 +1217,7 @@ function UserBacklinks() {
                 <div className="modal-field">
                   <label>Project</label>
                   <Select
-                    className="modal-select react-select"
+                    className="react-select"
                     classNamePrefix="react-select"
                     placeholder="Select Project"
                     isClearable
