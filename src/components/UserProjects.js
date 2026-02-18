@@ -126,7 +126,7 @@ function UserProjects() {
         </div>
 
         {/* MAIN CONTENT – View Projects */}
-        
+        <div className="main-content">
           {/* Breadcrumb */}
           <div className="breadcrumb">
             <span
@@ -138,129 +138,133 @@ function UserProjects() {
             {" > View Projects"}
           </div>
 
-          {/* Title */}
-          <h2 className="page-title">View Projects</h2>
-
-          {/* Small search bar (not wired yet) */}
           <div className="main-wrapper">
-          <div className="backlink-filters">
-            <div className="search-box">
-              <span className="search-icon">
-                <IoMdSearch />
-              </span>
-              <input type="text" placeholder="Search by Project name" />
+            {/* Title */}
+            <h2 className="page-title">View Projects</h2>
+
+            {/* Search bar */}
+            <div className="backlink-filters">
+              <div className="search-box">
+                <span className="search-icon">
+                  <IoMdSearch />
+                </span>
+                <input type="text" placeholder="Search by Project name" />
+              </div>
             </div>
-          </div>
-          </div>
-          {/* Projects table */}
-          {projectsError && (
-            <div style={{ color: "red", marginBottom: 8 }}>{projectsError}</div>
-          )}
-          <div
-            className="table-container user-projects-table"
-            style={{ marginTop: 8 }}
-          >
-            <table>
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th className="user-projects-actions-col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loadingProjects ? (
+
+            {/* Projects table */}
+            {projectsError && (
+              <div style={{ color: "red", marginBottom: 8 }}>
+                {projectsError}
+              </div>
+            )}
+            <div
+              className="table-container user-projects-table"
+              style={{ marginTop: 8 }}
+            >
+              <table>
+                <thead>
                   <tr>
-                    <td colSpan={2}>Loading projects...</td>
+                    <th>Project Name</th>
+                    <th className="user-projects-actions-col">Actions</th>
                   </tr>
-                ) : projects.length === 0 ? (
-                  <tr>
-                    <td colSpan={2}>No projects found.</td>
-                  </tr>
-                ) : (
-                  projects.map((p) => (
-                    <tr key={p.id || p._id || p.name}>
-                      <td>
-                        <div
-                          style={{
-                            fontWeight: 500,
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {p.name}
-                        </div>
-                      </td>
-                      <td className="user-projects-actions-col">
-                        <div className="user-projects-actions">
-                          {/* Info page (domain/bio/contact/custom attributes) */}
-                          <button
-                            className="user-project-btn user-project-btn-info"
-                            onClick={() =>
-                              navigate(
-                                `/user/projects/${p.id || p._id}/info`,
-                                {
-                                  state: { projectName: p.name },
-                                }
-                              )
-                            }
-                          >
-                            Info
-                          </button>
-
-                          {/* Social (Instagram) page */}
-                          <button
-                            className="user-project-btn user-project-btn-social"
-                            onClick={() =>
-                              navigate(
-                                `/user/projects/${p.id || p._id}/social`,
-                                {
-                                  state: { projectName: p.name },
-                                }
-                              )
-                            }
-                          >
-                            Social
-                          </button>
-
-                          {/* Media page */}
-                          <button
-                            className="user-project-btn user-project-btn-media"
-                            onClick={() =>
-                              navigate(
-                                `/user/projects/${p.id || p._id}/media`,
-                                {
-                                  state: { projectName: p.name },
-                                }
-                              )
-                            }
-                          >
-                            Media
-                          </button>
-
-                          {/* Backlink page */}
-                          <button
-                            className="user-project-btn user-project-btn-backlinks"
-                            type="button"
-                            onClick={() => {
-                              const id = p.id || p._id;
-                              navigate(`/user/projects/${id}/backlinks`, {
-                                state: {
-                                  projectName: p.name,
-                                },
-                              });
+                </thead>
+                <tbody>
+                  {loadingProjects ? (
+                    <tr>
+                      <td colSpan={2}>Loading projects...</td>
+                    </tr>
+                  ) : projects.length === 0 ? (
+                    <tr>
+                      <td colSpan={2}>No projects found.</td>
+                    </tr>
+                  ) : (
+                    projects.map((p) => (
+                      <tr key={p.id || p._id || p.name}>
+                        <td>
+                          <div
+                            style={{
+                              fontWeight: 500,
+                              whiteSpace: "nowrap",
                             }}
                           >
-                            Backlink
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                            {p.name}
+                          </div>
+                        </td>
+                        <td className="user-projects-actions-col">
+                          <div className="user-projects-actions">
+                            {/* Info page (domain/bio/contact/custom attributes) */}
+                            <button
+                              className="user-project-btn user-project-btn-info"
+                              onClick={() =>
+                                navigate(
+                                  `/user/projects/${p.id || p._id}/info`,
+                                  {
+                                    state: { projectName: p.name },
+                                  }
+                                )
+                              }
+                            >
+                              Info
+                            </button>
+
+                            {/* Social (Instagram) page */}
+                            <button
+                              className="user-project-btn user-project-btn-social"
+                              onClick={() =>
+                                navigate(
+                                  `/user/projects/${p.id || p._id}/social`,
+                                  {
+                                    state: { projectName: p.name },
+                                  }
+                                )
+                              }
+                            >
+                              Social
+                            </button>
+
+                            {/* Media page */}
+                            <button
+                              className="user-project-btn user-project-btn-media"
+                              onClick={() =>
+                                navigate(
+                                  `/user/projects/${p.id || p._id}/media`,
+                                  {
+                                    state: { projectName: p.name },
+                                  }
+                                )
+                              }
+                            >
+                              Media
+                            </button>
+
+                            {/* Backlink page */}
+                            <button
+                              className="user-project-btn user-project-btn-backlinks"
+                              type="button"
+                              onClick={() => {
+                                const id = p.id || p._id;
+                                navigate(`/user/projects/${id}/backlinks`, {
+                                  state: {
+                                    projectName: p.name,
+                                  },
+                                });
+                              }}
+                            >
+                              Backlink
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
+    </div>
   );
 }
 

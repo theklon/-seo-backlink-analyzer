@@ -191,7 +191,7 @@ function UserProjectInfoPage() {
         </div>
 
         {/* MAIN CONTENT */}
-        
+        <div className="main-content">
           {/* Breadcrumb */}
           <div className="breadcrumb">
             <span
@@ -210,116 +210,120 @@ function UserProjectInfoPage() {
             {" > Info"}
           </div>
 
-          {/* Title */}
-          <h2 className="page-title">Project Info – {displayProjectName}</h2>
+          <div className="main-wrapper">
+            {/* Title */}
+            <h2 className="page-title">
+              Project Info – {displayProjectName}
+            </h2>
 
-          {loadError && (
-            <div style={{ color: "red", marginBottom: 10 }}>{loadError}</div>
-          )}
-          {saveError && (
-            <div style={{ color: "red", marginBottom: 10 }}>{saveError}</div>
-          )}
-          {saveSuccess && (
-            <div style={{ color: "green", marginBottom: 10 }}>
-              {saveSuccess}
-            </div>
-          )}
-
-          {loading && <div>Loading project...</div>}
-
-          {!loading && project && (
-            <div className="main-wrapper">
-            <div className="tool-card">
-              {/* Edit/View toggle, top-right of card */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  marginBottom: 8,
-                }}
-              >
-                <button
-                  type="button"
-                  className="user-project-btn user-project-btn-backlinks"
-                  onClick={() => setIsEditing((prev) => !prev)}
-                >
-                  {isEditing ? "View" : "Edit"}
-                </button>
+            {/* Messages and loading */}
+            {loadError && (
+              <div style={{ color: "red", marginBottom: 10 }}>{loadError}</div>
+            )}
+            {saveError && (
+              <div style={{ color: "red", marginBottom: 10 }}>{saveError}</div>
+            )}
+            {saveSuccess && (
+              <div style={{ color: "green", marginBottom: 10 }}>
+                {saveSuccess}
               </div>
+            )}
+            {loading && <div>Loading project...</div>}
 
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSave();
-                }}
-              >
-                {/* Project Domain Name */}
-                <div className="modal-field">
-                  <label>Project Domain Name</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      placeholder="e.g. example.com"
-                      value={domain}
-                      onChange={(e) => setDomain(e.target.value)}
-                    />
-                  ) : (
-                    <div>{domain || "-"}</div>
-                  )}
+            {/* Info card */}
+            {!loading && project && (
+              <div className="tool-card">
+                {/* Edit/View toggle, top-right of card */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginBottom: 8,
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="user-project-btn user-project-btn-backlinks"
+                    onClick={() => setIsEditing((prev) => !prev)}
+                  >
+                    {isEditing ? "View" : "Edit"}
+                  </button>
                 </div>
 
-                {/* Project Bio */}
-                <div className="modal-field">
-                  <label>Project Bio</label>
-                  {isEditing ? (
-                    <textarea
-                      rows={3}
-                      placeholder="Describe this project..."
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      style={{ resize: "vertical", width: "100%" }}
-                    />
-                  ) : (
-                    <div style={{ whiteSpace: "pre-wrap" }}>
-                      {bio || "-"}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSave();
+                  }}
+                >
+                  {/* Project Domain Name */}
+                  <div className="modal-field">
+                    <label>Project Domain Name</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        placeholder="e.g. example.com"
+                        value={domain}
+                        onChange={(e) => setDomain(e.target.value)}
+                      />
+                    ) : (
+                      <div>{domain || "-"}</div>
+                    )}
+                  </div>
+
+                  {/* Project Bio */}
+                  <div className="modal-field">
+                    <label>Project Bio</label>
+                    {isEditing ? (
+                      <textarea
+                        rows={3}
+                        placeholder="Describe this project..."
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                        style={{ resize: "vertical", width: "100%" }}
+                      />
+                    ) : (
+                      <div style={{ whiteSpace: "pre-wrap" }}>
+                        {bio || "-"}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Contact */}
+                  <div className="modal-field">
+                    <label>Contact</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        placeholder="Email / phone / contact URL"
+                        value={contact}
+                        onChange={(e) => setContact(e.target.value)}
+                      />
+                    ) : (
+                      <div>{contact || "-"}</div>
+                    )}
+                  </div>
+
+                  {isEditing && (
+                    <div
+                      className="modal-actions"
+                      style={{ justifyContent: "flex-end", marginTop: 16 }}
+                    >
+                      <button
+                        className="primary-btn"
+                        type="submit"
+                        disabled={saving}
+                      >
+                        {saving ? "Saving..." : "Save"}
+                      </button>
                     </div>
                   )}
-                </div>
-
-                {/* Contact */}
-                <div className="modal-field">
-                  <label>Contact</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      placeholder="Email / phone / contact URL"
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                    />
-                  ) : (
-                    <div>{contact || "-"}</div>
-                  )}
-                </div>
-
-                {isEditing && (
-                  <div
-                    className="modal-actions"
-                    style={{ justifyContent: "flex-end", marginTop: 16 }}
-                  >
-                    <button
-                      className="primary-btn"
-                      type="submit"
-                      disabled={saving}
-                    >
-                      {saving ? "Saving..." : "Save"}
-                    </button>
-                  </div>
-                )}
-              </form>
-            </div>
-            </div>
-          )}
+                </form>
+              </div>
+            )}
+          </div>
         </div>
+      </div>
     </div>
   );
 }
