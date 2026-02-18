@@ -4,7 +4,7 @@ import logo from "../assets/klon-logo-white.png";
 import { API_BASE_URL } from "../api";
 
 import { useNavigate, useLocation } from "react-router-dom";
-
+import { HiOutlineUserGroup } from "react-icons/hi";
 import { FaHome } from "react-icons/fa";
 import {
   FiUsers,
