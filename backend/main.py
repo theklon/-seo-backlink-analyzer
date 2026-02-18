@@ -120,10 +120,8 @@ def build_login_otp_email_body(otp: str) -> str:
         margin: 20px 0;
         font-size: 36px;
         font-weight: bold;
-        color: #ffffff;
-        background-color: #2563eb;
+        color: #111827;
         padding: 12px 24px;
-        display: inline-block;
         letter-spacing: 4px;
       "
     >
