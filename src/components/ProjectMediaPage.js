@@ -15,8 +15,12 @@ import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 import {
   AiOutlineEye,
+  AiOutlineFilePdf,
+  AiOutlineFileWord,
+  AiOutlineFileImage,
+  AiOutlineFileText,
+  AiOutlineFile,
 } from "react-icons/ai";
-
 const MAX_IMAGES = 20;
 const MAX_FILES = 5;
 
