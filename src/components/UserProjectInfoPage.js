@@ -191,7 +191,7 @@ function UserProjectInfoPage() {
         </div>
 
         {/* MAIN CONTENT */}
-        <div className="main-wrapper">
+        
           {/* Breadcrumb */}
           <div className="breadcrumb">
             <span
@@ -228,6 +228,7 @@ function UserProjectInfoPage() {
           {loading && <div>Loading project...</div>}
 
           {!loading && project && (
+            <div className="main-wrapper">
             <div className="tool-card">
               {/* Edit/View toggle, top-right of card */}
               <div
@@ -316,9 +317,9 @@ function UserProjectInfoPage() {
                 )}
               </form>
             </div>
+            </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

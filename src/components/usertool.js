@@ -232,7 +232,7 @@ function UserTools() {
         </div>
 
         {/* MAIN CONTENT – Tool Collections */}
-        <div className="main-content">
+        <>
           <div className="breadcrumb">
             <span
               style={{ cursor: "pointer" }}
@@ -246,196 +246,200 @@ function UserTools() {
           <h2 className="page-title">Tool Collections</h2>
 
           {/* Two‑column layout: left card, right scrollable list */}
-          <div className="tool-page">
-            {/* LEFT: Add / Edit Tool card */}
-            <div className="tool-form-card tool-card">
-              <div className="tool-card-header">
-                <h3>{editingId ? "Edit Tool" : "Add Tool"}</h3>
-                <p>Add tool details for reference and tracking.</p>
+          <div className="main-wrapper">
+            <div className="tool-page">
+              {/* LEFT: Add / Edit Tool card */}
+              <div className="tool-form-card tool-card">
+                <div className="tool-card-header">
+                  <h3>{editingId ? "Edit Tool" : "Add Tool"}</h3>
+                  <p>Add tool details for reference and tracking.</p>
+                </div>
+
+                <form className="tool-form" onSubmit={handleSaveTool}>
+                  {error && (
+                    <div style={{ color: "red", marginBottom: 8 }}>
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="modal-field">
+                    <label>
+                      Tool Name <span>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="eg: Ahrefs"
+                      value={toolName}
+                      onChange={(e) => setToolName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="modal-field">
+                    <label>
+                      Links <span>*</span>
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://toolwebsite.com"
+                      value={link}
+                      onChange={(e) => setLink(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="modal-field">
+                    <label>Benefits</label>
+                    <textarea
+                      rows={4}
+                      placeholder="Describe how this tool helps with backlinks"
+                      value={benefits}
+                      onChange={(e) => setBenefits(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="modal-field">
+                    <label>Access Type</label>
+                    <div className="tool-access-row">
+                      <label className="tool-access-option">
+                        <input
+                          type="radio"
+                          name="accessType"
+                          value="paid"
+                          checked={accessType === "paid"}
+                          onChange={(e) => setAccessType(e.target.value)}
+                        />
+                        <span>Paid</span>
+                      </label>
+
+                      <label className="tool-access-option">
+                        <input
+                          type="radio"
+                          name="accessType"
+                          value="free"
+                          checked={accessType === "free"}
+                          onChange={(e) => setAccessType(e.target.value)}
+                        />
+                        <span>Free</span>
+                      </label>
+
+                      <label className="tool-access-option">
+                        <input
+                          type="radio"
+                          name="accessType"
+                          value="trial"
+                          checked={accessType === "trial"}
+                          onChange={(e) => setAccessType(e.target.value)}
+                        />
+                        <span>Trial</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div
+                    className="modal-actions"
+                    style={{ justifyContent: "flex-end" }}
+                  >
+                    <button className="primary-btn" type="submit">
+                      {editingId ? "Update Tool" : "Save Tool"}
+                    </button>
+                  </div>
+                </form>
               </div>
 
-              <form className="tool-form" onSubmit={handleSaveTool}>
-                {error && (
-                  <div style={{ color: "red", marginBottom: 8 }}>{error}</div>
-                )}
+              {/* RIGHT: Scrollable list of saved tools */}
+              <div className="saved-tools-panel">
+                <h3 className="admin-section-title">Saved Tools</h3>
 
-                <div className="modal-field">
-                  <label>
-                    Tool Name <span>*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="eg: Ahrefs"
-                    value={toolName}
-                    onChange={(e) => setToolName(e.target.value)}
-                  />
-                </div>
+                <div className="saved-tools-list">
+                  {savedTools.length === 0 && (
+                    <div className="saved-tools-empty">
+                      No tools saved yet. Add a tool on the left.
+                    </div>
+                  )}
 
-                <div className="modal-field">
-                  <label>
-                    Links <span>*</span>
-                  </label>
-                  <input
-                    type="url"
-                    placeholder="https://toolwebsite.com"
-                    value={link}
-                    onChange={(e) => setLink(e.target.value)}
-                  />
-                </div>
-
-                <div className="modal-field">
-                  <label>Benefits</label>
-                  <textarea
-                    rows={4}
-                    placeholder="Describe how this tool helps with backlinks"
-                    value={benefits}
-                    onChange={(e) => setBenefits(e.target.value)}
-                  />
-                </div>
-
-                <div className="modal-field">
-                  <label>Access Type</label>
-                  <div className="tool-access-row">
-                    <label className="tool-access-option">
-                      <input
-                        type="radio"
-                        name="accessType"
-                        value="paid"
-                        checked={accessType === "paid"}
-                        onChange={(e) => setAccessType(e.target.value)}
-                      />
-                      <span>Paid</span>
-                    </label>
-
-                    <label className="tool-access-option">
-                      <input
-                        type="radio"
-                        name="accessType"
-                        value="free"
-                        checked={accessType === "free"}
-                        onChange={(e) => setAccessType(e.target.value)}
-                      />
-                      <span>Free</span>
-                    </label>
-
-                    <label className="tool-access-option">
-                      <input
-                        type="radio"
-                        name="accessType"
-                        value="trial"
-                        checked={accessType === "trial"}
-                        onChange={(e) => setAccessType(e.target.value)}
-                      />
-                      <span>Trial</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div
-                  className="modal-actions"
-                  style={{ justifyContent: "flex-end" }}
-                >
-                  <button className="primary-btn" type="submit">
-                    {editingId ? "Update Tool" : "Save Tool"}
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            {/* RIGHT: Scrollable list of saved tools */}
-            <div className="saved-tools-panel">
-              <h3 className="admin-section-title">Saved Tools</h3>
-
-              <div className="saved-tools-list">
-                {savedTools.length === 0 && (
-                  <div className="saved-tools-empty">
-                    No tools saved yet. Add a tool on the left.
-                  </div>
-                )}
-
-                {savedTools.length > 0 && (
-                  <div className="saved-tools-card">
-                    {savedTools.map((tool) => (
-                      <div key={tool.id} className="saved-tool-row">
-                        <div className="saved-tool-header">
-                          {/* LEFT: tool name as clickable hidden link */}
-                          <button
-                            type="button"
-                            className="saved-tool-name-button"
-                            title={tool.link}
-                            onClick={() => {
-                              if (tool.link) {
-                                window.open(
-                                  tool.link,
-                                  "_blank",
-                                  "noopener,noreferrer"
-                                );
-                              }
-                            }}
-                          >
-                            {tool.toolName}
-                            <span className="saved-tool-link-hint">
-                              Open link
-                            </span>
-                          </button>
-
-                          {/* RIGHT: info icon + 3-dots menu */}
-                          <div className="saved-tool-actions">
+                  {savedTools.length > 0 && (
+                    <div className="saved-tools-card">
+                      {savedTools.map((tool) => (
+                        <div key={tool.id} className="saved-tool-row">
+                          <div className="saved-tool-header">
+                            {/* LEFT: tool name as clickable hidden link */}
                             <button
                               type="button"
-                              className="saved-tool-info-btn"
+                              className="saved-tool-name-button"
+                              title={tool.link}
                               onClick={() => {
-                                setSelectedTool(tool);
-                                setIsModalOpen(true);
+                                if (tool.link) {
+                                  window.open(
+                                    tool.link,
+                                    "_blank",
+                                    "noopener,noreferrer"
+                                  );
+                                }
                               }}
-                              aria-label="View tool details"
                             >
-                              <FiInfo />
+                              {tool.toolName}
+                              <span className="saved-tool-link-hint">
+                                Open link
+                              </span>
                             </button>
 
-                            <div className="saved-tool-menu-wrapper">
+                            {/* RIGHT: info icon + 3-dots menu */}
+                            <div className="saved-tool-actions">
                               <button
                                 type="button"
-                                className="saved-tool-menu-btn"
-                                onClick={() =>
-                                  setMenuOpenId(
-                                    menuOpenId === tool.id ? null : tool.id
-                                  )
-                                }
-                                aria-label="More actions"
+                                className="saved-tool-info-btn"
+                                onClick={() => {
+                                  setSelectedTool(tool);
+                                  setIsModalOpen(true);
+                                }}
+                                aria-label="View tool details"
                               >
-                                <FiMoreVertical />
+                                <FiInfo />
                               </button>
 
-                              {menuOpenId === tool.id && (
-                                <div className="saved-tool-menu">
-                                  <button
-                                    type="button"
-                                    className="saved-tool-menu-item"
-                                    onClick={() => handleEditTool(tool)}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="saved-tool-menu-item delete"
-                                    onClick={() => handleDeleteTool(tool.id)}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              )}
+                              <div className="saved-tool-menu-wrapper">
+                                <button
+                                  type="button"
+                                  className="saved-tool-menu-btn"
+                                  onClick={() =>
+                                    setMenuOpenId(
+                                      menuOpenId === tool.id ? null : tool.id
+                                    )
+                                  }
+                                  aria-label="More actions"
+                                >
+                                  <FiMoreVertical />
+                                </button>
+
+                                {menuOpenId === tool.id && (
+                                  <div className="saved-tool-menu">
+                                    <button
+                                      type="button"
+                                      className="saved-tool-menu-item"
+                                      onClick={() => handleEditTool(tool)}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="saved-tool-menu-item delete"
+                                      onClick={() => handleDeleteTool(tool.id)}
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+            {/* end .tool-page */}
           </div>
-          {/* end .tool-page */}
 
           {/* MODAL for tool details */}
           {isModalOpen && selectedTool && (
@@ -501,7 +505,7 @@ function UserTools() {
               </div>
             </div>
           )}
-        </div>
+        </>
       </div>
     </div>
   );

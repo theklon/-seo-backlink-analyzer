@@ -126,7 +126,7 @@ function UserProjects() {
         </div>
 
         {/* MAIN CONTENT – View Projects */}
-        <div className="main-wrapper">
+        
           {/* Breadcrumb */}
           <div className="breadcrumb">
             <span
@@ -142,6 +142,7 @@ function UserProjects() {
           <h2 className="page-title">View Projects</h2>
 
           {/* Small search bar (not wired yet) */}
+          <div className="main-wrapper">
           <div className="backlink-filters">
             <div className="search-box">
               <span className="search-icon">
@@ -150,7 +151,7 @@ function UserProjects() {
               <input type="text" placeholder="Search by Project name" />
             </div>
           </div>
-
+          </div>
           {/* Projects table */}
           {projectsError && (
             <div style={{ color: "red", marginBottom: 8 }}>{projectsError}</div>
@@ -260,7 +261,6 @@ function UserProjects() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

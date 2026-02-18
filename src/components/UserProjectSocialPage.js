@@ -247,94 +247,100 @@ function UserProjectSocialPage() {
             {" > Social"}
           </div>
 
-          {/* Title */}
-          <h2 className="page-title">
-            Project  – {displayProjectName}
-          </h2>
+          {/* Title + content inside main-wrapper */}
+          <div className="main-wrapper">
+            <h2 className="page-title">
+              Project – {displayProjectName}
+            </h2>
 
-          {loadError && (
-            <div style={{ color: "red", marginBottom: 10 }}>{loadError}</div>
-          )}
-          {saveError && (
-            <div style={{ color: "red", marginBottom: 10 }}>{saveError}</div>
-          )}
-          {saveSuccess && (
-            <div style={{ color: "green", marginBottom: 10 }}>
-              {saveSuccess}
-            </div>
-          )}
+            {loadError && (
+              <div style={{ color: "red", marginBottom: 10 }}>{loadError}</div>
+            )}
+            {saveError && (
+              <div style={{ color: "red", marginBottom: 10 }}>{saveError}</div>
+            )}
+            {saveSuccess && (
+              <div style={{ color: "green", marginBottom: 10 }}>
+                {saveSuccess}
+              </div>
+            )}
 
-          {loading && <div>Loading project...</div>}
+            {loading && <div>Loading project...</div>}
 
-          {!loading && project && (
-            <div>
-              <div className="social-cards-row">
-                {/* Instagram only */}
-                <div className="social-card-large social-card-instagram">
-                  <p className="social-card-title">
-                    <FaInstagram style={{ marginRight: 8 }} />
-                    Instagram
-                  </p>
+            {!loading && project && (
+              <div>
+                <div className="social-cards-row">
+                  {/* Instagram only */}
+                  <div className="social-card-large social-card-instagram">
+                    <p className="social-card-title">
+                      <FaInstagram style={{ marginRight: 8 }} />
+                      Instagram
+                    </p>
 
-                  <div className="social-row-content">
-                    <label className="field-label">Profile URL</label>
-                    <input
-                      type="url"
-                      placeholder="Instagram profile URL"
-                      value={instagramUrl}
-                      onChange={(e) => setInstagramUrl(e.target.value)}
-                      onBlur={() =>
-                        fetchSocialMetrics("instagram", instagramUrl)
-                      }
-                    />
-                    {metricsLoading.instagram && (
-                      <div className="social-metric-loading">
-                        Fetching Instagram stats...
+                    <div className="social-row-content">
+                      <label className="field-label">Profile URL</label>
+                      <input
+                        type="url"
+                        placeholder="Instagram profile URL"
+                        value={instagramUrl}
+                        onChange={(e) => setInstagramUrl(e.target.value)}
+                        onBlur={() =>
+                          fetchSocialMetrics("instagram", instagramUrl)
+                        }
+                      />
+                      {metricsLoading.instagram && (
+                        <div className="social-metric-loading">
+                          Fetching Instagram stats...
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="social-counts-row">
+                      <div className="social-count-field">
+                        <label className="field-label">Posts</label>
+                        <input
+                          type="number"
+                          value={instagramPosts}
+                          onChange={(e) => setInstagramPosts(e.target.value)}
+                        />
                       </div>
-                    )}
-                  </div>
-
-                  <div className="social-counts-row">
-                    <div className="social-count-field">
-                      <label className="field-label">Posts</label>
-                      <input
-                        type="number"
-                        value={instagramPosts}
-                        onChange={(e) => setInstagramPosts(e.target.value)}
-                      />
-                    </div>
-                    <div className="social-count-field">
-                      <label className="field-label">Followers</label>
-                      <input
-                        type="number"
-                        value={instagramFollowers}
-                        onChange={(e) => setInstagramFollowers(e.target.value)}
-                      />
-                    </div>
-                    <div className="social-count-field">
-                      <label className="field-label">Following</label>
-                      <input
-                        type="number"
-                        value={instagramFollowing}
-                        onChange={(e) => setInstagramFollowing(e.target.value)}
-                      />
+                      <div className="social-count-field">
+                        <label className="field-label">Followers</label>
+                        <input
+                          type="number"
+                          value={instagramFollowers}
+                          onChange={(e) =>
+                            setInstagramFollowers(e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="social-count-field">
+                        <label className="field-label">Following</label>
+                        <input
+                          type="number"
+                          value={instagramFollowing}
+                          onChange={(e) =>
+                            setInstagramFollowing(e.target.value)
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="modal-actions" style={{ marginTop: 16 }}>
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={handleSave}
-                  disabled={saving}
-                >
-                  {saving ? "Saving..." : "Save"}
-                </button>
+                <div className="modal-actions" style={{ marginTop: 16 }}>
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    onClick={handleSave}
+                    disabled={saving}
+                  >
+                    {saving ? "Saving..." : "Save"}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
