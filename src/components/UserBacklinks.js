@@ -898,15 +898,16 @@ function UserBacklinks() {
                               onClick={() => handleEditBacklinkClick(item)}
                               title="Edit"
                             >
-                              <HiOutlinePencilAlt />
+                              <HiOutlinePencilAlt Fill="blue" Size="22px" Width="22px"/>
                             </button>
                             <button
                               type="button"
                               className="actions-icon-btn"
                               onClick={() => handleDeleteBacklink(key)}
                               title="Delete"
+                              
                             >
-                              <RiDeleteBin6Line />
+                              <RiDeleteBin6Line  Fill="red" Size="22px" Width="22px"/>
                             </button>
                           </div>
                         </td>
