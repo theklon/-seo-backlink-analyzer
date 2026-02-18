@@ -13,6 +13,7 @@ import { LuCalendar, LuArrowUpDown } from "react-icons/lu";
 import { FiBell, FiCopy } from "react-icons/fi";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
+
 function ProjectBacklinksPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ function ProjectBacklinksPage() {
       </a>
     );
   };
+
   useEffect(() => {
     const fetchAdminUsers = async () => {
       try {
@@ -64,6 +66,7 @@ function ProjectBacklinksPage() {
 
     fetchAdminUsers();
   }, []);
+
   useEffect(() => {
     const fetchBacklinks = async () => {
       setLoading(true);
@@ -156,9 +159,7 @@ function ProjectBacklinksPage() {
     (a, b) => a - b
   );
   const userOptions = Array.from(
-    new Set(
-      (adminUsers || []).map((u) => u.name).filter(Boolean)
-    )
+    new Set((adminUsers || []).map((u) => u.name).filter(Boolean))
   );
 
   // Apply filters
@@ -271,217 +272,210 @@ function ProjectBacklinksPage() {
         </div>
 
         {/* MAIN CONTENT – Project Backlinks */}
-        <div className="main-wrapper">
-          {/* Breadcrumb */}
-          <div className="breadcrumb">
-            <span
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/user/dashboard")}
-            >
-              Home
-            </span>
-            {" > "}
-            <span
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/user/projects")}
-            >
-              View Projects
-            </span>
-            {" > "}
-            {projectName}
-          </div>
+        <div className="main-content">
+          <div className="main-wrapper">
+            {/* Breadcrumb */}
+            <div className="breadcrumb">
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/user/dashboard")}
+              >
+                Home
+              </span>
+              {" > "}
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/user/projects")}
+              >
+                View Projects
+              </span>
+              {" > "}
+              {projectName}
+            </div>
 
-          {/* Title */}
-          <h2 className="page-title">{projectName}</h2>
+            {/* Title */}
+            <h2 className="page-title">{projectName}</h2>
 
-          {/* Filters */}
-          <div
-            className="backlink-filters"
-            style={{ marginTop: 12, marginBottom: 12 }}
-          >
-            <select
-              className="filter-select"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">Categories</option>
-              {categoryOptions.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className="filter-select"
-              value={selectedDaRange}
-              onChange={(e) => setSelectedDaRange(e.target.value)}
-            >
-              <option value=""> DA</option>
-              <option value="0-10">0–10</option>
-              <option value="10-20">10–20</option>
-              <option value="20-30">20–30</option>
-              <option value="30-40">30–40</option>
-              <option value="40-50">40–50</option>
-              <option value="50-60">50–60</option>
-              <option value="60-70">60–70</option>
-              <option value="70-80">70–80</option>
-              <option value="80-90">80–90</option>
-              <option value="90-100">90–100</option>
-            </select>
-
-            <select
-              className="filter-select"
-              value={selectedSs}
-              onChange={(e) => setSelectedSs(e.target.value)}
-            >
-              <option value="">SS</option>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              {ssOptions.map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className="filter-select"
-              value={selectedUser}
-              onChange={(e) => setSelectedUser(e.target.value)}
-            >
-              <option value="">Users</option>
-              {userOptions.map((u) => (
-                <option key={u} value={u}>
-                  {u}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Table section */}
-          {loading && <p>Loading backlinks...</p>}
-          {error && <p style={{ color: "red" }}>{error}</p>}
-
-          {!loading && !error && (
+            {/* Filters */}
             <div
-              className="table-container user-projects-table"
-              style={{ marginTop: 8 }}
+              className="backlink-filters"
+              style={{ marginTop: 12, marginBottom: 12 }}
             >
-              <table className="user-backlinks-table">
-                <thead>
-                  <tr>
-                    <th>Domain Name</th>
-                    <th>Category</th>
-                    {/* DA and SS order kept the same, just less padding between them */}
-                    <th
-                      style={{ paddingRight: 8 }}
-                    >
-                      <span className="sortable-header">
-                        DA <LuArrowUpDown className="sort-icon" />
-                      </span>
-                    </th>
-                    <th
-                      style={{ paddingLeft: 8 }}
-                    >
-                      <span className="sortable-header">
-                        SS <LuArrowUpDown className="sort-icon" />
-                      </span>
-                    </th>
-                    <th>URL</th>
-                    <th>Sub Backlink URL</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredRows.length === 0 ? (
+              <select
+                className="filter-select"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">Categories</option>
+                {categoryOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="filter-select"
+                value={selectedDaRange}
+                onChange={(e) => setSelectedDaRange(e.target.value)}
+              >
+                <option value=""> DA</option>
+                <option value="0-10">0–10</option>
+                <option value="10-20">10–20</option>
+                <option value="20-30">20–30</option>
+                <option value="30-40">30–40</option>
+                <option value="40-50">40–50</option>
+                <option value="50-60">50–60</option>
+                <option value="60-70">60–70</option>
+                <option value="70-80">70–80</option>
+                <option value="80-90">80–90</option>
+                <option value="90-100">90–100</option>
+              </select>
+
+              <select
+                className="filter-select"
+                value={selectedSs}
+                onChange={(e) => setSelectedSs(e.target.value)}
+              >
+                <option value="">SS</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                {ssOptions.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="filter-select"
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
+              >
+                <option value="">Users</option>
+                {userOptions.map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Table section */}
+            {loading && <p>Loading backlinks...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            {!loading && !error && (
+              <div
+                className="table-container user-projects-table"
+                style={{ marginTop: 8 }}
+              >
+                <table className="user-backlinks-table">
+                  <thead>
                     <tr>
-                      <td colSpan={6} style={{ textAlign: "center" }}>
-                        No backlinks found for this project.
-                      </td>
+                      <th>Domain Name</th>
+                      <th>Category</th>
+                      <th style={{ paddingRight: 8 }}>
+                        <span className="sortable-header">
+                          DA <LuArrowUpDown className="sort-icon" />
+                        </span>
+                      </th>
+                      <th style={{ paddingLeft: 8 }}>
+                        <span className="sortable-header">
+                          SS <LuArrowUpDown className="sort-icon" />
+                        </span>
+                      </th>
+                      <th>URL</th>
+                      <th>Sub Backlink URL</th>
                     </tr>
-                  ) : (
-                    filteredRows.map((row, index) => (
-                      <tr key={row.id || `${row.domain}-${index}`}>
-                        <td>{row.domain}</td>
-                        <td>{row.category}</td>
-                        <td
-                          style={{ paddingRight: 8 }}
-                        >
-                          <span className="da-badge">{row.da}</span>
-                        </td>
-                        <td
-                          style={{ paddingLeft: 8 }}
-                        >
-                          <span className="ss-badge">{row.ss}</span>
-                        </td>
-                        <td>
-                          {row.urls && row.urls.length > 0 ? (
-                            row.urls.map((u, idx) => (
-                              <div key={idx} className="url-row">
-                                <button
-                                  type="button"
-                                  className="url-icon-btn"
-                                  onClick={() => handleCopyUrl(u)}
-                                >
-                                  <FiCopy />
-                                </button>
-                                <a
-                                  href={u}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="url-icon-btn"
-                                >
-                                  <HiOutlineExternalLink />
-                                </a>
-                                <span className="url-text">
-                                  {renderUrlCell(u)}
-                                </span>
-                              </div>
-                            ))
-                          ) : (
-                            "-"
-                          )}
-                        </td>
-                        <td>
-                          {row.subUrls && row.subUrls.length > 0 ? (
-                            row.subUrls.map((su, idx) => (
-                              <div key={idx} className="url-row">
-                                <span className="url-text">
-                                  {renderUrlCell(su.url)}
-                                  {su.userName && (
-                                    <span
-                                      style={{
-                                        marginLeft: 4,
-                                        color: "#6b7280",
-                                        fontSize: 12,
-                                      }}
-                                    >
-                                      ({su.userName})
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                            ))
-                          ) : (
-                            "-"
-                          )}
+                  </thead>
+                  <tbody>
+                    {filteredRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} style={{ textAlign: "center" }}>
+                          No backlinks found for this project.
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
+                    ) : (
+                      filteredRows.map((row, index) => (
+                        <tr key={row.id || `${row.domain}-${index}`}>
+                          <td>{row.domain}</td>
+                          <td>{row.category}</td>
+                          <td style={{ paddingRight: 8 }}>
+                            <span className="da-badge">{row.da}</span>
+                          </td>
+                          <td style={{ paddingLeft: 8 }}>
+                            <span className="ss-badge">{row.ss}</span>
+                          </td>
+                          <td>
+                            {row.urls && row.urls.length > 0 ? (
+                              row.urls.map((u, idx) => (
+                                <div key={idx} className="url-row">
+                                  <button
+                                    type="button"
+                                    className="url-icon-btn"
+                                    onClick={() => handleCopyUrl(u)}
+                                  >
+                                    <FiCopy />
+                                  </button>
+                                  <a
+                                    href={u}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="url-icon-btn"
+                                  >
+                                    <HiOutlineExternalLink />
+                                  </a>
+                                  <span className="url-text">
+                                    {renderUrlCell(u)}
+                                  </span>
+                                </div>
+                              ))
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                          <td>
+                            {row.subUrls && row.subUrls.length > 0 ? (
+                              row.subUrls.map((su, idx) => (
+                                <div key={idx} className="url-row">
+                                  <span className="url-text">
+                                    {renderUrlCell(su.url)}
+                                    {su.userName && (
+                                      <span
+                                        style={{
+                                          marginLeft: 4,
+                                          color: "#6b7280",
+                                          fontSize: 12,
+                                        }}
+                                      >
+                                        ({su.userName})
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                              ))
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

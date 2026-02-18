@@ -21,7 +21,6 @@ import {
   AiOutlineFileText,
   AiOutlineFile,
 } from "react-icons/ai";
-
 const MAX_IMAGES = 20;
 const MAX_FILES = 5;
 
@@ -35,7 +34,7 @@ function ProjectMediaPage() {
   const [activeTab, setActiveTab] = useState("images");
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]); // {id,name,url}
-  const [files, setFiles] = useState([]); // {id,name,url}
+  const [files, setFiles] = useState([]);   // {id,name,url}
 
   const [imageError, setImageError] = useState("");
   const [videoError, setVideoError] = useState("");
@@ -70,7 +69,6 @@ function ProjectMediaPage() {
 
   const [videoDeleteTarget, setVideoDeleteTarget] = useState(null);
   const [fileDeleteTarget, setFileDeleteTarget] = useState(null);
-
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -85,7 +83,6 @@ function ProjectMediaPage() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [imageModalOpen, videoModalOpen, fileModalOpen]);
-
   // Load already-saved media for this project
   useEffect(() => {
     const loadMedia = async () => {
@@ -102,7 +99,7 @@ function ProjectMediaPage() {
           const data = await imgRes.json();
           setImages(
             data.map((m) => ({
-              id: m.id || m._id,
+              id: m.id || m._id, 
               name: m.name,
               url: m.dataUrl || m.url || "",
             }))
@@ -113,7 +110,7 @@ function ProjectMediaPage() {
           const data = await vidRes.json();
           setVideos(
             data.map((m) => ({
-              id: m.id || m._id,
+              id: m.id|| m._id, 
               name: m.name,
               url: m.url || "",
             }))
@@ -124,7 +121,7 @@ function ProjectMediaPage() {
           const data = await fileRes.json();
           setFiles(
             data.map((m) => ({
-              id: m.id || m._id,
+              id: m.id || m._id, 
               name: m.name,
               url: m.dataUrl || m.url || "",
             }))
@@ -146,7 +143,6 @@ function ProjectMediaPage() {
       console.error("Copy failed", e);
     }
   };
-
   const openDataUrlInNewTab = (dataUrl, filename = "file") => {
     if (!dataUrl) return;
 
@@ -176,12 +172,10 @@ function ProjectMediaPage() {
 
     window.open(url, "_blank", "noopener,noreferrer");
   };
-
   const handleOpenFile = (file) => {
     if (!file || !file.url) return;
     openDataUrlInNewTab(file.url, file.name || "file");
   };
-
   const fileToDataUrl = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -236,57 +230,49 @@ function ProjectMediaPage() {
 
   // ========== FILES POPUP (upload) ==========
   // ==== File-type detection + icons ====
-  const getFileExtension = (file) => {
-    if (!file) return "";
-    // 1) Try from name
-    if (file.name && file.name.includes(".")) {
-      return file.name.split(".").pop().toLowerCase();
-    }
+const getFileExtension = (file) => {
+  if (!file) return "";
+  // 1) Try from name
+  if (file.name && file.name.includes(".")) {
+    return file.name.split(".").pop().toLowerCase();
+  }
 
-    // 2) Try from data URL MIME type
-    if (file.url && typeof file.url === "string" && file.url.startsWith("data:")) {
-      const match = file.url.match(/^data:(.*?);/);
-      if (match && match[1]) {
-        const mime = match[1].toLowerCase();
-        if (mime.includes("pdf")) return "pdf";
-        if (
-          mime.includes("word") ||
-          mime.includes("msword") ||
-          mime.includes("officedocument")
-        ) {
-          return "doc";
-        }
-        if (mime.startsWith("image/")) return "image";
-        if (mime.startsWith("text/")) return "txt";
+  // 2) Try from data URL MIME type
+  if (file.url && typeof file.url === "string" && file.url.startsWith("data:")) {
+    const match = file.url.match(/^data:(.*?);/);
+    if (match && match[1]) {
+      const mime = match[1].toLowerCase();
+      if (mime.includes("pdf")) return "pdf";
+      if (mime.includes("word") || mime.includes("msword") || mime.includes("officedocument")) {
+        return "doc";
       }
+      if (mime.startsWith("image/")) return "image";
+      if (mime.startsWith("text/")) return "txt";
     }
+  }
 
-    return "";
-  };
+  return "";
+};
 
-  const getFileTypeIcon = (file) => {
-    const ext = getFileExtension(file);
+const getFileTypeIcon = (file) => {
+  const ext = getFileExtension(file);
 
-    if (ext === "pdf") {
-      return <AiOutlineFilePdf className="file-type-icon" />;
-    }
-    if (["doc", "docx"].includes(ext)) {
-      return <AiOutlineFileWord className="file-type-icon" />;
-    }
-    if (
-      ["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(ext) ||
-      ext === "image"
-    ) {
-      return <AiOutlineFileImage className="file-type-icon" />;
-    }
-    if (["txt", "md"].includes(ext) || ext === "txt") {
-      return <AiOutlineFileText className="file-type-icon" />;
-    }
+  if (ext === "pdf") {
+    return <AiOutlineFilePdf className="file-type-icon" />;
+  }
+  if (["doc", "docx"].includes(ext)) {
+    return <AiOutlineFileWord className="file-type-icon" />;
+  }
+  if (["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(ext) || ext === "image") {
+    return <AiOutlineFileImage className="file-type-icon" />;
+  }
+  if (["txt", "md"].includes(ext) || ext === "txt") {
+    return <AiOutlineFileText className="file-type-icon" />;
+  }
 
-    // default icon
-    return <AiOutlineFile className="file-type-icon" />;
-  };
-
+  // default icon
+  return <AiOutlineFile className="file-type-icon" />;
+};
   const handleFileFilesChange = (e) => {
     const fileList = Array.from(e.target.files || []);
     if (!fileList.length) return;
@@ -302,7 +288,9 @@ function ProjectMediaPage() {
       const toUse = fileList.slice(0, remainingSlots);
       const startIndex = existingCount;
       const base =
-        fileBaseName && fileBaseName.trim() ? fileBaseName.trim() : "File";
+        fileBaseName && fileBaseName.trim()
+          ? fileBaseName.trim()
+          : "File";
 
       const newItems = toUse.map((file, idx) => {
         const index = startIndex + idx + 1;
@@ -353,7 +341,9 @@ function ProjectMediaPage() {
 
     setVideos((prev) =>
       prev.map((v) =>
-        v.id === videoEditTarget.id ? { ...v, name: newName, url: newUrl } : v
+        v.id === videoEditTarget.id
+          ? { ...v, name: newName, url: newUrl }
+          : v
       )
     );
     setVideoEditTarget(null);
@@ -389,7 +379,9 @@ function ProjectMediaPage() {
     } catch (e) {
       console.error("Failed to delete video", e);
     }
-    setVideos((prev) => prev.filter((v) => v.id !== videoDeleteTarget.id));
+    setVideos((prev) =>
+      prev.filter((v) => v.id !== videoDeleteTarget.id)
+    );
     setVideoDeleteTarget(null);
   };
 
@@ -410,7 +402,9 @@ function ProjectMediaPage() {
     } catch (e) {
       console.error("Failed to delete file", e);
     }
-    setFiles((prev) => prev.filter((f) => f.id !== fileDeleteTarget.id));
+    setFiles((prev) =>
+      prev.filter((f) => f.id !== fileDeleteTarget.id)
+    );
     setFileDeleteTarget(null);
   };
 
@@ -496,7 +490,7 @@ function ProjectMediaPage() {
         </div>
 
         {/* MAIN CONTENT – Media */}
-        <div className="main-content">
+        
           <div className="breadcrumb">
             <span
               style={{ cursor: "pointer" }}
@@ -524,299 +518,294 @@ function ProjectMediaPage() {
             </span>
             {" > Media"}
           </div>
-
           <div className="main-wrapper">
-            <h2 className="page-title">{projectName} – Media</h2>
+          <h2 className="page-title">{projectName} – Media</h2>
 
-            {/* Tabs + upload button row */}
-            <div className="media-tabs-row">
-              <div className="media-tabs">
-                <button
-                  className={
-                    activeTab === "images" ? "media-tab active" : "media-tab"
-                  }
-                  onClick={() => setActiveTab("images")}
-                >
-                  Images
-                </button>
-                <button
-                  className={
-                    activeTab === "videos" ? "media-tab active" : "media-tab"
-                  }
-                  onClick={() => setActiveTab("videos")}
-                >
-                  Videos
-                </button>
-                <button
-                  className={
-                    activeTab === "files" ? "media-tab active" : "media-tab"
-                  }
-                  onClick={() => setActiveTab("files")}
-                >
-                  Files
-                </button>
-              </div>
-
-              {activeTab === "images" && (
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={() => setImageModalOpen(true)}
-                >
-                  Upload Images
-                </button>
-              )}
-
-              {activeTab === "videos" && (
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={() => setVideoModalOpen(true)}
-                >
-                  Add Video URL
-                </button>
-              )}
-
-              {activeTab === "files" && (
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={() => setFileModalOpen(true)}
-                >
-                  Upload Files
-                </button>
-              )}
+          {/* Tabs + upload button row */}
+          <div className="media-tabs-row">
+            <div className="media-tabs">
+              <button
+                className={
+                  activeTab === "images" ? "media-tab active" : "media-tab"
+                }
+                onClick={() => setActiveTab("images")}
+              >
+                Images
+              </button>
+              <button
+                className={
+                  activeTab === "videos" ? "media-tab active" : "media-tab"
+                }
+                onClick={() => setActiveTab("videos")}
+              >
+                Videos
+              </button>
+              <button
+                className={
+                  activeTab === "files" ? "media-tab active" : "media-tab"
+                }
+                onClick={() => setActiveTab("files")}
+              >
+                Files
+              </button>
             </div>
 
-            {/* Images tab */}
             {activeTab === "images" && (
-              <div className="media-section">
-                {imageError && (
-                  <div style={{ color: "red", marginBottom: 8 }}>
-                    {imageError}
-                  </div>
-                )}
-
-                <div className="media-grid">
-                  {images.map((img) => (
-                    <div key={img.id} className="media-image-card">
-                      <img src={img.url} alt={img.name} />
-                      <div className="media-image-title">
-                        <input
-                          type="text"
-                          value={img.name}
-                          onChange={(e) =>
-                            handleImageNameChange(img.id, e.target.value)
-                          }
-                          style={{
-                            width: "100%",
-                            border: "none",
-                            background: "transparent",
-                            outline: "none",
-                          }}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        className="image-menu-btn"
-                        onClick={() => setDeleteImageTarget(img)}
-                        title="More options"
-                      >
-                        ...
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={() => setImageModalOpen(true)}
+              >
+                Upload Images
+              </button>
             )}
 
-            {/* Videos tab – table (URL only, copy + redirect) */}
             {activeTab === "videos" && (
-              <div className="media-section">
-                {videoError && (
-                  <div style={{ color: "red", marginBottom: 8 }}>
-                    {videoError}
-                  </div>
-                )}
-
-                <table className="user-backlinks-table">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>URL</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {videos.length === 0 ? (
-                      <tr>
-                        <td colSpan={3} style={{ textAlign: "center" }}>
-                          No videos added.
-                        </td>
-                      </tr>
-                    ) : (
-                      videos.map((v) => (
-                        <tr key={v.id}>
-                          <td>{v.name}</td>
-                          <td style={{ fontSize: 13, color: "#4b5563" }}>
-                            {v.url || "-"}
-                          </td>
-                          <td>
-                            <div className="url-row">
-                              {/* Copy + external only if URL exists */}
-                              {v.url && (
-                                <>
-                                  <button
-                                    type="button"
-                                    className="url-icon-btn"
-                                    onClick={() => handleCopy(v.url)}
-                                    title="Copy URL"
-                                  >
-                                    <FiCopy />
-                                  </button>
-                                  <a
-                                    href={v.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="url-icon-btn"
-                                    title="Open in new tab"
-                                  >
-                                    <HiOutlineExternalLink />
-                                  </a>
-                                </>
-                              )}
-
-                              {/* Three dots menu */}
-                              <button
-                                type="button"
-                                className="media-more-btn"
-                                onClick={() =>
-                                  setVideoMenuOpenId((prev) =>
-                                    prev === v.id ? null : v.id
-                                  )
-                                }
-                                title="More options"
-                              >
-                                ...
-                              </button>
-                              {videoMenuOpenId === v.id && (
-                                <div className="media-more-menu">
-                                  <button
-                                    type="button"
-                                    className="media-more-item action-menu-btn"
-                                    onClick={() => openVideoEdit(v)}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="media-more-item action-menu-button"
-                                    onClick={() => openVideoDelete(v)}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={() => setVideoModalOpen(true)}
+              >
+                Add Video URL
+              </button>
             )}
 
-            {/* Files tab – table */}
             {activeTab === "files" && (
-              <div className="media-section">
-                {fileError && (
-                  <div style={{ color: "red", marginBottom: 8 }}>
-                    {fileError}
-                  </div>
-                )}
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={() => setFileModalOpen(true)}
+              >
+                Upload Files
+              </button>
+            )}
+          </div>
 
-                <table className="user-backlinks-table">
-                  <thead>
+          {/* Images tab */}
+          {activeTab === "images" && (
+            <div className="media-section">
+              {imageError && (
+                <div style={{ color: "red", marginBottom: 8 }}>{imageError}</div>
+              )}
+
+              <div className="media-grid">
+                {images.map((img) => (
+                  <div key={img.id} className="media-image-card">
+                    <img src={img.url} alt={img.name} />
+                    <div className="media-image-title">
+                      <input
+                        type="text"
+                        value={img.name}
+                        onChange={(e) =>
+                          handleImageNameChange(img.id, e.target.value)
+                        }
+                        style={{
+                          width: "100%",
+                          border: "none",
+                          background: "transparent",
+                          outline: "none",
+                        }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="image-menu-btn"
+                      onClick={() => setDeleteImageTarget(img)}
+                      title="More options"
+                    >
+                      ...
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Videos tab – table (URL only, copy + redirect) */}
+          {activeTab === "videos" && (
+            <div className="media-section">
+              {videoError && (
+                <div style={{ color: "red", marginBottom: 8 }}>{videoError}</div>
+              )}
+
+              <table className="user-backlinks-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>URL</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {videos.length === 0 ? (
                     <tr>
-                      <th>Title</th>
-                      <th>Description</th>
-                      <th>Actions</th>
+                      <td colSpan={3} style={{ textAlign: "center" }}>
+                        No videos added.
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {files.length === 0 ? (
-                      <tr>
-                        <td colSpan={3} style={{ textAlign: "center" }}>
-                          No files uploaded.
+                  ) : (
+                    videos.map((v) => (
+                      <tr key={v.id}>
+                        <td>{v.name}</td>
+                        <td style={{ fontSize: 13, color: "#4b5563" }}>
+                          {v.url || "-"}
                         </td>
-                      </tr>
-                    ) : (
-                      files.map((f) => (
-                        <tr key={f.id}>
-                          <td>
-                            <div className="file-name-cell">
-                              {getFileTypeIcon(f)}
-                              <span className="file-name-text">{f.name}</span>
-                            </div>
-                          </td>
-                          <td>-</td>
-                          <td>
-                            <div className="url-row">
-                              {/* Eye: open file */}
-                              {f.url && (
+                        <td>
+                          <div className="url-row">
+                            {/* Copy + external only if URL exists */}
+                            {v.url && (
+                              <>
                                 <button
                                   type="button"
                                   className="url-icon-btn"
-                                  onClick={() => handleOpenFile(f)}
-                                  title="View file"
+                                  onClick={() => handleCopy(v.url)}
+                                  title="Copy URL"
                                 >
-                                  <AiOutlineEye />
+                                  <FiCopy />
                                 </button>
-                              )}
+                                <a
+                                  href={v.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="url-icon-btn"
+                                  title="Open in new tab"
+                                >
+                                  <HiOutlineExternalLink />
+                                </a>
+                              </>
+                            )}
 
-                              {/* Three dots menu */}
+                            {/* Three dots menu */}
+                            {/* Three dots menu */}
+                            <button
+                              type="button"
+                              className="media-more-btn"
+                              onClick={() =>
+                                setVideoMenuOpenId((prev) =>
+                                  prev === v.id ? null : v.id
+                                )
+                              }
+                              title="More options"
+                            >
+                              ...
+                            </button>
+                            {videoMenuOpenId === v.id && (
+                              <div className="media-more-menu">
+                                <button
+                                  type="button"
+                                  className="media-more-item action-menu-btn"
+                                  onClick={() => openVideoEdit(v)}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  className="media-more-item action-menu-button"
+                                  onClick={() => openVideoDelete(v)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Files tab – table */}
+          {activeTab === "files" && (
+            <div className="media-section">
+              {fileError && (
+                <div style={{ color: "red", marginBottom: 8 }}>{fileError}</div>
+              )}
+
+              <table className="user-backlinks-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {files.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} style={{ textAlign: "center" }}>
+                        No files uploaded.
+                      </td>
+                    </tr>
+                  ) : (
+                    files.map((f) => (
+                      <tr key={f.id}>
+                        <td>
+                          <div className="file-name-cell">
+                            {getFileTypeIcon(f)}
+                            <span className="file-name-text">{f.name}</span>
+                          </div>
+                        </td>
+                        <td>-</td>
+                        <td>
+                          <div className="url-row">
+                            {/* Eye: open file */}
+                            {/* Eye: open file */}
+                            {f.url && (
                               <button
                                 type="button"
-                                className="media-more-btn"
-                                onClick={() =>
-                                  setFileMenuOpenId((prev) =>
-                                    prev === f.id ? null : f.id
-                                  )
-                                }
-                                title="More options"
+                                className="url-icon-btn"
+                                onClick={() => handleOpenFile(f)}
+                                title="View file"
                               >
-                                ...
+                                <AiOutlineEye />
                               </button>
+                            )}
 
-                              {fileMenuOpenId === f.id && (
-                                <div className="media-more-menu">
-                                  <button
-                                    type="button"
-                                    className="media-more-item action-menu-btn"
-                                    onClick={() => openFileEdit(f)}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="media-more-item action-menu-btn"
-                                    onClick={() => openFileDelete(f)}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+                            {/* Three dots menu */}
+                            <button
+                              type="button"
+                              className="media-more-btn"
+                              onClick={() =>
+                                setFileMenuOpenId((prev) =>
+                                  prev === f.id ? null : f.id
+                                )
+                              }
+                              title="More options"
+                            >
+                              ...
+                            </button>
+
+                            {fileMenuOpenId === f.id && (
+                              <div className="media-more-menu">
+                                <button
+                                  type="button"
+                                  className="media-more-item action-menu-btn"
+                                  onClick={() => openFileEdit(f)}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  className="media-more-item action-menu-btn"
+                                  onClick={() => openFileDelete(f)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        
         </div>
       </div>
 
@@ -839,9 +828,7 @@ function ProjectMediaPage() {
             </div>
             <div className="modal-body">
               {imageError && (
-                <div style={{ color: "red", marginBottom: 8 }}>
-                  {imageError}
-                </div>
+                <div style={{ color: "red", marginBottom: 8 }}>{imageError}</div>
               )}
 
               <div className="modal-field">
@@ -950,9 +937,7 @@ function ProjectMediaPage() {
             </div>
             <div className="modal-body">
               {videoError && (
-                <div style={{ color: "red", marginBottom: 8 }}>
-                  {videoError}
-                </div>
+                <div style={{ color: "red", marginBottom: 8 }}>{videoError}</div>
               )}
 
               <div className="modal-field">
@@ -1060,9 +1045,7 @@ function ProjectMediaPage() {
             </div>
             <div className="modal-body">
               {fileError && (
-                <div style={{ color: "red", marginBottom: 8 }}>
-                  {fileError}
-                </div>
+                <div style={{ color: "red", marginBottom: 8 }}>{fileError}</div>
               )}
 
               <div className="modal-field">
