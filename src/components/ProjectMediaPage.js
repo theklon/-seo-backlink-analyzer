@@ -49,7 +49,7 @@ function ProjectMediaPage() {
   // Videos: URL only
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [videoName, setVideoName] = useState("");
-  the [videoUrl, setVideoUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
 
   // Files popup (upload)
   const [fileModalOpen, setFileModalOpen] = useState(false);
