@@ -25,11 +25,26 @@ function ProjectBacklinksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [adminUsers, setAdminUsers] = useState([]);
+
   // Filters
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDaRange, setSelectedDaRange] = useState("");
   const [selectedSs, setSelectedSs] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
+
+  // Modal for "+N More urls"
+  const [urlModalOpen, setUrlModalOpen] = useState(false);
+  const [urlModalUrls, setUrlModalUrls] = useState([]);
+
+  const handleOpenUrlModal = (urls) => {
+    setUrlModalUrls(urls || []);
+    setUrlModalOpen(true);
+  };
+
+  const handleCloseUrlModal = () => {
+    setUrlModalOpen(false);
+    setUrlModalUrls([]);
+  };
 
   const handleCopyUrl = async (url) => {
     try {
@@ -418,52 +433,80 @@ function ProjectBacklinksPage() {
                           </td>
                           <td>
                             {row.urls && row.urls.length > 0 ? (
-                              row.urls.map((u, idx) => (
-                                <div key={idx} className="url-row">
+                              <>
+                                {row.urls.slice(0, 2).map((u, idx) => (
+                                  <div key={idx} className="url-row">
+                                    <button
+                                      type="button"
+                                      className="url-icon-btn"
+                                      onClick={() => handleCopyUrl(u)}
+                                    >
+                                      <FiCopy />
+                                    </button>
+                                    <a
+                                      href={u}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="url-icon-btn"
+                                    >
+                                      <HiOutlineExternalLink />
+                                    </a>
+                                    <span className="url-text">
+                                      {renderUrlCell(u)}
+                                    </span>
+                                  </div>
+                                ))}
+
+                                {row.urls.length > 2 && (
                                   <button
                                     type="button"
-                                    className="url-icon-btn"
-                                    onClick={() => handleCopyUrl(u)}
+                                    className="more-urls-btn"
+                                    onClick={() => handleOpenUrlModal(row.urls)}
                                   >
-                                    <FiCopy />
+                                    +{row.urls.length - 2} More urls
                                   </button>
-                                  <a
-                                    href={u}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="url-icon-btn"
-                                  >
-                                    <HiOutlineExternalLink />
-                                  </a>
-                                  <span className="url-text">
-                                    {renderUrlCell(u)}
-                                  </span>
-                                </div>
-                              ))
+                                )}
+                              </>
                             ) : (
                               "-"
                             )}
                           </td>
                           <td>
                             {row.subUrls && row.subUrls.length > 0 ? (
-                              row.subUrls.map((su, idx) => (
-                                <div key={idx} className="url-row">
-                                  <span className="url-text">
-                                    {renderUrlCell(su.url)}
-                                    {su.userName && (
-                                      <span
-                                        style={{
-                                          marginLeft: 4,
-                                          color: "#6b7280",
-                                          fontSize: 12,
-                                        }}
-                                      >
-                                        ({su.userName})
-                                      </span>
-                                    )}
-                                  </span>
-                                </div>
-                              ))
+                              <>
+                                {row.subUrls.slice(0, 2).map((su, idx) => (
+                                  <div key={idx} className="url-row">
+                                    <span className="url-text">
+                                      {renderUrlCell(su.url)}
+                                      {su.userName && (
+                                        <span
+                                          style={{
+                                            marginLeft: 4,
+                                            color: "#6b7280",
+                                            fontSize: 12,
+                                          }}
+                                        >
+                                          ({su.userName})
+                                        </span>
+                                      )}
+                                    </span>
+                                  </div>
+                                ))}
+
+                                {row.subUrls.length > 2 && (
+                                  <button
+                                    type="button"
+                                    className="more-urls-btn"
+                                    onClick={() =>
+                                      handleOpenUrlModal(
+                                        row.subUrls.map((su) => su.url)
+                                      )
+                                    }
+                                  >
+                                    +{row.subUrls.length - 2} More urls
+                                  </button>
+                                )}
+                              </>
                             ) : (
                               "-"
                             )}
@@ -473,6 +516,42 @@ function ProjectBacklinksPage() {
                     )}
                   </tbody>
                 </table>
+              </div>
+            )}
+
+            {/* URL LIST MODAL FOR "+N More urls" */}
+            {urlModalOpen && (
+              <div className="modal-overlay">
+                <div className="small-url-modal-card">
+                  <div className="modal-header">
+                    <h3>All URLs</h3>
+                    <span className="modal-close" onClick={handleCloseUrlModal}>
+                      ×
+                    </span>
+                  </div>
+                  <div className="modal-body url-list-modal-body">
+                    {urlModalUrls.map((u, idx) => (
+                      <div key={idx} className="url-row">
+                        <button
+                          type="button"
+                          className="url-icon-btn"
+                          onClick={() => handleCopyUrl(u)}
+                        >
+                          <FiCopy />
+                        </button>
+                        <a
+                          href={u}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="url-icon-btn"
+                        >
+                          <HiOutlineExternalLink />
+                        </a>
+                        <span className="url-text">{renderUrlCell(u)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>

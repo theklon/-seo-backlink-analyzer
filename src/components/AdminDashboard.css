@@ -743,8 +743,10 @@ th, td {
 .user-dashboard .user-projects-table {
   max-width: 1600px;    /* or 100% if you prefer full width */
   margin-top: 8px;
-  margin-left: 0;      /* align with search box */
+  margin-left: 0;       /* align with search box */
   margin-right: 0;
+
+  border-radius: 0;     /* make UserProjects table sharp, not curved */
 }
 .user-dashboard .user-projects-table td.user-projects-actions-col {
   padding-right: 16px;    /* space between last button and table border */
@@ -1066,6 +1068,27 @@ th, td {
   align-items: center;
   gap: 6px;
   margin-bottom: 4px;
+}
+/* ProjectBacklinksPage – 6-column backlinks table layout */
+.user-dashboard .user-projects-table .user-backlinks-table th:nth-child(3),
+.user-dashboard .user-projects-table .user-backlinks-table td:nth-child(3),
+.user-dashboard .user-projects-table .user-backlinks-table th:nth-child(4),
+.user-dashboard .user-projects-table .user-backlinks-table td:nth-child(4) {
+  width: 6%;           /* narrow DA / SS */
+  text-align: center;
+  padding-left: 4px;
+  padding-right: 4px;  /* pulls 3rd & 4th closer */
+}
+
+.user-dashboard .user-projects-table .user-backlinks-table th:nth-child(5),
+.user-dashboard .user-projects-table .user-backlinks-table td:nth-child(5) {
+  width: 34%;          /* URL gets more room */
+}
+
+.user-dashboard .user-projects-table .user-backlinks-table th:nth-child(6),
+.user-dashboard .user-projects-table .user-backlinks-table td:nth-child(6) {
+  width: 28%;          /* Sub Backlink URL gets more room */
+  padding-right: 24px; /* extra white space at right edge */
 }
 .user-backlinks-table .actions-icon-btn svg {
   width: 22px;
@@ -1825,8 +1848,7 @@ th, td {
 .media-tabs {
   display: flex;
   gap: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 16px;
+  /* border-bottom moved to .media-tabs-row so the line spans full width */
 }
 
 .media-tab {
@@ -1907,6 +1929,9 @@ th, td {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+
+  border-bottom: 1px solid #e5e7eb;  /* full-width line under tabs + button */
+  padding-bottom: 4px;               /* small gap above the line */
 }
 /* Dedicated card for Project Media "Upload Images" popup */
 .media-upload-modal-card {

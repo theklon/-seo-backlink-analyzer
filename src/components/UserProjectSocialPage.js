@@ -249,9 +249,7 @@ function UserProjectSocialPage() {
 
           {/* Title + content inside main-wrapper */}
           <div className="main-wrapper">
-            <h2 className="page-title">
-              Project – {displayProjectName}
-            </h2>
+            <h2 className="page-title">Project – {displayProjectName}</h2>
 
             {loadError && (
               <div style={{ color: "red", marginBottom: 10 }}>{loadError}</div>
@@ -325,18 +323,19 @@ function UserProjectSocialPage() {
                         />
                       </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="modal-actions" style={{ marginTop: 16 }}>
-                  <button
-                    type="button"
-                    className="primary-btn"
-                    onClick={handleSave}
-                    disabled={saving}
-                  >
-                    {saving ? "Saving..." : "Save"}
-                  </button>
+                    {/* Save button directly below Instagram card */}
+                    <div className="modal-actions" style={{ marginTop: 16 }}>
+                      <button
+                        type="button"
+                        className="primary-btn"
+                        onClick={handleSave}
+                        disabled={saving}
+                      >
+                        {saving ? "Saving..." : "Save"}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

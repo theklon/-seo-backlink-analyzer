@@ -232,21 +232,23 @@ function UserTools() {
         </div>
 
         {/* MAIN CONTENT – Tool Collections */}
-        <>
+        <div className="main-content">
+          {/* Breadcrumb */}
           <div className="breadcrumb">
             <span
               style={{ cursor: "pointer" }}
-              onClick={() => navigate("/user/dashboard")} // or "/admin/dashboard" in admin pages
+              onClick={() => navigate("/user/dashboard")}
             >
               Home
             </span>
             {" > Tool Collections"}
           </div>
 
-          <h2 className="page-title">Tool Collections</h2>
-
-          {/* Two‑column layout: left card, right scrollable list */}
           <div className="main-wrapper">
+            {/* Title */}
+            <h2 className="page-title">Tool Collections</h2>
+
+            {/* Two‑column layout: left card, right scrollable list */}
             <div className="tool-page">
               {/* LEFT: Add / Edit Tool card */}
               <div className="tool-form-card tool-card">
@@ -439,73 +441,71 @@ function UserTools() {
               </div>
             </div>
             {/* end .tool-page */}
-          </div>
 
-          {/* MODAL for tool details */}
-          {isModalOpen && selectedTool && (
-            <div
-              className="tool-modal-backdrop"
-              onClick={() => {
-                setIsModalOpen(false);
-                setSelectedTool(null);
-              }}
-            >
+            {/* MODAL for tool details */}
+            {isModalOpen && selectedTool && (
               <div
-                className="tool-modal"
-                onClick={(e) => e.stopPropagation()}
+                className="tool-modal-backdrop"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setSelectedTool(null);
+                }}
               >
-                <div className="tool-modal-header">
-                  <h4>{selectedTool.toolName}</h4>
-                  <button
-                    type="button"
-                    className="tool-modal-close"
-                    onClick={() => {
-                      setIsModalOpen(false);
-                      setSelectedTool(null);
-                    }}
-                    aria-label="Close"
-                  >
-                    ×
-                  </button>
-                </div>
-
-                <div className="tool-modal-body">
-                  <div className="tool-modal-row">
-                    <span className="tool-modal-label">URL:</span>
-                    {selectedTool.link ? (
-                      <a
-                        href={selectedTool.link}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {getShortUrl(selectedTool.link)}
-                      </a>
-                    ) : (
-                      <span>-</span>
-                    )}
+                <div
+                  className="tool-modal"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="tool-modal-header">
+                    <h4>{selectedTool.toolName}</h4>
+                    <button
+                      type="button"
+                      className="tool-modal-close"
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        setSelectedTool(null);
+                      }}
+                      aria-label="Close"
+                    >
+                      ×
+                    </button>
                   </div>
 
-                  <div className="tool-modal-row">
-                    <span className="tool-modal-label">Access Type:</span>
-                    <span>
-                      {selectedTool.accessType
-                        ? selectedTool.accessType
-                            .charAt(0)
-                            .toUpperCase() +
-                          selectedTool.accessType.slice(1)
-                        : "-"}
-                    </span>
-                  </div>
+                  <div className="tool-modal-body">
+                    <div className="tool-modal-row">
+                      <span className="tool-modal-label">URL:</span>
+                      {selectedTool.link ? (
+                        <a
+                          href={selectedTool.link}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {getShortUrl(selectedTool.link)}
+                        </a>
+                      ) : (
+                        <span>-</span>
+                      )}
+                    </div>
 
-                  <div className="tool-modal-row">
-                    <span className="tool-modal-label">Description:</span>
-                    <span>{selectedTool.benefits || "-"}</span>
+                    <div className="tool-modal-row">
+                      <span className="tool-modal-label">Access Type:</span>
+                      <span>
+                        {selectedTool.accessType
+                          ? selectedTool.accessType.charAt(0).toUpperCase() +
+                            selectedTool.accessType.slice(1)
+                          : "-"}
+                      </span>
+                    </div>
+
+                    <div className="tool-modal-row">
+                      <span className="tool-modal-label">Description:</span>
+                      <span>{selectedTool.benefits || "-"}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
