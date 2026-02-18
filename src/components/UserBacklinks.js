@@ -79,6 +79,7 @@ function UserBacklinks() {
   const [contributeViewModalOpen, setContributeViewModalOpen] =
     useState(false);
   const [contributeTarget, setContributeTarget] = useState(null);
+  const [contributeProjectId, setContributeProjectId] = useState("");
   const [contributeSubId, setContributeSubId] = useState("");
   const [contributeSubUrl, setContributeSubUrl] = useState("");
   const [contributePassword, setContributePassword] = useState("");
@@ -432,6 +433,7 @@ function UserBacklinks() {
     setContributeSubUrl("");
     setContributeSubId("");
     setContributePassword("");
+    setContributeProjectId(item.projectId || "");  // NEW: prefill from backlink
     setContributeError("");
     setContributeModalOpen(true);
   };
@@ -471,6 +473,7 @@ function UserBacklinks() {
         points: 1,
         userId,
         userName,
+        projectId: contributeProjectId || contributeTarget.projectId || "",  // NEW
       };
 
       const res = await fetch(
@@ -685,7 +688,7 @@ function UserBacklinks() {
             >
               <option value="">Projects</option>
               {projects.map((p) => (
-                <option key={p.id || p._id} value={p.name}>
+                <option key={p.id || p._id} value={p.id || p._id}>
                   {p.name}
                 </option>
               ))}
@@ -792,11 +795,24 @@ function UserBacklinks() {
                       <tr key={key}>
                         <td>{item.domain}</td>
                         <td>
-                          {selectedProject
-                            ? (item.projectId || "") === selectedProject
-                              ? item.projectId
-                              : ""
-                            : item.projectId}
+                          {(() => {
+                            // If no project stored, nothing to show
+                            if (!item.projectId) return "";
+
+                            // Resolve project name from the list (supports both id and old name data)
+                            const project = projects.find(
+                              (p) =>
+                                (p.id || p._id) === item.projectId || // id-based
+                                p.name === item.projectId             // fallback if old data used name
+                            );
+                            const projName = project ? project.name : item.projectId;
+
+                            // No filter -> always show the project name
+                            if (!selectedProject) return projName;
+
+                            // With filter selected: show name only for matching project, else blank
+                            return (item.projectId || "") === selectedProject ? projName : "";
+                          })()}
                         </td>
                         <td>{item.categoryId}</td>
                         <td>
@@ -1115,24 +1131,25 @@ function UserBacklinks() {
               <p className="contribute-meta">
                 Domain: {contributeTarget.domain}
               </p>
+              <p className="contribute-meta">
+                Category: {contributeTarget.categoryId}
+              </p>
 
               <div className="modal-field">
                 <label>Project</label>
                 <select
                   className="modal-select"
-                  value={contributeTarget.projectId || ""}
-                  onChange={() => {}}
-                  disabled
+                  value={contributeProjectId}
+                  onChange={(e) => setContributeProjectId(e.target.value)}
                 >
-                  <option value="">
-                    {contributeTarget.projectId || "No project"}
-                  </option>
+                  <option value="">Select Project</option>
+                  {projects.map((p) => (
+                    <option key={p.id || p._id} value={p.id || p._id}>
+                      {p.name}
+                    </option>
+                  ))}
                 </select>
               </div>
-
-              <p className="contribute-meta">
-                Category: {contributeTarget.categoryId}
-              </p>
               <div className="modal-field">
                 <label>Sub Backlink URL</label>
                 <input
