@@ -31,6 +31,8 @@ function ProjectBacklinksPage() {
   const [selectedDaRange, setSelectedDaRange] = useState("");
   const [selectedSs, setSelectedSs] = useState("");
   const [selectedUser, setSelectedUser] = useState("");
+  const [projectSearch, setProjectSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
 
   // Modal for "+N More urls"
   const [urlModalOpen, setUrlModalOpen] = useState(false);
@@ -164,7 +166,7 @@ function ProjectBacklinksPage() {
     if (projectName) {
       fetchBacklinks();
     }
-  }, [projectId, projectName]);
+  }, [projectId, projectName, projectName]);
 
   // Derived options for filters
   const categoryOptions = Array.from(
@@ -288,25 +290,25 @@ function ProjectBacklinksPage() {
 
         {/* MAIN CONTENT – Project Backlinks */}
         <div className="main-content">
-            {/* Breadcrumb */}
-            <div className="breadcrumb">
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate("/user/dashboard")}
-              >
-                Home
-              </span>
-              {" > "}
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate("/user/projects")}
-              >
-                View Projects
-              </span>
-              {" > "}
-              {projectName}
-            </div>
-            <div className="main-wrapper">
+          {/* Breadcrumb */}
+          <div className="breadcrumb">
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/dashboard")}
+            >
+              Home
+            </span>
+            {" > "}
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/user/projects")}
+            >
+              View Projects
+            </span>
+            {" > "}
+            {projectName}
+          </div>
+          <div className="main-wrapper">
             {/* Title */}
             <h2 className="page-title">{projectName}</h2>
 
@@ -315,18 +317,23 @@ function ProjectBacklinksPage() {
               className="backlink-filters"
               style={{ marginTop: 12, marginBottom: 12 }}
             >
-              <select
+              {/* Searchable Categories dropdown */}
+              <input
+                list="projectCategoryOptions"
                 className="filter-select"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Categories</option>
+                placeholder="Categories"
+                value={categorySearch}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setCategorySearch(value);
+                  setSelectedCategory(value || "");
+                }}
+              />
+              <datalist id="projectCategoryOptions">
                 {categoryOptions.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                  <option key={c} value={c} />
                 ))}
-              </select>
+              </datalist>
 
               <select
                 className="filter-select"

@@ -54,6 +54,8 @@ function UserBacklinks() {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [projectSearch, setProjectSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
 
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -565,6 +567,10 @@ function UserBacklinks() {
       }
     }
 
+    if (selectedProject && (item.projectId || "") !== selectedProject) {
+      return false;
+    }
+
     if (selectedCategory && (item.categoryId || "") !== selectedCategory) {
       return false;
     }
@@ -703,31 +709,49 @@ function UserBacklinks() {
                 />
               </div>
 
-              <select
+              {/* Searchable Projects dropdown */}
+              <input
+                list="userProjectOptions"
                 className="filter-select"
-                value={selectedProject}
-                onChange={(e) => setSelectedProject(e.target.value)}
-              >
-                <option value="">Projects</option>
-                {projects.map((p) => (
-                  <option key={p.id || p._id} value={p.id || p._id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                placeholder="Projects"
+                value={projectSearch}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setProjectSearch(value);
 
-              <select
-                className="filter-select"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Category</option>
-                {categories.map((c) => (
-                  <option key={c.id || c._id} value={c.name}>
-                    {c.name}
-                  </option>
+                  const match = projects.find(
+                    (p) => p.name.toLowerCase() === value.toLowerCase()
+                  );
+                  setSelectedProject(match ? (match.id || match._id) : "");
+                }}
+              />
+              <datalist id="userProjectOptions">
+                {projects.map((p) => (
+                  <option key={p.id || p._id} value={p.name} />
                 ))}
-              </select>
+              </datalist>
+
+              {/* Searchable Category dropdown */}
+              <input
+                list="userCategoryOptions"
+                className="filter-select"
+                placeholder="Category"
+                value={categorySearch}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setCategorySearch(value);
+
+                  const match = categories.find(
+                    (c) => c.name.toLowerCase() === value.toLowerCase()
+                  );
+                  setSelectedCategory(match ? match.name : "");
+                }}
+              />
+              <datalist id="userCategoryOptions">
+                {categories.map((c) => (
+                  <option key={c.id || c._id} value={c.name} />
+                ))}
+              </datalist>
 
               <select
                 className="filter-select"
@@ -818,10 +842,7 @@ function UserBacklinks() {
                           <td>{item.domain}</td>
                           <td>
                             {(() => {
-                              // If no project stored, nothing to show
                               if (!item.projectId) return "";
-
-                              // Resolve project name from the list (supports both id and old data)
                               const project = projects.find(
                                 (p) =>
                                   (p.id || p._id) === item.projectId ||
@@ -831,10 +852,8 @@ function UserBacklinks() {
                                 ? project.name
                                 : item.projectId;
 
-                              // No filter -> always show the project name
                               if (!selectedProject) return projName;
 
-                              // With filter: show name only for matching project, else blank
                               return (item.projectId || "") === selectedProject
                                 ? projName
                                 : "";
@@ -879,7 +898,8 @@ function UserBacklinks() {
                                     className="more-urls-btn"
                                     onClick={() => handleOpenUrlModal(item.urls)}
                                   >
-                                    +{item.urls.length - 2} More urls
+                                    +
+                                    {item.urls.length - 2} More urls
                                   </button>
                                 )}
                               </>
@@ -893,7 +913,9 @@ function UserBacklinks() {
                                   className="contribute-pill"
                                   onClick={() => handleOpenContributeView(item)}
                                 >
-                                  <span className="contribute-points">{totalPoints}</span>
+                                  <span className="contribute-points">
+                                    {totalPoints}
+                                  </span>
                                   <span className="contribute-tick">✔</span>
                                 </button>
                                 <button
