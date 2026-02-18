@@ -10,8 +10,7 @@ import { VscTools } from "react-icons/vsc";
 
 import { LuCalendar, LuArrowUpDown } from "react-icons/lu";
 import { FiBell, FiCopy } from "react-icons/fi";
-import { IoIosArrowDown } from "react-icons/io";
-import { IoMdSearch } from "react-icons/io";
+import { IoIosArrowDown, IoMdSearch, IoMdAdd } from "react-icons/io";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -684,7 +683,8 @@ function UserBacklinks() {
           <div className="backlink-header">
             <h2 className="page-title">Backlinks</h2>
             <button className="new-backlink-btn" onClick={openModal}>
-              + New Backlink
+              <IoMdAdd />
+              <span>New Backlink</span>
             </button>
           </div>
 
@@ -893,9 +893,7 @@ function UserBacklinks() {
                                   className="contribute-pill"
                                   onClick={() => handleOpenContributeView(item)}
                                 >
-                                  <span className="contribute-points">
-                                    {totalPoints}
-                                  </span>
+                                  <span className="contribute-points">{totalPoints}</span>
                                   <span className="contribute-tick">✔</span>
                                 </button>
                                 <button
@@ -903,7 +901,7 @@ function UserBacklinks() {
                                   className="contribute-plus-btn"
                                   onClick={() => handleOpenContribute(item)}
                                 >
-                                  +
+                                  <IoMdAdd />
                                 </button>
                               </div>
                             ) : (
@@ -912,7 +910,7 @@ function UserBacklinks() {
                                 className="contribute-plus-btn"
                                 onClick={() => handleOpenContribute(item)}
                               >
-                                +
+                                <IoMdAdd />
                               </button>
                             )}
                           </td>
