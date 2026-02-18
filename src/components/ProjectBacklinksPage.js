@@ -13,12 +13,11 @@ import { LuCalendar, LuArrowUpDown } from "react-icons/lu";
 import { FiBell, FiCopy } from "react-icons/fi";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
-
 function ProjectBacklinksPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Project name passed from UserProjects via navigate state
+  const { projectId } = useParams(); // this is what /user/projects/:projectId/backlinks gives you
   const projectName = location.state?.projectName || "Project";
 
   const [rows, setRows] = useState([]);
@@ -71,7 +70,9 @@ function ProjectBacklinksPage() {
       setError("");
       try {
         const params = new URLSearchParams();
-        params.append("projectId", projectName);
+        if (projectId) {
+          params.append("projectId", projectId);
+        }
 
         const res = await fetch(
           `${API_BASE_URL}/api/user/backlinks?${params.toString()}`
@@ -145,7 +146,7 @@ function ProjectBacklinksPage() {
     if (projectName) {
       fetchBacklinks();
     }
-  }, [projectName]);
+  }, [projectId, projectName]);
 
   // Derived options for filters
   const categoryOptions = Array.from(
