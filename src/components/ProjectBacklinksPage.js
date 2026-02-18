@@ -316,18 +316,19 @@ function ProjectBacklinksPage() {
               className="backlink-filters"
               style={{ marginTop: 12, marginBottom: 12 }}
             >
-              <select
+              {/* Searchable Categories dropdown */}
+              <input
+                list="projectCategoryOptions"
                 className="filter-select"
+                placeholder="Categories"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Categories</option>
+              />
+              <datalist id="projectCategoryOptions">
                 {categoryOptions.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                  <option key={c} value={c} />
                 ))}
-              </select>
+              </datalist>
 
               <select
                 className="filter-select"
