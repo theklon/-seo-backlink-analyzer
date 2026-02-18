@@ -1,146 +1,42 @@
-import React, { useState, useEffect } from "react";
+// src/components/ProjectBacklinksPage.js
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./AdminDashboard.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { API_BASE_URL } from "../api";
 
 import logo from "../assets/klonlogo.png";
-import { HiOutlineExternalLink } from "react-icons/hi";
+
 import { FaHome } from "react-icons/fa";
 import { FaLink, FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
-
 import { LuCalendar, LuArrowUpDown } from "react-icons/lu";
 import { FiBell, FiCopy } from "react-icons/fi";
+import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
-import { IoMdSearch } from "react-icons/io";
-import { HiOutlinePencilAlt } from "react-icons/hi";
-import { RiDeleteBin6Line } from "react-icons/ri";
 
-import { API_BASE_URL } from "../api";
-
-/**
- * Extract clean domain from a URL or text.
- */
-function extractDomain(value) {
-  if (!value) return "";
-
-  const trimmed = value.trim();
-
-  try {
-    const url = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
-    let hostname = new URL(url).hostname;
-    hostname = hostname.replace(/^www\./i, "");
-    return hostname;
-  } catch (err) {
-    return trimmed
-      .replace(/^(https?:\/\/)/i, "")
-      .replace(/^www\./i, "")
-      .split("/")[0]
-      .split("?")[0];
-  }
-}
-
-function UserBacklinks() {
-  const navigate = useNavigate();
+function ProjectBacklinksPage() {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [domainName, setDomainName] = useState("");
-  const [category, setCategory] = useState("");
-  const [project, setProject] = useState("");
-  const [urls, setUrls] = useState([""]);
-  const [da, setDa] = useState(0);
-  const [ss, setSs] = useState(0);
+  const { projectId } = useParams(); // this is what /user/projects/:projectId/backlinks gives you
+  const projectName = location.state?.projectName || "Project";
 
-  const [backlinks, setBacklinks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [loadError, setLoadError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const [projects, setProjects] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [selectedProject, setSelectedProject] = useState("");
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [adminUsers, setAdminUsers] = useState([]);
+  // Filters
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDaRange, setSelectedDaRange] = useState("");
-  const [selectedSsValue, setSelectedSsValue] = useState("");
+  const [selectedSs, setSelectedSs] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
 
-  const [, setMenuOpenId] = useState(null);
-  const [editingBacklink, setEditingBacklink] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [deleteTargetId, setDeleteTargetId] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editDomain, setEditDomain] = useState("");
-  const [editProject, setEditProject] = useState("");
-  const [editCategory, setEditCategory] = useState("");
-  const [editUrls, setEditUrls] = useState([""]);
-  const [editError, setEditError] = useState("");
-  const [urlModalOpen, setUrlModalOpen] = useState(false);
-  const [urlModalUrls, setUrlModalUrls] = useState([]);
-
-  // Contribute state
-  const [contributeModalOpen, setContributeModalOpen] = useState(false);
-  const [contributeViewModalOpen, setContributeViewModalOpen] =
-    useState(false);
-  const [contributeTarget, setContributeTarget] = useState(null);
-  const [contributeProjectId, setContributeProjectId] = useState("");
-  const [contributeSubId, setContributeSubId] = useState("");
-  const [contributeSubUrl, setContributeSubUrl] = useState("");
-  const [contributePassword, setContributePassword] = useState("");
-  const [contributeSaving, setContributeSaving] = useState(false);
-  const [contributeError, setContributeError] = useState("");
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setDomainName("");
-    setCategory("");
-    setProject("");
-    setUrls([""]);
-    setDa(0);
-    setSs(0);
-  };
-
-  const getProjectName = (projectId) => {
-    if (!projectId) return "-";
-    const p = projects.find(
-      (p) =>
-        (p.id || p._id) === projectId || // id-based
-        p.name === projectId // fallback for old data
-    );
-    return p ? p.name : projectId;
-  };
-
-  // ===== Domain auto-sanitization (Add) =====
-  const handleDomainPaste = (e) => {
-    const pasted = e.clipboardData.getData("text");
-    const sanitized = extractDomain(pasted);
-    e.preventDefault();
-    setDomainName(sanitized);
-  };
-
-  const handleOpenUrlModal = (urls) => {
-    setUrlModalUrls(urls || []);
-    setUrlModalOpen(true);
-  };
-
-  const handleCloseUrlModal = () => {
-    setUrlModalOpen(false);
-    setUrlModalUrls([]);
-  };
-
-  const handleDomainBlur = () => {
-    setDomainName((prev) => extractDomain(prev));
-  };
-
-  // ===== Domain auto-sanitization (Edit) =====
-  const handleEditDomainPaste = (e) => {
-    const pasted = e.clipboardData.getData("text");
-    const sanitized = extractDomain(pasted);
-    e.preventDefault();
-    setEditDomain(sanitized);
-  };
-
-  const handleEditDomainBlur = () => {
-    setEditDomain((prev) => extractDomain(prev));
+  const handleCopyUrl = async (url) => {
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch (e) {
+      console.error("Copy failed", e);
+    }
   };
 
   const renderUrlCell = (urlValue) => {
@@ -156,417 +52,119 @@ function UserBacklinks() {
     );
   };
 
-  // Load data
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      console.log("UserBacklinks keydown:", e.key);
-      if (e.key === "Escape") {
-        if (isModalOpen) setIsModalOpen(false);
-        if (showEditModal) setShowEditModal(false);
-        if (contributeModalOpen) setContributeModalOpen(false);
-        if (contributeViewModalOpen) setContributeViewModalOpen(false);
-        if (showDeleteModal) setShowDeleteModal(false);
+    const fetchAdminUsers = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/admin/users`);
+        if (!res.ok) return;
+        const data = await res.json();
+        setAdminUsers(data || []);
+      } catch (e) {
+        console.error("Failed to load admin users", e);
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [
-    isModalOpen,
-    showEditModal,
-    contributeModalOpen,
-    contributeViewModalOpen,
-    showDeleteModal,
-  ]);
+    fetchAdminUsers();
+  }, []);
 
   useEffect(() => {
     const fetchBacklinks = async () => {
+      setLoading(true);
+      setError("");
       try {
-        setLoading(true);
-        setLoadError("");
-        const res = await fetch(`${API_BASE_URL}/api/user/backlinks`);
+        const params = new URLSearchParams();
+        if (projectId) {
+          params.append("projectId", projectId);
+        }
+
+        const res = await fetch(
+          `${API_BASE_URL}/api/user/backlinks?${params.toString()}`
+        );
         if (!res.ok) {
           throw new Error(`Failed to load backlinks: ${res.status}`);
         }
         const data = await res.json();
-        setBacklinks(data);
+        console.log("Backlinks for project", projectName, data);
+
+        // GROUP BY domain + category + project, collect multiple URLs and sublinks
+        const groupedMap = data.reduce((acc, b) => {
+          const key = `${b.domain}__${b.categoryId}__${b.projectId || ""}`;
+
+          if (!acc[key]) {
+            acc[key] = {
+              id: b.id || b._id,
+              domain: b.domain,
+              category: b.categoryId,
+              da: b.da,
+              ss: b.ss,
+              urls: [],
+              subUrls: [],
+              contributors: new Set(),
+            };
+          }
+
+          // main URL
+          if (b.url) {
+            acc[key].urls.push(b.url);
+          }
+
+          // contributions on this document – add once per subUrl
+          if (b.contributions && b.contributions.length) {
+            b.contributions.forEach((c) => {
+              if (c.subUrl) {
+                acc[key].subUrls.push({
+                  url: c.subUrl,
+                  userName: c.userName || "", // adjust to your real field
+                });
+                if (c.userName) {
+                  acc[key].contributors.add(c.userName);
+                }
+              }
+            });
+          }
+
+          return acc;
+        }, {});
+
+        // Convert map to array and dedupe subUrls, flatten contributors
+        const mapped = Object.values(groupedMap).map((row) => ({
+          ...row,
+          subUrls: Array.from(
+            new Map(
+              row.subUrls.map((su) => [su.url, su]) // dedupe by URL
+            ).values()
+          ),
+          contributors: Array.from(row.contributors || []),
+        }));
+
+        setRows(mapped);
       } catch (err) {
-        console.error("Error loading backlinks", err);
-        setLoadError(err.message || "Error loading backlinks");
+        console.error("Error loading project backlinks", err);
+        setError(err.message || "Error loading backlinks");
       } finally {
         setLoading(false);
       }
     };
 
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/projects`);
-        if (!res.ok) return;
-        const data = await res.json();
-        setProjects(data);
-      } catch (err) {
-        console.error("Error loading projects", err);
-      }
-    };
-
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/categories`);
-        if (!res.ok) return;
-        const data = await res.json();
-        setCategories(data);
-      } catch (err) {
-        console.error("Error loading categories", err);
-      }
-    };
-
-    fetchBacklinks();
-    fetchProjects();
-    fetchCategories();
-  }, []);
-
-  const handleUrlChange = (index, value) => {
-    setUrls((prev) => {
-      const copy = [...prev];
-      copy[index] = value;
-      return copy;
-    });
-  };
-
-  const addUrlField = () => {
-    setUrls((prev) => [...prev, ""]);
-  };
-
-  const handleCopyUrl = async (urlValue) => {
-    try {
-      await navigator.clipboard.writeText(urlValue);
-    } catch (err) {
-      console.error("Failed to copy URL", err);
+    if (projectName) {
+      fetchBacklinks();
     }
-  };
+  }, [projectId, projectName]);
 
-  const handleAddBacklink = async (e) => {
-    e.preventDefault();
-    try {
-      const trimmedDomain = extractDomain(domainName);
-      const trimmedCategory = category.trim();
-      const trimmedProject = project.trim();
-      const validUrls = urls.map((u) => u.trim()).filter((u) => u !== "");
-
-      // Project is optional here on purpose
-      if (!trimmedDomain || !trimmedCategory) {
-        return;
-      }
-
-      const createdList = [];
-
-      for (const oneUrl of validUrls) {
-        const body = {
-          projectId: trimmedProject, // can be ""
-          createdByUserId: "",
-          domain: trimmedDomain,
-          categoryId: trimmedCategory,
-          da: Number(da) || 0,
-          ss: Number(ss) || 0,
-          url: oneUrl,
-          contribute: null,
-          status: "approved",
-        };
-
-        const res = await fetch(`${API_BASE_URL}/api/user/backlinks`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-
-        if (!res.ok) {
-          throw new Error(`Failed to create backlink: ${res.status}`);
-        }
-
-        const created = await res.json();
-        createdList.push(created);
-      }
-
-      setBacklinks((prev) => [...prev, ...createdList]);
-
-      closeModal();
-    } catch (err) {
-      console.error("Create backlink failed", err);
-    }
-  };
-
-  const handleEditBacklinkClick = (item) => {
-    setEditingBacklink(item);
-    setEditDomain(item.domain || "");
-    setEditCategory(item.categoryId || "");
-    setEditProject(item.projectId || "");
-    setEditUrls(item.urls && item.urls.length > 0 ? item.urls : [""]);
-    setEditError("");
-    setShowEditModal(true);
-    setMenuOpenId(null);
-  };
-
-  const handleDeleteBacklink = (backlinkId) => {
-    setDeleteTargetId(backlinkId);
-    setShowDeleteModal(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deleteTargetId) return;
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/user/backlinks/${deleteTargetId}`,
-        { method: "DELETE" }
-      );
-      if (!res.ok) {
-        throw new Error(`Failed to delete backlink: ${res.status}`);
-      }
-      setBacklinks((prev) =>
-        prev.filter((b) => (b.id || b._id) !== deleteTargetId)
-      );
-    } catch (err) {
-      console.error("Delete backlink failed", err);
-    } finally {
-      setShowDeleteModal(false);
-      setDeleteTargetId(null);
-      setMenuOpenId(null);
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteModal(false);
-    setDeleteTargetId(null);
-  };
-
-  const handleEditUrlChange = (index, value) => {
-    setEditUrls((prev) => {
-      const copy = [...prev];
-      copy[index] = value;
-      return copy;
-    });
-  };
-
-  const addEditUrlField = () => {
-    setEditUrls((prev) => [...prev, ""]);
-  };
-
-  const handleSaveBacklink = async () => {
-    if (!editingBacklink) return;
-    try {
-      setEditError("");
-
-      const editingId = editingBacklink.id;
-      const trimmedDomain = extractDomain(editDomain);
-      const trimmedCategory = editCategory.trim();
-      const trimmedProject = editProject.trim();
-
-      const trimmedUrls = editUrls.map((u) => (u || "").trim());
-      const firstUrl = trimmedUrls[0] || "";
-
-      if (!trimmedDomain || !trimmedCategory || !trimmedProject) {
-        setEditError("Project, Category and Domain are required.");
-        return;
-      }
-
-      if (!firstUrl) {
-        setEditError("At least one URL is required.");
-        return;
-      }
-
-      // 1) UPDATE EXISTING BACKLINK WITH FIRST URL
-      const bodyUpdate = {
-        projectId: trimmedProject,
-        createdByUserId: "",
-        domain: trimmedDomain,
-        categoryId: trimmedCategory,
-        da: editingBacklink.da ?? 0,
-        ss: editingBacklink.ss ?? 0,
-        url: firstUrl,
-        contribute: editingBacklink.contribute || null,
-        status: "approved",
-      };
-
-      const resUpdate = await fetch(
-        `${API_BASE_URL}/api/user/backlinks/${editingId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(bodyUpdate),
-        }
-      );
-      if (!resUpdate.ok) {
-        throw new Error(`Failed to update backlink: ${resUpdate.status}`);
-      }
-
-      const updatedMain = await resUpdate.json();
-      const updatedId = updatedMain.id || updatedMain._id;
-
-      // 2) CREATE NEW BACKLINKS FOR ANY EXTRA URLS
-      const extraUrls = trimmedUrls.slice(1).filter((u) => !!u);
-      const createdExtras = [];
-
-      for (const extra of extraUrls) {
-        const bodyCreate = {
-          projectId: trimmedProject,
-          createdByUserId: "",
-          domain: trimmedDomain,
-          categoryId: trimmedCategory,
-          da: editingBacklink.da ?? 0,
-          ss: editingBacklink.ss ?? 0,
-          url: extra,
-          contribute: null,
-          status: "approved",
-        };
-
-        const resCreate = await fetch(`${API_BASE_URL}/api/user/backlinks`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(bodyCreate),
-        });
-        if (!resCreate.ok) {
-          throw new Error(
-            `Failed to create extra backlink: ${resCreate.status}`
-          );
-        }
-        const created = await resCreate.json();
-        createdExtras.push(created);
-      }
-
-      // 3) UPDATE LOCAL STATE
-      setBacklinks((prev) => {
-        const replaced = prev.map((b) =>
-          (b.id || b._id) === updatedId ? updatedMain : b
-        );
-        return [...replaced, ...createdExtras];
-      });
-
-      setShowEditModal(false);
-    } catch (err) {
-      setEditError(err.message || "Error updating backlink");
-    }
-  };
-
-  // ===== Contribute handlers =====
-
-  const handleOpenContribute = (item) => {
-    setContributeTarget(item);
-    setContributeSubUrl("");
-    setContributeSubId("");
-    setContributePassword("");
-    setContributeProjectId(item.projectId || ""); // prefill from backlink
-    setContributeError("");
-    setContributeModalOpen(true);
-  };
-
-  const handleOpenContributeView = (item) => {
-    setContributeTarget(item);
-    setContributeViewModalOpen(true);
-  };
-
-  const closeContributeModal = () => {
-    setContributeModalOpen(false);
-    setContributeTarget(null);
-    setContributeSubUrl("");
-    setContributeSubId("");
-    setContributePassword("");
-    setContributeError("");
-  };
-
-  const closeContributeViewModal = () => {
-    setContributeViewModalOpen(false);
-    setContributeTarget(null);
-  };
-
-  const handleSaveContribute = async () => {
-    if (!contributeTarget) return;
-    try {
-      setContributeSaving(true);
-      setContributeError("");
-
-      const backlinkId = contributeTarget.id;
-      const userId = localStorage.getItem("userId") || "";
-      const userName = localStorage.getItem("userName") || "";
-      const body = {
-        subBacklinkId: contributeSubId.trim(),
-        password: contributePassword.trim(),
-        subUrl: contributeSubUrl.trim(),
-        points: 1,
-        userId,
-        userName,
-        projectId: contributeProjectId || contributeTarget.projectId || "",
-      };
-
-      const res = await fetch(
-        `${API_BASE_URL}/api/user/backlinks/${backlinkId}/contribute`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error(`Failed to save contribution: ${res.status}`);
-      }
-
-      const updated = await res.json();
-      const updatedId = updated.id || updated._id;
-
-      setBacklinks((prev) =>
-        prev.map((b) => ((b.id || b._id) === updatedId ? updated : b))
-      );
-
-      closeContributeModal();
-    } catch (err) {
-      setContributeError(err.message || "Error saving contribution");
-    } finally {
-      setContributeSaving(false);
-    }
-  };
-
-  // Group backlinks by domain/category/project
-  const groupedBacklinks = Object.values(
-    backlinks.reduce((acc, b) => {
-      const key = `${b.domain}__${b.categoryId}__${b.projectId || ""}`;
-      if (!acc[key]) {
-        acc[key] = {
-          id: b.id || b._id,
-          domain: b.domain,
-          categoryId: b.categoryId,
-          projectId: b.projectId || "",
-          da: b.da,
-          ss: b.ss,
-          contribute: b.contribute,
-          contributions: b.contributions || [],
-          urls: [],
-        };
-      }
-      if (b.contributions && b.contributions.length) {
-        acc[key].contributions = b.contributions;
-      }
-      if (b.contribute) {
-        acc[key].contribute = b.contribute;
-      }
-      acc[key].urls.push(b.url);
-      return acc;
-    }, {})
+  // Derived options for filters
+  const categoryOptions = Array.from(
+    new Set(rows.map((r) => r.category).filter(Boolean))
+  );
+  const ssOptions = Array.from(new Set(rows.map((r) => r.ss))).sort(
+    (a, b) => a - b
+  );
+  const userOptions = Array.from(
+    new Set((adminUsers || []).map((u) => u.name).filter(Boolean))
   );
 
   // Apply filters
-  const filteredBacklinks = groupedBacklinks.filter((item) => {
-    if (searchTerm.trim()) {
-      const q = searchTerm.toLowerCase();
-      if (
-        !(item.domain || "").toLowerCase().includes(q) &&
-        !(item.categoryId || "").toLowerCase().includes(q)
-      ) {
-        return false;
-      }
-    }
-
-    if (selectedCategory && (item.categoryId || "") !== selectedCategory) {
+  const filteredRows = rows.filter((row) => {
+    if (selectedCategory && row.category !== selectedCategory) {
       return false;
     }
 
@@ -574,15 +172,19 @@ function UserBacklinks() {
       const [minStr, maxStr] = selectedDaRange.split("-");
       const min = Number(minStr);
       const max = Number(maxStr);
-      const daValue = Number(item.da ?? 0);
+      const daValue = Number(row.da ?? 0);
       if (!(daValue >= min && daValue <= max)) {
         return false;
       }
     }
 
-    if (selectedSsValue) {
-      const ssValue = Number(item.ss ?? 0);
-      if (ssValue !== Number(selectedSsValue)) {
+    if (selectedSs && Number(row.ss ?? 0) !== Number(selectedSs)) {
+      return false;
+    }
+
+    if (selectedUser) {
+      const contributors = row.contributors || [];
+      if (!contributors.includes(selectedUser)) {
         return false;
       }
     }
@@ -592,7 +194,7 @@ function UserBacklinks() {
 
   return (
     <div className="dashboard-root user-dashboard">
-      {/* TOP BAR */}
+      {/* TOP BAR – same as UserProjects */}
       <div className="topbar">
         <div className="topbar-left">
           <img src={logo} alt="Klon" className="topbar-logo" />
@@ -607,7 +209,7 @@ function UserBacklinks() {
             <FiBell />
           </div>
 
-          <div className="topbar-divider" />
+          <div className="topbar-divider"></div>
 
           <div className="admin-info">
             <div className="admin-avatar">U</div>
@@ -624,7 +226,7 @@ function UserBacklinks() {
 
       {/* BODY */}
       <div className="dashboard-body">
-        {/* SIDEBAR */}
+        {/* SIDEBAR – View Projects stays active for this page */}
         <div className="sidebar">
           <ul className="sidebar-menu">
             <li
@@ -649,7 +251,7 @@ function UserBacklinks() {
 
             <li
               className={`menu-item ${
-                location.pathname === "/user/projects" ? "active" : ""
+                location.pathname.startsWith("/user/projects") ? "active" : ""
               }`}
               onClick={() => navigate("/user/projects")}
             >
@@ -669,62 +271,45 @@ function UserBacklinks() {
           </ul>
         </div>
 
-        {/* MAIN CONTENT */}
+        {/* MAIN CONTENT – Project Backlinks */}
         <div className="main-content">
-          <div className="breadcrumb">
-            <span
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/user/dashboard")}
-            >
-              Home
-            </span>
-            {" > Backlinks"}
-          </div>
-
-          <div className="backlink-header">
-            <h2 className="page-title">Backlinks</h2>
-            <button className="new-backlink-btn" onClick={openModal}>
-              + New Backlink
-            </button>
-          </div>
-
-          {/* FILTER BAR */}
-          <div className="main-wrapper ">
-            <div className="backlink-filters">
-              <div className="search-box">
-                <span className="search-icon">
-                  <IoMdSearch />
-                </span>
-                <input
-                  type="text"
-                  placeholder="Search Domain..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-
-              <select
-                className="filter-select"
-                value={selectedProject}
-                onChange={(e) => setSelectedProject(e.target.value)}
+          <div className="main-wrapper">
+            {/* Breadcrumb */}
+            <div className="breadcrumb">
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/user/dashboard")}
               >
-                <option value="">Projects</option>
-                {projects.map((p) => (
-                  <option key={p.id || p._id} value={p.id || p._id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                Home
+              </span>
+              {" > "}
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/user/projects")}
+              >
+                View Projects
+              </span>
+              {" > "}
+              {projectName}
+            </div>
 
+            {/* Title */}
+            <h2 className="page-title">{projectName}</h2>
+
+            {/* Filters */}
+            <div
+              className="backlink-filters"
+              style={{ marginTop: 12, marginBottom: 12 }}
+            >
               <select
                 className="filter-select"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                <option value="">Category</option>
-                {categories.map((c) => (
-                  <option key={c.id || c._id} value={c.name}>
-                    {c.name}
+                <option value="">Categories</option>
+                {categoryOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
                   </option>
                 ))}
               </select>
@@ -734,7 +319,7 @@ function UserBacklinks() {
                 value={selectedDaRange}
                 onChange={(e) => setSelectedDaRange(e.target.value)}
               >
-                <option value="">DA</option>
+                <option value=""> DA</option>
                 <option value="0-10">0–10</option>
                 <option value="10-20">10–20</option>
                 <option value="20-30">20–30</option>
@@ -749,8 +334,8 @@ function UserBacklinks() {
 
               <select
                 className="filter-select"
-                value={selectedSsValue}
-                onChange={(e) => setSelectedSsValue(e.target.value)}
+                value={selectedSs}
+                onChange={(e) => setSelectedSs(e.target.value)}
               >
                 <option value="">SS</option>
                 <option value="0">0</option>
@@ -764,539 +349,86 @@ function UserBacklinks() {
                 <option value="8">8</option>
                 <option value="9">9</option>
                 <option value="10">10</option>
+                {ssOptions.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="filter-select"
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
+              >
+                <option value="">Users</option>
+                {userOptions.map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
               </select>
             </div>
 
-            {/* TABLE */}
-            <div
-              className="table-container user-backlinks-table"
-              style={{ marginTop: 24 }}
-            >
-              {loadError && (
-                <div style={{ color: "red", marginBottom: 8 }}>{loadError}</div>
-              )}
-              <table>
-                <thead>
-                  <tr>
-                    <th>Domain Name</th>
-                    <th>Project</th>
-                    <th>Category</th>
-                    <th>
-                      <span className="sortable-header">
-                        DA <LuArrowUpDown className="sort-icon" />
-                      </span>
-                    </th>
-                    <th>
-                      <span className="sortable-header">
-                        SS <LuArrowUpDown className="sort-icon" />
-                      </span>
-                    </th>
-                    <th>URL</th>
-                    <th>Contribute</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
+            {/* Table section */}
+            {loading && <p>Loading backlinks...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            {!loading && !error && (
+              <div
+                className="table-container user-projects-table"
+                style={{ marginTop: 8 }}
+              >
+                <table className="user-backlinks-table">
+                  <thead>
                     <tr>
-                      <td colSpan={8}>Loading backlinks...</td>
+                      <th>Domain Name</th>
+                      <th>Category</th>
+                      <th style={{ paddingRight: 8 }}>
+                        <span className="sortable-header">
+                          DA <LuArrowUpDown className="sort-icon" />
+                        </span>
+                      </th>
+                      <th style={{ paddingLeft: 8 }}>
+                        <span className="sortable-header">
+                          SS <LuArrowUpDown className="sort-icon" />
+                        </span>
+                      </th>
+                      <th>URL</th>
+                      <th>Sub Backlink URL</th>
                     </tr>
-                  ) : filteredBacklinks.length === 0 ? (
-                    <tr>
-                      <td colSpan={8}>No backlinks found.</td>
-                    </tr>
-                  ) : (
-                    filteredBacklinks.map((item) => {
-                      const key = item.id;
-                      const totalPoints =
-                        (item.contribute && item.contribute.points) ||
-                        (item.contributions
-                          ? item.contributions.length
-                          : 0);
-                      return (
-                        <tr key={key}>
-                          <td>{item.domain}</td>
-                          <td>
-                            {(() => {
-                              // If no project stored, nothing to show
-                              if (!item.projectId) return "";
-
-                              // Resolve project name from the list (supports both id and old data)
-                              const project = projects.find(
-                                (p) =>
-                                  (p.id || p._id) === item.projectId ||
-                                  p.name === item.projectId
-                              );
-                              const projName = project
-                                ? project.name
-                                : item.projectId;
-
-                              // No filter -> always show the project name
-                              if (!selectedProject) return projName;
-
-                              // With filter: show name only for matching project, else blank
-                              return (item.projectId || "") === selectedProject
-                                ? projName
-                                : "";
-                            })()}
+                  </thead>
+                  <tbody>
+                    {filteredRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} style={{ textAlign: "center" }}>
+                          No backlinks found for this project.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredRows.map((row, index) => (
+                        <tr key={row.id || `${row.domain}-${index}`}>
+                          <td>{row.domain}</td>
+                          <td>{row.category}</td>
+                          <td style={{ paddingRight: 8 }}>
+                            <span className="da-badge">{row.da}</span>
                           </td>
-                          <td>{item.categoryId}</td>
-                          <td>
-                            <span className="da-badge">{item.da}</span>
+                          <td style={{ paddingLeft: 8 }}>
+                            <span className="ss-badge">{row.ss}</span>
                           </td>
                           <td>
-                            <span className="ss-badge">{item.ss}</span>
-                          </td>
-                          <td>
-                            {item.urls && item.urls.length > 0 && (
-                              <>
-                                {item.urls.slice(0, 2).map((u, idx) => (
-                                  <div key={idx} className="url-row">
-                                    <button
-                                      type="button"
-                                      className="url-icon-btn"
-                                      onClick={() => handleCopyUrl(u)}
-                                    >
-                                      <FiCopy />
-                                    </button>
-                                    <a
-                                      href={u}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="url-icon-btn"
-                                    >
-                                      <HiOutlineExternalLink />
-                                    </a>
-                                    <span className="url-text">
-                                      {renderUrlCell(u)}
-                                    </span>
-                                  </div>
-                                ))}
-
-                                {item.urls.length > 2 && (
-                                  <button
-                                    type="button"
-                                    className="more-urls-btn"
-                                    onClick={() => handleOpenUrlModal(item.urls)}
-                                  >
-                                    +{item.urls.length - 2} More urls
-                                  </button>
-                                )}
-                              </>
-                            )}
-                          </td>
-                          <td className="contribute-col">
-                            {totalPoints > 0 ? (
-                              <div className="contribute-wrapper">
-                                <button
-                                  type="button"
-                                  className="contribute-pill"
-                                  onClick={() => handleOpenContributeView(item)}
-                                >
-                                  <span className="contribute-points">
-                                    {totalPoints}
-                                  </span>
-                                  <span className="contribute-tick">✔</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  className="contribute-plus-btn"
-                                  onClick={() => handleOpenContribute(item)}
-                                >
-                                  +
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                className="contribute-plus-btn"
-                                onClick={() => handleOpenContribute(item)}
-                              >
-                                +
-                              </button>
-                            )}
-                          </td>
-                          <td className="actions-col">
-                            <div className="actions-wrapper">
-                              <button
-                                type="button"
-                                className="actions-icon-btn"
-                                onClick={() => handleEditBacklinkClick(item)}
-                                title="Edit"
-                              >
-                                <HiOutlinePencilAlt
-                                  size={22}
-                                  color="#2563eb"
-                                />
-                              </button>
-                              <button
-                                type="button"
-                                className="actions-icon-btn"
-                                onClick={() => handleDeleteBacklink(key)}
-                                title="Delete"
-                              >
-                                <RiDeleteBin6Line
-                                  size={22}
-                                  color="#ef4444"
-                                />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* ADD NEW BACKLINK MODAL */}
-        {isModalOpen && (
-          <div className="modal-overlay">
-            <div className="backlinks-add-modal-card">
-              <div className="modal-header">
-                <h3>Add New Backlink</h3>
-                <span className="modal-close" onClick={closeModal}>
-                  ×
-                </span>
-              </div>
-
-              <form className="modal-body" onSubmit={handleAddBacklink}>
-                <div className="modal-field">
-                  <label>
-                    Domain Name <span>*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={domainName}
-                    onChange={(e) => setDomainName(e.target.value)}
-                    onPaste={handleDomainPaste}
-                    onBlur={handleDomainBlur}
-                    required
-                  />
-                </div>
-
-                <div className="modal-field-row">
-                  <div className="modal-field small-field">
-                    <label>
-                      Category <span>*</span>
-                    </label>
-                    <select
-                      className="modal-select"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      required
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map((c) => (
-                        <option key={c.id || c._id} value={c.name}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="modal-field-row">
-                  <div className="modal-field small-field">
-                    <label>DA</label>
-                    <input
-                      type="number"
-                      value={da}
-                      onChange={(e) => setDa(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="modal-field small-field">
-                    <label>SS</label>
-                    <input
-                      type="number"
-                      value={ss}
-                      onChange={(e) => setSs(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="modal-field">
-                  <div className="modal-field-header">
-                    <label>URL(s)</label>
-                    <button
-                      type="button"
-                      className="primary-btn url-add-btn"
-                      onClick={addUrlField}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div className="url-list-wrapper">
-                    {urls.map((val, index) => (
-                      <input
-                        key={index}
-                        type="url"
-                        value={val}
-                        onChange={(e) =>
-                          handleUrlChange(index, e.target.value)
-                        }
-                        className="url-list-input"
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="modal-actions">
-                  <button className="primary-btn" type="submit">
-                    Add Backlink
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* EDIT BACKLINK MODAL */}
-        {showEditModal && editingBacklink && (
-          <div className="modal-overlay">
-            <div className="modal-card">
-              <div className="modal-header">
-                <h3>Edit Backlink</h3>
-                <span
-                  className="modal-close"
-                  onClick={() => setShowEditModal(false)}
-                >
-                  ×
-                </span>
-              </div>
-
-              <div className="modal-body">
-                {editError && (
-                  <div style={{ color: "red", marginBottom: 8 }}>
-                    {editError}
-                  </div>
-                )}
-
-                <div className="modal-field">
-                  <label>Domain Name</label>
-                  <input
-                    type="text"
-                    value={editDomain}
-                    onChange={(e) => setEditDomain(e.target.value)}
-                    onPaste={handleEditDomainPaste}
-                    onBlur={handleEditDomainBlur}
-                  />
-                </div>
-
-                <div className="modal-field-row">
-                  <div className="modal-field small-field">
-                    <label>Project</label>
-                    <select
-                      className="modal-select"
-                      value={editProject}
-                      onChange={(e) => setEditProject(e.target.value)}
-                    >
-                      <option value="">Select Project</option>
-                      {projects.map((p) => (
-                        <option key={p.id || p._id} value={p.id || p._id}>
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="modal-field small-field">
-                    <label>Category</label>
-                    <select
-                      className="modal-select"
-                      value={editCategory}
-                      onChange={(e) => setEditCategory(e.target.value)}
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map((c) => (
-                        <option key={c.id || c._id} value={c.name}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="modal-field">
-                  <div className="modal-field-header">
-                    <label>URL(s)</label>
-                    <button
-                      type="button"
-                      className="primary-btn url-add-btn"
-                      onClick={addEditUrlField}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div className="url-list-wrapper">
-                    {editUrls.map((val, index) => (
-                      <input
-                        key={index}
-                        type="url"
-                        value={val}
-                        onChange={(e) =>
-                          handleEditUrlChange(index, e.target.value)
-                        }
-                        required={index === 0}
-                        className="url-list-input"
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="modal-actions">
-                  <button
-                    className="primary-btn"
-                    type="button"
-                    onClick={handleSaveBacklink}
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* CONTRIBUTE CREATE MODAL */}
-        {contributeModalOpen && contributeTarget && (
-          <div className="modal-overlay">
-            <div className="backlinks-modal-card small-confirm-modal ">
-              <div className="modal-header">
-                <h3>Create Backlink Contribution</h3>
-                <span className="modal-close" onClick={closeContributeModal}>
-                  ×
-                </span>
-              </div>
-              <div className="modal-body">
-                {contributeError && (
-                  <p style={{ color: "red", marginBottom: 8 }}>
-                    {contributeError}
-                  </p>
-                )}
-                <p className="contribute-meta">
-                  Domain: {contributeTarget.domain}
-                </p>
-                <p className="contribute-meta">
-                  Category: {contributeTarget.categoryId}
-                </p>
-
-                <div className="modal-field">
-                  <label>Project</label>
-                  <select
-                    className="modal-select"
-                    value={contributeProjectId}
-                    onChange={(e) => setContributeProjectId(e.target.value)}
-                  >
-                    <option value="">Select Project</option>
-                    {projects.map((p) => (
-                      <option key={p.id || p._id} value={p.id || p._id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="modal-field">
-                  <label>Sub Backlink URL</label>
-                  <input
-                    type="text"
-                    value={contributeSubUrl}
-                    onChange={(e) => setContributeSubUrl(e.target.value)}
-                    autoComplete="off"
-                    name="sub-backlink-url"
-                  />
-                </div>
-                <div className="modal-field">
-                  <label>Sub Backlink ID</label>
-                  <input
-                    type="text"
-                    value={contributeSubId}
-                    onChange={(e) => setContributeSubId(e.target.value)}
-                    autoComplete="off"
-                    name="sub-backlink-id"
-                  />
-                </div>
-
-                <div className="modal-field">
-                  <label>Password</label>
-                  <input
-                    type="text"
-                    value={contributePassword}
-                    onChange={(e) => setContributePassword(e.target.value)}
-                    autoComplete="off"
-                    name="backlink-password"
-                  />
-                </div>
-
-                <div className="modal-actions">
-                  <button
-                    type="button"
-                    className="primary-btn"
-                    onClick={handleSaveContribute}
-                    disabled={contributeSaving}
-                  >
-                    {contributeSaving ? "Saving..." : "Save"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* CONTRIBUTE VIEW MODAL */}
-        {contributeViewModalOpen && contributeTarget && (
-          <div className="modal-overlay">
-            <div className="backlinks-modal-card small-confirm-modal contribute-details-card">
-              <div className="modal-header">
-                <h3>Contribution Details</h3>
-                <span
-                  className="modal-close"
-                  onClick={closeContributeViewModal}
-                >
-                  ×
-                </span>
-              </div>
-              <div className="modal-body">
-                <p className="contribute-meta">
-                  Domain: {contributeTarget.domain}
-                  <br />
-                  Project: {getProjectName(contributeTarget.projectId)}
-                  <br />
-                  Category: {contributeTarget.categoryId}
-                </p>
-
-                {contributeTarget.contributions &&
-                  contributeTarget.contributions.length > 0 && (
-                    <table className="contribute-table">
-                      <thead>
-                        <tr>
-                          <th>Sub Backlink URL</th>
-                          <th>Sub Backlink ID</th>
-                          <th>Password</th>
-                          <th>Created At</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {contributeTarget.contributions.map((row, idx) => (
-                          <tr key={idx}>
-                            <td>
-                              {row.subUrl ? (
-                                <div className="url-row">
+                            {row.urls && row.urls.length > 0 ? (
+                              row.urls.map((u, idx) => (
+                                <div key={idx} className="url-row">
                                   <button
                                     type="button"
                                     className="url-icon-btn"
-                                    onClick={() => handleCopyUrl(row.subUrl)}
+                                    onClick={() => handleCopyUrl(u)}
                                   >
                                     <FiCopy />
                                   </button>
                                   <a
-                                    href={row.subUrl}
+                                    href={u}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="url-icon-btn"
@@ -1304,102 +436,50 @@ function UserBacklinks() {
                                     <HiOutlineExternalLink />
                                   </a>
                                   <span className="url-text">
-                                    {renderUrlCell(row.subUrl)}
+                                    {renderUrlCell(u)}
                                   </span>
                                 </div>
-                              ) : (
-                                "-"
-                              )}
-                            </td>
-                            <td>{row.subBacklinkId}</td>
-                            <td>{row.password}</td>
-                            <td>
-                              {new Date(row.createdAt).toLocaleString()}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-
-                <div className="modal-actions">
-                  <button
-                    type="button"
-                    className="primary-btn"
-                    onClick={closeContributeViewModal}
-                  >
-                    Close
-                  </button>
-                </div>
+                              ))
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                          <td>
+                            {row.subUrls && row.subUrls.length > 0 ? (
+                              row.subUrls.map((su, idx) => (
+                                <div key={idx} className="url-row">
+                                  <span className="url-text">
+                                    {renderUrlCell(su.url)}
+                                    {su.userName && (
+                                      <span
+                                        style={{
+                                          marginLeft: 4,
+                                          color: "#6b7280",
+                                          fontSize: 12,
+                                        }}
+                                      >
+                                        ({su.userName})
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                              ))
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
-            </div>
+            )}
           </div>
-        )}
-
-        {/* URL LIST MODAL FOR "+N More urls" */}
-        {urlModalOpen && (
-          <div className="modal-overlay">
-            <div className="small-url-modal-card">
-              <div className="modal-header">
-                <h3>All URLs</h3>
-                <span className="modal-close" onClick={handleCloseUrlModal}>
-                  ×
-                </span>
-              </div>
-              <div className="modal-body url-list-modal-body">
-                {urlModalUrls.map((u, idx) => (
-                  <div key={idx} className="url-row">
-                    <button
-                      type="button"
-                      className="url-icon-btn"
-                      onClick={() => handleCopyUrl(u)}
-                    >
-                      <FiCopy />
-                    </button>
-                    <a
-                      href={u}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="url-icon-btn"
-                    >
-                      <HiOutlineExternalLink />
-                    </a>
-                    <span className="url-text">{renderUrlCell(u)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* DELETE CONFIRMATION MODAL */}
-        {showDeleteModal && (
-          <div className="modal-overlay">
-            <div className="modal-card small-confirm-modal">
-              <div className="modal-header">
-                <h3>Delete Backlink</h3>
-                <span className="modal-close" onClick={handleCancelDelete}>
-                  ×
-                </span>
-              </div>
-              <div className="modal-body">
-                <p>Are you sure you want to delete this backlink?</p>
-                <div className="modal-actions">
-                  <button
-                    type="button"
-                    className="primary-btn"
-                    onClick={handleConfirmDelete}
-                  >
-                    Yes, Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
 }
 
-export default UserBacklinks;
+export default ProjectBacklinksPage;

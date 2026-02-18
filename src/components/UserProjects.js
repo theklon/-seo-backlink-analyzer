@@ -128,6 +128,7 @@ function UserProjects() {
         {/* MAIN CONTENT – View Projects */}
         
           {/* Breadcrumb */}
+          <div className="main-content">
           <div className="breadcrumb">
             <span
               style={{ cursor: "pointer" }}
@@ -258,6 +259,7 @@ function UserProjects() {
                 )}
               </tbody>
             </table>
+          </div>
           </div>
         </div>
       </div>

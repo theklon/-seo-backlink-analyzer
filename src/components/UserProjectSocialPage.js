@@ -249,9 +249,7 @@ function UserProjectSocialPage() {
 
           {/* Title + content inside main-wrapper */}
           <div className="main-wrapper">
-            <h2 className="page-title">
-              Project – {displayProjectName}
-            </h2>
+            <h2 className="page-title">Project – {displayProjectName}</h2>
 
             {loadError && (
               <div style={{ color: "red", marginBottom: 10 }}>{loadError}</div>
