@@ -680,9 +680,7 @@ th, td {
 }
 
 .table-container td {
-  padding: 15px;
   border-bottom: 1px solid #e5ecf6;
-  color: #0f172a;
 }
 
 .table-container tr:last-child td {
@@ -919,7 +917,6 @@ th, td {
 }
 .url-text a,
 .url-text {
-  color: #2563eb;          /* blue */
   cursor: pointer;
 }
 
@@ -1072,13 +1069,7 @@ th, td {
 }
 
 .url-icon-btn {
-  border: none;
-  background: transparent;
   cursor: pointer;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   color: #4a5568;
 }
 
@@ -1086,9 +1077,7 @@ th, td {
   color: #2b6cb0;
 }
 
-.url-text a {
-  text-decoration: none;
-}
+
 .url-text {
   flex: 1;
   min-width: 0;
@@ -1213,16 +1202,15 @@ th, td {
 }
 
 .filter-select {
-  min-width: 100px;
-  padding: 5px;
-  border-radius: 6px;
+  background: #fff;
   border: 1px solid #e5e7eb;
-  background: #ffffff;
-  font-size: 13px;
+  border-radius: 6px;
   color: #111827;
+  font-size: 13px;
+  min-width: 100px;
   outline: none;
+  padding: 5px;
 }
-
 /* "+ New Backlink" button on the right */
 .new-backlink-btn {
   background: #2f3b82;
@@ -1260,7 +1248,7 @@ th, td {
 
 /* Base URL style in user backlinks table */
 .user-backlinks-table .url-text a {
-  color: #1f2937;           /* same as normal text */
+  color: #283aec; /* same as normal text */
   text-decoration: none;
   transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
@@ -1276,7 +1264,6 @@ th, td {
 .user-backlinks-table td {
   font-size: 14px;
   padding: 12px 12px;
-  vertical-align: top;
 }
 
 /* 1: Domain Name */
@@ -1364,7 +1351,11 @@ th, td {
   vertical-align: middle;
   color: #111827;           /* dark gray text */
 }
-
+.url-text a {
+  color: #283aec;           /* same as normal text */
+  text-decoration: none;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
 .user-backlinks-table th {
   color: #000000;
   font-weight: 700;
