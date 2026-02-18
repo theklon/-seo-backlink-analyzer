@@ -919,24 +919,6 @@ function UserBacklinks() {
               <div className="modal-field-row">
                 <div className="modal-field small-field">
                   <label>
-                    Project
-                  </label>
-                  <select
-                    className="modal-select"
-                    value={project}
-                    onChange={(e) => setProject(e.target.value)}
-                  >
-                    <option value="">Select Project</option>
-                    {projects.map((p) => (
-                      <option key={p.id || p._id} value={p.name}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="modal-field small-field">
-                  <label>
                     Category <span>*</span>
                   </label>
                   <select
@@ -1132,9 +1114,23 @@ function UserBacklinks() {
               )}
               <p className="contribute-meta">
                 Domain: {contributeTarget.domain}
-                <br />
-                Project: {contributeTarget.projectId}
-                <br />
+              </p>
+
+              <div className="modal-field">
+                <label>Project</label>
+                <select
+                  className="modal-select"
+                  value={contributeTarget.projectId || ""}
+                  onChange={() => {}}
+                  disabled
+                >
+                  <option value="">
+                    {contributeTarget.projectId || "No project"}
+                  </option>
+                </select>
+              </div>
+
+              <p className="contribute-meta">
                 Category: {contributeTarget.categoryId}
               </p>
               <div className="modal-field">

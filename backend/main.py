@@ -70,7 +70,11 @@ ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 
 # Admin OTP store and email
-ADMIN_OTP_EMAIL = "ajay@nextwebi.com"
+ALLOWED_ADMIN_EMAILS = {
+    os.getenv("ADMIN_OTP_EMAIL", "ajay@nextwebi.com").lower(),
+    "sureshraksha7@gmail.com",
+}
+ 
 admin_otp_store = {
     # "ajay@nextwebi.com": {"code": "123456", "expires_at": datetime(...) }
 }
@@ -294,31 +298,32 @@ async def login(payload: dict):
 async def admin_login(payload: dict):
     """
     Step 1 – Admin email check.
-    If OK, generate OTP and email it to ADMIN_OTP_EMAIL.
+    If OK, generate OTP and email it to that admin email.
     """
     email = (payload.get("email") or "").strip().lower()
 
     if not email:
         raise HTTPException(status_code=400, detail="Email required")
 
-    # Optional: ensure only the configured admin email is accepted
-    if email != ADMIN_OTP_EMAIL.lower():
+    # allow only known admin emails
+    if email not in ALLOWED_ADMIN_EMAILS:
         raise HTTPException(status_code=401, detail="Unauthorized email")
 
     otp_code = generate_otp()
     expires_at = datetime.utcnow() + timedelta(minutes=5)
 
-    admin_otp_store[ADMIN_OTP_EMAIL] = {
+    # store OTP for this specific admin email
+    admin_otp_store[email] = {
         "code": otp_code,
         "expires_at": expires_at,
     }
 
     try:
-        send_admin_otp_email(ADMIN_OTP_EMAIL, otp_code)
+        send_admin_otp_email(email, otp_code)
     except Exception as e:
         print("Failed to send admin OTP email:", e)
 
-    print("ADMIN OTP for", ADMIN_OTP_EMAIL, "=", otp_code)
+    print("ADMIN OTP for", email, "=", otp_code)
     return {"otp_required": True}
 
 
@@ -328,6 +333,7 @@ async def verify_admin_otp(payload: dict):
     Step 2 – Admin submits OTP received on email.
     Frontend will treat success as 'admin logged in'.
     """
+    email = (payload.get("email") or "").strip().lower()
     otp = (payload.get("otp") or "").strip()
 
     if not otp:

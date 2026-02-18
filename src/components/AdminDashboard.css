@@ -828,7 +828,22 @@ th, td {
   color: #d77300;
   border: 1px solid #d97706;
 }
- 
+.file-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-type-icon {
+  font-size: 18px;
+  color: #4b5563; /* adjust as needed */
+}
+
+.file-name-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 /* Backlinks = old white pill design */
 .user-dashboard .user-project-btn-backlinks {
   background-color: #ffffff;
