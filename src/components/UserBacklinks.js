@@ -159,7 +159,6 @@ function UserBacklinks() {
   // Load data
   useEffect(() => {
     const handleKeyDown = (e) => {
-      console.log("UserBacklinks keydown:", e.key);
       if (e.key === "Escape") {
         if (isModalOpen) setIsModalOpen(false);
         if (showEditModal) setShowEditModal(false);
@@ -611,8 +610,7 @@ function UserBacklinks() {
     selectedCategory &&
     categoryOptions.find((opt) => opt.value === selectedCategory);
 
-  const addCategoryValue =
-    category && { value: category, label: category };
+  const addCategoryValue = category && { value: category, label: category };
 
   const contributeProjectValue =
     contributeProjectId &&
@@ -905,8 +903,7 @@ function UserBacklinks() {
                                     className="more-urls-btn"
                                     onClick={() => handleOpenUrlModal(item.urls)}
                                   >
-                                    +
-                                    {item.urls.length - 2} More urls
+                                    +{item.urls.length - 2} More urls
                                   </button>
                                 )}
                               </>
@@ -1206,12 +1203,16 @@ function UserBacklinks() {
                     {contributeError}
                   </p>
                 )}
-                <p className="contribute-meta">
-                  Domain: {contributeTarget.domain}
-                </p>
-                <p className="contribute-meta">
-                  Category: {contributeTarget.categoryId}
-                </p>
+
+                {/* Domain + Category closer together */}
+                <div className="contribute-meta-block">
+                  <p className="contribute-meta">
+                    Domain: {contributeTarget.domain}
+                  </p>
+                  <p className="contribute-meta">
+                    Category: {contributeTarget.categoryId}
+                  </p>
+                </div>
 
                 <div className="modal-field">
                   <label>Project</label>
