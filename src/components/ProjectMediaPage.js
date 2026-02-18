@@ -35,7 +35,7 @@ function ProjectMediaPage() {
   const [activeTab, setActiveTab] = useState("images");
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]); // {id,name,url}
-  const [files, setFiles] = useState([]);   // {id,name,url}
+  const [files, setFiles] = useState([]); // {id,name,url}
 
   const [imageError, setImageError] = useState("");
   const [videoError, setVideoError] = useState("");
@@ -49,7 +49,7 @@ function ProjectMediaPage() {
   // Videos: URL only
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [videoName, setVideoName] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  the [videoUrl, setVideoUrl] = useState("");
 
   // Files popup (upload)
   const [fileModalOpen, setFileModalOpen] = useState(false);
@@ -60,7 +60,7 @@ function ProjectMediaPage() {
   const [videoMenuOpenId, setVideoMenuOpenId] = useState(null);
   const [fileMenuOpenId, setFileMenuOpenId] = useState(null);
 
-  // Edit / delete popups for videos/files
+  // Edit / delete popups for videos/files (state kept for future use if needed)
   const [videoEditTarget, setVideoEditTarget] = useState(null);
   const [videoEditName, setVideoEditName] = useState("");
   const [videoEditUrl, setVideoEditUrl] = useState("");
@@ -70,6 +70,55 @@ function ProjectMediaPage() {
 
   const [videoDeleteTarget, setVideoDeleteTarget] = useState(null);
   const [fileDeleteTarget, setFileDeleteTarget] = useState(null);
+
+  // FILE EDIT: rename via prompt + update local state
+  const openFileEdit = (file) => {
+    setFileEditTarget(file);
+    setFileEditName(file.name || "");
+    setFileMenuOpenId(null);
+
+    const currentName = file.name || "";
+    const newName = window.prompt("Edit file name", currentName);
+
+    if (!newName) {
+      return;
+    }
+
+    const trimmed = newName.trim();
+    if (!trimmed || trimmed === currentName.trim()) {
+      return;
+    }
+
+    setFiles((prev) =>
+      prev.map((f) => (f.id === file.id ? { ...f, name: trimmed } : f))
+    );
+  };
+
+  // FILE DELETE: confirm + backend delete + remove from state
+  const openFileDelete = async (file) => {
+    setFileDeleteTarget(file);
+    setFileMenuOpenId(null);
+
+    const ok = window.confirm(`Delete file "${file.name}"?`);
+    if (!ok) return;
+
+    try {
+      if (projectId && file.id) {
+        const res = await fetch(
+          `${API_BASE_URL}/api/projects/${projectId}/media/${file.id}`,
+          { method: "DELETE" }
+        );
+        if (!res.ok) {
+          const body = await res.text();
+          console.error("file delete error body:", body);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to delete file", e);
+    }
+
+    setFiles((prev) => prev.filter((f) => f.id !== file.id));
+  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -235,17 +284,14 @@ function ProjectMediaPage() {
       reader.readAsDataURL(file);
     });
 
-  // ===== rest of image / file upload, edit, delete handlers stay the same =====
-  // (handleImageFilesChange, handleImageNameChange, handleFileFilesChange,
-  //  openVideoEdit, openFileEdit, openVideoDelete, openFileDelete,
-  //  handleSaveVideoEdit, handleSaveFileEdit, handleConfirmVideoDelete,
-  //  handleConfirmFileDelete)
+  // ===== rest of image / video / file upload handlers, modals etc. remain as before =====
+  // (not shown here if you trimmed them out earlier)
 
   // ========== RENDER ==========
   return (
     <div className="dashboard-root user-dashboard">
       {/* TOP BAR */}
-      {/* ... unchanged top bar / sidebar / tabs / images tab / videos tab ... */}
+      {/* ... your existing top bar / sidebar / breadcrumbs / tabs / images & videos sections ... */}
 
       {/* Files tab – table */}
       {activeTab === "files" && (
