@@ -127,7 +127,8 @@ input[type="password"]::-webkit-textfield-decoration-container {
 .admin-avatar {
   width: 32px;
   height: 32px;
-  background: #1a4487;
+  background-color: #2563eb;   /* example: your current blue */
+  color: #ffffff; 
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1094,6 +1095,31 @@ th, td {
 /* Domain + Category spacing in Create Backlink Contribution */
 .contribute-meta-block {
   margin-bottom: 0px;   /* space below both lines before "Project" */
+}
+/* Base wrapper: no extra border/padding */
+.react-select {
+  width: 100%;
+}
+
+/* Make react-select box look like DA / SS select */
+.react-select__control {
+  min-height: 36px;              /* adjust to your DA box height */
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  box-shadow: none;
+}
+
+.react-select__control--is-focused {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+}
+
+.react-select__value-container {
+  padding: 4px 8px;
+}
+
+.react-select__indicator-separator {
+  display: none;
 }
 
 

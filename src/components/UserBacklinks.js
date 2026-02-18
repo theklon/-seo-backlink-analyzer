@@ -732,7 +732,7 @@ function UserBacklinks() {
 
               {/* Projects: react-select searchable dropdown */}
               <Select
-                className="filter-select react-select"
+                className="react-select"
                 classNamePrefix="react-select"
                 placeholder="Projects"
                 isClearable
@@ -746,7 +746,7 @@ function UserBacklinks() {
 
               {/* Category: react-select searchable dropdown */}
               <Select
-                className="filter-select react-select"
+                className="react-select"
                 classNamePrefix="react-select"
                 placeholder="Category"
                 isClearable
