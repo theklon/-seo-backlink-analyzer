@@ -288,7 +288,6 @@ function ProjectBacklinksPage() {
 
         {/* MAIN CONTENT – Project Backlinks */}
         <div className="main-content">
-          <div className="main-wrapper">
             {/* Breadcrumb */}
             <div className="breadcrumb">
               <span
@@ -307,7 +306,7 @@ function ProjectBacklinksPage() {
               {" > "}
               {projectName}
             </div>
-
+            <div className="main-wrapper">
             {/* Title */}
             <h2 className="page-title">{projectName}</h2>
 
