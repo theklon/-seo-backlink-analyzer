@@ -101,7 +101,43 @@ def send_admin_otp_email(to_email: str, otp_code: str):
 def generate_otp(length: int = 6) -> str:
     """Generate numeric OTP like '123456'."""
     return "".join(random.choices(string.digits, k=length))
+def build_login_otp_email_body(otp: str) -> str:
+    return f"""\
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your Login OTP</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+    <p>
+      To log into your <strong>Klon</strong> account, please use the following
+      one-time password (OTP):
+    </p>
 
+    <div
+      style="
+        margin: 20px 0;
+        font-size: 36px;
+        font-weight: bold;
+        color: #ffffff;
+        background-color: #2563eb;
+        padding: 12px 24px;
+        display: inline-block;
+        letter-spacing: 4px;
+      "
+    >
+      {otp}
+    </div>
+
+    <p style="margin-top: 24px; line-height: 1.5;">
+      Do not share this OTP with anyone. We take your account security very
+      seriously. Our support team will never ask you to disclose or verify your
+      account using this code.
+    </p>
+  </body>
+</html>
+"""
 
 def send_otp_email(to_email: str, otp: str) -> None:
     """Send user OTP email via SMTP."""
@@ -109,7 +145,13 @@ def send_otp_email(to_email: str, otp: str) -> None:
     msg["Subject"] = "Your OTP Code"
     msg["From"] = SMTP_FROM
     msg["To"] = to_email
+
+    # Plain-text fallback (for clients that don't support HTML)
     msg.set_content(f"Your OTP code is: {otp}\nIt is valid for 10 minutes.")
+
+    # HTML version (what you want it to look like)
+    html_body = build_login_otp_email_body(otp)
+    msg.add_alternative(html_body, subtype="html")
 
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
         server.starttls()
