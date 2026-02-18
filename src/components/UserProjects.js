@@ -5,7 +5,7 @@ import { API_BASE_URL } from "../api";
 
 import logo from "../assets/klonlogo.png";
 
-import { HiOutlineHome } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
 import { FaLink, FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
 import { LuCalendar } from "react-icons/lu";
@@ -89,7 +89,7 @@ function UserProjects() {
               }`}
               onClick={() => navigate("/user/dashboard")}
             >
-              <HiOutlineHome className="nav-icon" />
+              <FaHome className="nav-icon" />
               <span>Home</span>
             </li>
 
@@ -126,7 +126,7 @@ function UserProjects() {
         </div>
 
         {/* MAIN CONTENT – View Projects */}
-        <div className="main-content">
+        <div className="main-wrapper">
           {/* Breadcrumb */}
           <div className="breadcrumb">
             <span

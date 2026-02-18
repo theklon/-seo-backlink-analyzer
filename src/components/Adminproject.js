@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/klon-logo-white.png";
 import { API_BASE_URL } from "../api";
 
-import { HiOutlineHome } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
 import {
   FiUsers,
   FiBell,
@@ -282,7 +282,7 @@ function Adminproject() {
               }`}
               onClick={() => navigate("/admin/dashboard")}
             >
-              <HiOutlineHome className="nav-icon" />
+              <FaHome className="nav-icon" />
               <span>Home</span>
             </li>
 

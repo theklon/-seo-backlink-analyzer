@@ -1076,14 +1076,12 @@ th, td {
   padding: 0;
   border: none;
   background: transparent;
-  color: #1d4ed8;
-  font-size: 13px;
+  color: #000000;          /* black */
+  font-weight: 700;        /* bold */
+  font-size: 14px;         /* match your table header size */
   cursor: pointer;
 }
 
-.more-urls-btn:hover {
-  text-decoration: underline;
-}
 
 .small-url-modal-card {
   max-width: 480px;

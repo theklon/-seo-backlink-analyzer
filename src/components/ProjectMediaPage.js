@@ -6,7 +6,7 @@ import "./AdminDashboard.css";
 import logo from "../assets/klonlogo.png";
 import { API_BASE_URL } from "../api";
 
-import { HiOutlineHome } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
 import { FaLink, FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
 import { LuCalendar } from "react-icons/lu";
@@ -453,7 +453,7 @@ const getFileTypeIcon = (file) => {
               }`}
               onClick={() => navigate("/user/dashboard")}
             >
-              <HiOutlineHome className="nav-icon" />
+              <FaHome className="nav-icon" />
               <span>Home</span>
             </li>
 
@@ -490,7 +490,7 @@ const getFileTypeIcon = (file) => {
         </div>
 
         {/* MAIN CONTENT – Media */}
-        <div className="main-content">
+        <div className="main-wrapper">
           <div className="breadcrumb">
             <span
               style={{ cursor: "pointer" }}

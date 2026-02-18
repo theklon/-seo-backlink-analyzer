@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/klonlogo.png";
 import banner from "../assets/admindashboardslide.png";
 
-import { HiOutlineHome } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
 import { FaLink } from "react-icons/fa6";
 import { FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
@@ -64,7 +64,7 @@ function UserDashboard() {
               }`}
               onClick={() => navigate("/user/dashboard")}
             >
-              <HiOutlineHome className="nav-icon" />
+              <FaHome className="nav-icon" />
               <span>Home</span>
             </li>
 

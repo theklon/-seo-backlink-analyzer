@@ -5,7 +5,7 @@ import { API_BASE_URL } from "../api";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { HiOutlineHome, HiOutlineUserGroup } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
 import {
   FiUsers,
   FiBell,
@@ -322,7 +322,7 @@ function Adminuser() {
               }`}
               onClick={() => navigate("/admin/dashboard")}
             >
-              <HiOutlineHome className="nav-icon" />
+              <FaHome className="nav-icon" />
               <span>Home</span>
             </li>
 

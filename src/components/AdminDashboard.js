@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/klon-logo-white.png";
 import banner from "../assets/admindashboardslide.png";
 
-import { HiOutlineHome } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
 import { FiUsers, FiBell, FiUser, FiZap, FiSettings, FiLogOut } from "react-icons/fi";
 import { FaDesktop } from "react-icons/fa6";
 import { RiShapesLine } from "react-icons/ri";
@@ -147,7 +147,7 @@ function AdminDashboard() {
               }`}
               onClick={() => navigate("/admin/dashboard")}
             >
-              <HiOutlineHome className="nav-icon" />
+              <FaHome className="nav-icon" />
               <span>Home</span>
             </li>
 
@@ -184,7 +184,7 @@ function AdminDashboard() {
         </div>
 
         {/* MAIN CONTENT */}
-        <div className="main-content">
+        <div className="main-wrapper">
           <div
             className="banner"
             style={{ backgroundImage: `url(${banner})` }}
