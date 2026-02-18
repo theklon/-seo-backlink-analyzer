@@ -897,6 +897,7 @@ async def set_backlink_contribution(backlink_id: str, payload: dict):
     sub_url = (payload.get("subUrl") or "").strip()
     user_id = (payload.get("userId") or "").strip()
     user_name = (payload.get("userName") or "").strip()
+    project_id = (payload.get("projectId") or "").strip()  # NEW
 
     doc = await backlinks_collection.find_one({"_id": ObjectId(backlink_id)})
     if not doc:
@@ -911,6 +912,7 @@ async def set_backlink_contribution(backlink_id: str, payload: dict):
         "createdAt": datetime.utcnow(),
         "userId": user_id,
         "userName": user_name,
+        "projectId": project_id or doc.get("projectId", ""),  # NEW
     }
     contributions.append(new_entry)
 
@@ -921,6 +923,8 @@ async def set_backlink_contribution(backlink_id: str, payload: dict):
         "contribute": {"points": total_points},
         "updatedAt": datetime.utcnow(),
     }
+    if project_id:
+        update_fields["projectId"] = project_id
 
     result = await backlinks_collection.update_one(
         {"_id": ObjectId(backlink_id)},

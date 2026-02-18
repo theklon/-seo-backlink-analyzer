@@ -97,6 +97,16 @@ function UserBacklinks() {
     setSs(0);
   };
 
+  const getProjectName = (projectId) => {
+    if (!projectId) return "-";
+    const p = projects.find(
+      (p) =>
+        (p.id || p._id) === projectId || // id-based
+        p.name === projectId // fallback for old data
+    );
+    return p ? p.name : projectId;
+  };
+
   // ===== Domain auto-sanitization (Add) =====
   const handleDomainPaste = (e) => {
     const pasted = e.clipboardData.getData("text");
@@ -133,10 +143,11 @@ function UserBacklinks() {
       </a>
     );
   };
+
   // Load data
   useEffect(() => {
     const handleKeyDown = (e) => {
-      console.log("UserBacklinks keydown:", e.key);   // 
+      console.log("UserBacklinks keydown:", e.key);
       if (e.key === "Escape") {
         if (isModalOpen) setIsModalOpen(false);
         if (showEditModal) setShowEditModal(false);
@@ -157,6 +168,7 @@ function UserBacklinks() {
     contributeViewModalOpen,
     showDeleteModal,
   ]);
+
   useEffect(() => {
     const fetchBacklinks = async () => {
       try {
@@ -231,7 +243,8 @@ function UserBacklinks() {
       const trimmedProject = project.trim();
       const validUrls = urls.map((u) => u.trim()).filter((u) => u !== "");
 
-      if (!trimmedDomain || !trimmedCategory ) {
+      // Project is optional here on purpose
+      if (!trimmedDomain || !trimmedCategory) {
         return;
       }
 
@@ -239,7 +252,7 @@ function UserBacklinks() {
 
       for (const oneUrl of validUrls) {
         const body = {
-          projectId: trimmedProject,
+          projectId: trimmedProject, // can be ""
           createdByUserId: "",
           domain: trimmedDomain,
           categoryId: trimmedCategory,
@@ -395,14 +408,11 @@ function UserBacklinks() {
           status: "approved",
         };
 
-        const resCreate = await fetch(
-          `${API_BASE_URL}/api/user/backlinks`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(bodyCreate),
-          }
-        );
+        const resCreate = await fetch(`${API_BASE_URL}/api/user/backlinks`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bodyCreate),
+        });
         if (!resCreate.ok) {
           throw new Error(
             `Failed to create extra backlink: ${resCreate.status}`
@@ -433,7 +443,7 @@ function UserBacklinks() {
     setContributeSubUrl("");
     setContributeSubId("");
     setContributePassword("");
-    setContributeProjectId(item.projectId || "");  // NEW: prefill from backlink
+    setContributeProjectId(item.projectId || ""); // prefill from backlink
     setContributeError("");
     setContributeModalOpen(true);
   };
@@ -473,7 +483,7 @@ function UserBacklinks() {
         points: 1,
         userId,
         userName,
-        projectId: contributeProjectId || contributeTarget.projectId || "",  // NEW
+        projectId: contributeProjectId || contributeTarget.projectId || "",
       };
 
       const res = await fetch(
@@ -543,7 +553,6 @@ function UserBacklinks() {
         return false;
       }
     }
-
 
     if (selectedCategory && (item.categoryId || "") !== selectedCategory) {
       return false;
@@ -789,7 +798,7 @@ function UserBacklinks() {
                     const totalPoints =
                       (item.contribute && item.contribute.points) ||
                       (item.contributions
-                        ? item.contributions.length 
+                        ? item.contributions.length
                         : 0);
                     return (
                       <tr key={key}>
@@ -799,19 +808,23 @@ function UserBacklinks() {
                             // If no project stored, nothing to show
                             if (!item.projectId) return "";
 
-                            // Resolve project name from the list (supports both id and old name data)
+                            // Resolve project name from the list (supports both id and old data)
                             const project = projects.find(
                               (p) =>
-                                (p.id || p._id) === item.projectId || // id-based
-                                p.name === item.projectId             // fallback if old data used name
+                                (p.id || p._id) === item.projectId ||
+                                p.name === item.projectId
                             );
-                            const projName = project ? project.name : item.projectId;
+                            const projName = project
+                              ? project.name
+                              : item.projectId;
 
                             // No filter -> always show the project name
                             if (!selectedProject) return projName;
 
-                            // With filter selected: show name only for matching project, else blank
-                            return (item.projectId || "") === selectedProject ? projName : "";
+                            // With filter: show name only for matching project, else blank
+                            return (item.projectId || "") === selectedProject
+                              ? projName
+                              : "";
                           })()}
                         </td>
                         <td>{item.categoryId}</td>
@@ -1048,7 +1061,7 @@ function UserBacklinks() {
                   >
                     <option value="">Select Project</option>
                     {projects.map((p) => (
-                      <option key={p.id || p._id} value={p.name}>
+                      <option key={p.id || p._id} value={p.id || p._id}>
                         {p.name}
                       </option>
                     ))}
@@ -1214,7 +1227,7 @@ function UserBacklinks() {
               <p className="contribute-meta">
                 Domain: {contributeTarget.domain}
                 <br />
-                Project: {contributeTarget.projectId}
+                Project: {getProjectName(contributeTarget.projectId)}
                 <br />
                 Category: {contributeTarget.categoryId}
               </p>
