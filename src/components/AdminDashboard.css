@@ -1091,13 +1091,14 @@ th, td {
   gap: 6px;                      /* space between icon and text */
   /* keep your existing padding, colors, etc. */
 }
-.contribute-meta {
-  margin-bottom: 12px;        /* space below the pair */
+/* Domain + Category spacing in Create Backlink Contribution */
+.contribute-meta-block {
+  margin-bottom: 6px;   /* space below both lines before "Project" */
 }
 
-.contribute-meta .modal-subtitle {
-  margin: 0;                  /* remove large gaps between domain & category */
-  line-height: 1.4;
+.contribute-meta {
+  margin: 0;            /* no top/bottom gap between Domain & Category */
+  line-height: 1.2;     /* tighter line spacing */
 }
 /* Optional: control icon size explicitly */
 .new-backlink-btn svg {
