@@ -73,6 +73,8 @@ function UserBacklinks() {
   const [editCategory, setEditCategory] = useState("");
   const [editUrls, setEditUrls] = useState([""]);
   const [editError, setEditError] = useState("");
+  const [urlModalOpen, setUrlModalOpen] = useState(false);
+  const [urlModalUrls, setUrlModalUrls] = useState([]);
 
   // Contribute state
   const [contributeModalOpen, setContributeModalOpen] = useState(false);
@@ -113,6 +115,16 @@ function UserBacklinks() {
     const sanitized = extractDomain(pasted);
     e.preventDefault();
     setDomainName(sanitized);
+  };
+
+  const handleOpenUrlModal = (urls) => {
+    setUrlModalUrls(urls || []);
+    setUrlModalOpen(true);
+  };
+
+  const handleCloseUrlModal = () => {
+    setUrlModalOpen(false);
+    setUrlModalUrls([]);
   };
 
   const handleDomainBlur = () => {
@@ -678,200 +690,223 @@ function UserBacklinks() {
 
           {/* FILTER BAR */}
           <div className="main-wrapper ">
-          <div className="backlink-filters">
-            <div className="search-box">
-              <span className="search-icon">
-                <IoMdSearch />
-              </span>
-              <input
-                type="text"
-                placeholder="Search Domain..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            <div className="backlink-filters">
+              <div className="search-box">
+                <span className="search-icon">
+                  <IoMdSearch />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search Domain..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <select
+                className="filter-select"
+                value={selectedProject}
+                onChange={(e) => setSelectedProject(e.target.value)}
+              >
+                <option value="">Projects</option>
+                {projects.map((p) => (
+                  <option key={p.id || p._id} value={p.id || p._id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="filter-select"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">Category</option>
+                {categories.map((c) => (
+                  <option key={c.id || c._id} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="filter-select"
+                value={selectedDaRange}
+                onChange={(e) => setSelectedDaRange(e.target.value)}
+              >
+                <option value="">DA</option>
+                <option value="0-10">0–10</option>
+                <option value="10-20">10–20</option>
+                <option value="20-30">20–30</option>
+                <option value="30-40">30–40</option>
+                <option value="40-50">40–50</option>
+                <option value="50-60">50–60</option>
+                <option value="60-70">60–70</option>
+                <option value="70-80">70–80</option>
+                <option value="80-90">80–90</option>
+                <option value="90-100">90–100</option>
+              </select>
+
+              <select
+                className="filter-select"
+                value={selectedSsValue}
+                onChange={(e) => setSelectedSsValue(e.target.value)}
+              >
+                <option value="">SS</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
             </div>
 
-            <select
-              className="filter-select"
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
+            {/* TABLE */}
+            <div
+              className="table-container user-backlinks-table"
+              style={{ marginTop: 24 }}
             >
-              <option value="">Projects</option>
-              {projects.map((p) => (
-                <option key={p.id || p._id} value={p.id || p._id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className="filter-select"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">Category</option>
-              {categories.map((c) => (
-                <option key={c.id || c._id} value={c.name}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className="filter-select"
-              value={selectedDaRange}
-              onChange={(e) => setSelectedDaRange(e.target.value)}
-            >
-              <option value="">DA</option>
-              <option value="0-10">0–10</option>
-              <option value="10-20">10–20</option>
-              <option value="20-30">20–30</option>
-              <option value="30-40">30–40</option>
-              <option value="40-50">40–50</option>
-              <option value="50-60">50–60</option>
-              <option value="60-70">60–70</option>
-              <option value="70-80">70–80</option>
-              <option value="80-90">80–90</option>
-              <option value="90-100">90–100</option>
-            </select>
-
-            <select
-              className="filter-select"
-              value={selectedSsValue}
-              onChange={(e) => setSelectedSsValue(e.target.value)}
-            >
-              <option value="">SS</option>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-          </div>
-
-          {/* TABLE */}
-          <div
-            className="table-container user-backlinks-table"
-            style={{ marginTop: 24 }}
-          >
-            {loadError && (
-              <div style={{ color: "red", marginBottom: 8 }}>{loadError}</div>
-            )}
-            <table>
-              <thead>
-                <tr>
-                  <th>Domain Name</th>
-                  <th>Project</th>
-                  <th>Category</th>
-                  <th>
-                    <span className="sortable-header">
-                      DA <LuArrowUpDown className="sort-icon" />
-                    </span>
-                  </th>
-                  <th>
-                    <span className="sortable-header">
-                      SS <LuArrowUpDown className="sort-icon" />
-                    </span>
-                  </th>
-                  <th>URL</th>
-                  <th>Contribute</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
+              {loadError && (
+                <div style={{ color: "red", marginBottom: 8 }}>{loadError}</div>
+              )}
+              <table>
+                <thead>
                   <tr>
-                    <td colSpan={8}>Loading backlinks...</td>
+                    <th>Domain Name</th>
+                    <th>Project</th>
+                    <th>Category</th>
+                    <th>
+                      <span className="sortable-header">
+                        DA <LuArrowUpDown className="sort-icon" />
+                      </span>
+                    </th>
+                    <th>
+                      <span className="sortable-header">
+                        SS <LuArrowUpDown className="sort-icon" />
+                      </span>
+                    </th>
+                    <th>URL</th>
+                    <th>Contribute</th>
+                    <th>Actions</th>
                   </tr>
-                ) : filteredBacklinks.length === 0 ? (
-                  <tr>
-                    <td colSpan={8}>No backlinks found.</td>
-                  </tr>
-                ) : (
-                  filteredBacklinks.map((item) => {
-                    const key = item.id;
-                    const totalPoints =
-                      (item.contribute && item.contribute.points) ||
-                      (item.contributions
-                        ? item.contributions.length
-                        : 0);
-                    return (
-                      <tr key={key}>
-                        <td>{item.domain}</td>
-                        <td>
-                          {(() => {
-                            // If no project stored, nothing to show
-                            if (!item.projectId) return "";
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={8}>Loading backlinks...</td>
+                    </tr>
+                  ) : filteredBacklinks.length === 0 ? (
+                    <tr>
+                      <td colSpan={8}>No backlinks found.</td>
+                    </tr>
+                  ) : (
+                    filteredBacklinks.map((item) => {
+                      const key = item.id;
+                      const totalPoints =
+                        (item.contribute && item.contribute.points) ||
+                        (item.contributions
+                          ? item.contributions.length
+                          : 0);
+                      return (
+                        <tr key={key}>
+                          <td>{item.domain}</td>
+                          <td>
+                            {(() => {
+                              // If no project stored, nothing to show
+                              if (!item.projectId) return "";
 
-                            // Resolve project name from the list (supports both id and old data)
-                            const project = projects.find(
-                              (p) =>
-                                (p.id || p._id) === item.projectId ||
-                                p.name === item.projectId
-                            );
-                            const projName = project
-                              ? project.name
-                              : item.projectId;
+                              // Resolve project name from the list (supports both id and old data)
+                              const project = projects.find(
+                                (p) =>
+                                  (p.id || p._id) === item.projectId ||
+                                  p.name === item.projectId
+                              );
+                              const projName = project
+                                ? project.name
+                                : item.projectId;
 
-                            // No filter -> always show the project name
-                            if (!selectedProject) return projName;
+                              // No filter -> always show the project name
+                              if (!selectedProject) return projName;
 
-                            // With filter: show name only for matching project, else blank
-                            return (item.projectId || "") === selectedProject
-                              ? projName
-                              : "";
-                          })()}
-                        </td>
-                        <td>{item.categoryId}</td>
-                        <td>
-                          <span className="da-badge">{item.da}</span>
-                        </td>
-                        <td>
-                          <span className="ss-badge">{item.ss}</span>
-                        </td>
-                        <td>
-                          {item.urls.map((u, idx) => (
-                            <div key={idx} className="url-row">
-                              <button
-                                type="button"
-                                className="url-icon-btn"
-                                onClick={() => handleCopyUrl(u)}
-                              >
-                                <FiCopy />
-                              </button>
-                              <a
-                                href={u}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="url-icon-btn"
-                              >
-                                <HiOutlineExternalLink />
-                              </a>
-                              <span className="url-text">
-                                {renderUrlCell(u)}
-                              </span>
-                            </div>
-                          ))}
-                        </td>
-                        <td className="contribute-col">
-                          {totalPoints > 0 ? (
-                            <div className="contribute-wrapper">
-                              <button
-                                type="button"
-                                className="contribute-pill"
-                                onClick={() => handleOpenContributeView(item)}
-                              >
-                                <span className="contribute-points">
-                                  {totalPoints}
-                                </span>
-                                <span className="contribute-tick">✔</span>
-                              </button>
+                              // With filter: show name only for matching project, else blank
+                              return (item.projectId || "") === selectedProject
+                                ? projName
+                                : "";
+                            })()}
+                          </td>
+                          <td>{item.categoryId}</td>
+                          <td>
+                            <span className="da-badge">{item.da}</span>
+                          </td>
+                          <td>
+                            <span className="ss-badge">{item.ss}</span>
+                          </td>
+                          <td>
+                            {item.urls && item.urls.length > 0 && (
+                              <>
+                                {item.urls.slice(0, 2).map((u, idx) => (
+                                  <div key={idx} className="url-row">
+                                    <button
+                                      type="button"
+                                      className="url-icon-btn"
+                                      onClick={() => handleCopyUrl(u)}
+                                    >
+                                      <FiCopy />
+                                    </button>
+                                    <a
+                                      href={u}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="url-icon-btn"
+                                    >
+                                      <HiOutlineExternalLink />
+                                    </a>
+                                    <span className="url-text">
+                                      {renderUrlCell(u)}
+                                    </span>
+                                  </div>
+                                ))}
+
+                                {item.urls.length > 2 && (
+                                  <button
+                                    type="button"
+                                    className="more-urls-btn"
+                                    onClick={() => handleOpenUrlModal(item.urls)}
+                                  >
+                                    +{item.urls.length - 2} More urls
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </td>
+                          <td className="contribute-col">
+                            {totalPoints > 0 ? (
+                              <div className="contribute-wrapper">
+                                <button
+                                  type="button"
+                                  className="contribute-pill"
+                                  onClick={() => handleOpenContributeView(item)}
+                                >
+                                  <span className="contribute-points">
+                                    {totalPoints}
+                                  </span>
+                                  <span className="contribute-tick">✔</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  className="contribute-plus-btn"
+                                  onClick={() => handleOpenContribute(item)}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            ) : (
                               <button
                                 type="button"
                                 className="contribute-plus-btn"
@@ -879,187 +914,285 @@ function UserBacklinks() {
                               >
                                 +
                               </button>
+                            )}
+                          </td>
+                          <td className="actions-col">
+                            <div className="actions-wrapper">
+                              <button
+                                type="button"
+                                className="actions-icon-btn"
+                                onClick={() => handleEditBacklinkClick(item)}
+                                title="Edit"
+                              >
+                                <HiOutlinePencilAlt
+                                  size={22}
+                                  color="#2563eb"
+                                />
+                              </button>
+                              <button
+                                type="button"
+                                className="actions-icon-btn"
+                                onClick={() => handleDeleteBacklink(key)}
+                                title="Delete"
+                              >
+                                <RiDeleteBin6Line
+                                  size={22}
+                                  color="#ef4444"
+                                />
+                              </button>
                             </div>
-                          ) : (
-                            <button
-                              type="button"
-                              className="contribute-plus-btn"
-                              onClick={() => handleOpenContribute(item)}
-                            >
-                              +
-                            </button>
-                          )}
-                        </td>
-                        <td className="actions-col">
-                          <div className="actions-wrapper">
-                            <button
-                              type="button"
-                              className="actions-icon-btn"
-                              onClick={() => handleEditBacklinkClick(item)}
-                              title="Edit"
-                            >
-                              <HiOutlinePencilAlt Fill="blue" Size="22px" Width="22px"/>
-                            </button>
-                            <button
-                              type="button"
-                              className="actions-icon-btn"
-                              onClick={() => handleDeleteBacklink(key)}
-                              title="Delete"
-                              
-                            >
-                              <RiDeleteBin6Line  Fill="red" Size="22px" Width="22px"/>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ADD NEW BACKLINK MODAL */}
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="backlinks-add-modal-card">
-            <div className="modal-header">
-              <h3>Add New Backlink</h3>
-              <span className="modal-close" onClick={closeModal}>
-                ×
-              </span>
-            </div>
-
-            <form className="modal-body" onSubmit={handleAddBacklink}>
-              <div className="modal-field">
-                <label>
-                  Domain Name <span>*</span>
-                </label>
-                <input
-                  type="text"
-                  value={domainName}
-                  onChange={(e) => setDomainName(e.target.value)}
-                  onPaste={handleDomainPaste}
-                  onBlur={handleDomainBlur}
-                  required
-                />
+        {/* ADD NEW BACKLINK MODAL */}
+        {isModalOpen && (
+          <div className="modal-overlay">
+            <div className="backlinks-add-modal-card">
+              <div className="modal-header">
+                <h3>Add New Backlink</h3>
+                <span className="modal-close" onClick={closeModal}>
+                  ×
+                </span>
               </div>
 
-              <div className="modal-field-row">
-                <div className="modal-field small-field">
+              <form className="modal-body" onSubmit={handleAddBacklink}>
+                <div className="modal-field">
                   <label>
-                    Category <span>*</span>
+                    Domain Name <span>*</span>
                   </label>
-                  <select
-                    className="modal-select"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                  <input
+                    type="text"
+                    value={domainName}
+                    onChange={(e) => setDomainName(e.target.value)}
+                    onPaste={handleDomainPaste}
+                    onBlur={handleDomainBlur}
                     required
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((c) => (
-                      <option key={c.id || c._id} value={c.name}>
-                        {c.name}
-                      </option>
+                  />
+                </div>
+
+                <div className="modal-field-row">
+                  <div className="modal-field small-field">
+                    <label>
+                      Category <span>*</span>
+                    </label>
+                    <select
+                      className="modal-select"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((c) => (
+                        <option key={c.id || c._id} value={c.name}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="modal-field-row">
+                  <div className="modal-field small-field">
+                    <label>DA</label>
+                    <input
+                      type="number"
+                      value={da}
+                      onChange={(e) => setDa(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="modal-field small-field">
+                    <label>SS</label>
+                    <input
+                      type="number"
+                      value={ss}
+                      onChange={(e) => setSs(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="modal-field">
+                  <div className="modal-field-header">
+                    <label>URL(s)</label>
+                    <button
+                      type="button"
+                      className="primary-btn url-add-btn"
+                      onClick={addUrlField}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <div className="url-list-wrapper">
+                    {urls.map((val, index) => (
+                      <input
+                        key={index}
+                        type="url"
+                        value={val}
+                        onChange={(e) =>
+                          handleUrlChange(index, e.target.value)
+                        }
+                        className="url-list-input"
+                      />
                     ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="modal-field-row">
-                <div className="modal-field small-field">
-                  <label>DA</label>
-                  <input
-                    type="number"
-                    value={da}
-                    onChange={(e) => setDa(e.target.value)}
-                  />
+                  </div>
                 </div>
 
-                <div className="modal-field small-field">
-                  <label>SS</label>
-                  <input
-                    type="number"
-                    value={ss}
-                    onChange={(e) => setSs(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="modal-field">
-                <div className="modal-field-header">
-                  <label>URL(s)</label>
-                  <button
-                    type="button"
-                    className="primary-btn url-add-btn"
-                    onClick={addUrlField}
-                  >
-                    +
+                <div className="modal-actions">
+                  <button className="primary-btn" type="submit">
+                    Add Backlink
                   </button>
                 </div>
+              </form>
+            </div>
+          </div>
+        )}
 
-                <div className="url-list-wrapper">
-                  {urls.map((val, index) => (
-                    <input
-                      key={index}
-                      type="url"
-                      value={val}
-                      onChange={(e) => handleUrlChange(index, e.target.value)}
-                      className="url-list-input"
-                    />
-                  ))}
+        {/* EDIT BACKLINK MODAL */}
+        {showEditModal && editingBacklink && (
+          <div className="modal-overlay">
+            <div className="modal-card">
+              <div className="modal-header">
+                <h3>Edit Backlink</h3>
+                <span
+                  className="modal-close"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  ×
+                </span>
+              </div>
+
+              <div className="modal-body">
+                {editError && (
+                  <div style={{ color: "red", marginBottom: 8 }}>
+                    {editError}
+                  </div>
+                )}
+
+                <div className="modal-field">
+                  <label>Domain Name</label>
+                  <input
+                    type="text"
+                    value={editDomain}
+                    onChange={(e) => setEditDomain(e.target.value)}
+                    onPaste={handleEditDomainPaste}
+                    onBlur={handleEditDomainBlur}
+                  />
+                </div>
+
+                <div className="modal-field-row">
+                  <div className="modal-field small-field">
+                    <label>Project</label>
+                    <select
+                      className="modal-select"
+                      value={editProject}
+                      onChange={(e) => setEditProject(e.target.value)}
+                    >
+                      <option value="">Select Project</option>
+                      {projects.map((p) => (
+                        <option key={p.id || p._id} value={p.id || p._id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="modal-field small-field">
+                    <label>Category</label>
+                    <select
+                      className="modal-select"
+                      value={editCategory}
+                      onChange={(e) => setEditCategory(e.target.value)}
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((c) => (
+                        <option key={c.id || c._id} value={c.name}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="modal-field">
+                  <div className="modal-field-header">
+                    <label>URL(s)</label>
+                    <button
+                      type="button"
+                      className="primary-btn url-add-btn"
+                      onClick={addEditUrlField}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <div className="url-list-wrapper">
+                    {editUrls.map((val, index) => (
+                      <input
+                        key={index}
+                        type="url"
+                        value={val}
+                        onChange={(e) =>
+                          handleEditUrlChange(index, e.target.value)
+                        }
+                        required={index === 0}
+                        className="url-list-input"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="modal-actions">
+                  <button
+                    className="primary-btn"
+                    type="button"
+                    onClick={handleSaveBacklink}
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
-
-              <div className="modal-actions">
-                <button className="primary-btn" type="submit">
-                  Add Backlink
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* EDIT BACKLINK MODAL */}
-      {showEditModal && editingBacklink && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <div className="modal-header">
-              <h3>Edit Backlink</h3>
-              <span
-                className="modal-close"
-                onClick={() => setShowEditModal(false)}
-              >
-                ×
-              </span>
             </div>
+          </div>
+        )}
 
-            <div className="modal-body">
-              {editError && (
-                <div style={{ color: "red", marginBottom: 8 }}>{editError}</div>
-              )}
-
-              <div className="modal-field">
-                <label>Domain Name</label>
-                <input
-                  type="text"
-                  value={editDomain}
-                  onChange={(e) => setEditDomain(e.target.value)}
-                  onPaste={handleEditDomainPaste}
-                  onBlur={handleEditDomainBlur}
-                />
+        {/* CONTRIBUTE CREATE MODAL */}
+        {contributeModalOpen && contributeTarget && (
+          <div className="modal-overlay">
+            <div className="backlinks-modal-card small-confirm-modal ">
+              <div className="modal-header">
+                <h3>Create Backlink Contribution</h3>
+                <span className="modal-close" onClick={closeContributeModal}>
+                  ×
+                </span>
               </div>
+              <div className="modal-body">
+                {contributeError && (
+                  <p style={{ color: "red", marginBottom: 8 }}>
+                    {contributeError}
+                  </p>
+                )}
+                <p className="contribute-meta">
+                  Domain: {contributeTarget.domain}
+                </p>
+                <p className="contribute-meta">
+                  Category: {contributeTarget.categoryId}
+                </p>
 
-              <div className="modal-field-row">
-                <div className="modal-field small-field">
+                <div className="modal-field">
                   <label>Project</label>
                   <select
                     className="modal-select"
-                    value={editProject}
-                    onChange={(e) => setEditProject(e.target.value)}
+                    value={contributeProjectId}
+                    onChange={(e) => setContributeProjectId(e.target.value)}
                   >
                     <option value="">Select Project</option>
                     {projects.map((p) => (
@@ -1069,262 +1202,202 @@ function UserBacklinks() {
                     ))}
                   </select>
                 </div>
-
-                <div className="modal-field small-field">
-                  <label>Category</label>
-                  <select
-                    className="modal-select"
-                    value={editCategory}
-                    onChange={(e) => setEditCategory(e.target.value)}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((c) => (
-                      <option key={c.id || c._id} value={c.name}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="modal-field">
+                  <label>Sub Backlink URL</label>
+                  <input
+                    type="text"
+                    value={contributeSubUrl}
+                    onChange={(e) => setContributeSubUrl(e.target.value)}
+                    autoComplete="off"
+                    name="sub-backlink-url"
+                  />
                 </div>
-              </div>
+                <div className="modal-field">
+                  <label>Sub Backlink ID</label>
+                  <input
+                    type="text"
+                    value={contributeSubId}
+                    onChange={(e) => setContributeSubId(e.target.value)}
+                    autoComplete="off"
+                    name="sub-backlink-id"
+                  />
+                </div>
 
-              <div className="modal-field">
-                <div className="modal-field-header">
-                  <label>URL(s)</label>
+                <div className="modal-field">
+                  <label>Password</label>
+                  <input
+                    type="text"
+                    value={contributePassword}
+                    onChange={(e) => setContributePassword(e.target.value)}
+                    autoComplete="off"
+                    name="backlink-password"
+                  />
+                </div>
+
+                <div className="modal-actions">
                   <button
                     type="button"
-                    className="primary-btn url-add-btn"
-                    onClick={addEditUrlField}
+                    className="primary-btn"
+                    onClick={handleSaveContribute}
+                    disabled={contributeSaving}
                   >
-                    +
+                    {contributeSaving ? "Saving..." : "Save"}
                   </button>
                 </div>
-
-                <div className="url-list-wrapper">
-                  {editUrls.map((val, index) => (
-                    <input
-                      key={index}
-                      type="url"
-                      value={val}
-                      onChange={(e) => handleEditUrlChange(index, e.target.value)}
-                      required={index === 0}
-                      className="url-list-input"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="modal-actions">
-                <button
-                  className="primary-btn"
-                  type="button"
-                  onClick={handleSaveBacklink}
-                >
-                  Save
-                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* CONTRIBUTE CREATE MODAL */}
-      {contributeModalOpen && contributeTarget && (
-        <div className="modal-overlay">
-          <div className="backlinks-modal-card small-confirm-modal ">
-            <div className="modal-header">
-              <h3>Create Backlink Contribution</h3>
-              <span className="modal-close" onClick={closeContributeModal}>
-                ×
-              </span>
-            </div>
-            <div className="modal-body">
-              {contributeError && (
-                <p style={{ color: "red", marginBottom: 8 }}>
-                  {contributeError}
-                </p>
-              )}
-              <p className="contribute-meta">
-                Domain: {contributeTarget.domain}
-              </p>
-              <p className="contribute-meta">
-                Category: {contributeTarget.categoryId}
-              </p>
-
-              <div className="modal-field">
-                <label>Project</label>
-                <select
-                  className="modal-select"
-                  value={contributeProjectId}
-                  onChange={(e) => setContributeProjectId(e.target.value)}
-                >
-                  <option value="">Select Project</option>
-                  {projects.map((p) => (
-                    <option key={p.id || p._id} value={p.id || p._id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="modal-field">
-                <label>Sub Backlink URL</label>
-                <input
-                  type="text"
-                  value={contributeSubUrl}
-                  onChange={(e) => setContributeSubUrl(e.target.value)}
-                  autoComplete="off"
-                  name="sub-backlink-url"
-                />
-              </div>
-              <div className="modal-field">
-                <label>Sub Backlink ID</label>
-                <input
-                  type="text"
-                  value={contributeSubId}
-                  onChange={(e) => setContributeSubId(e.target.value)}
-                  autoComplete="off"
-                  name="sub-backlink-id"
-                />
-              </div>
-
-              <div className="modal-field">
-                <label>Password</label>
-                <input
-                  type="text"
-                  value={contributePassword}
-                  onChange={(e) => setContributePassword(e.target.value)}
-                  autoComplete="off"
-                  name="backlink-password"
-                />
-              </div>
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={handleSaveContribute}
-                  disabled={contributeSaving}
-                >
-                  {contributeSaving ? "Saving..." : "Save"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* CONTRIBUTE VIEW MODAL */}
-      {contributeViewModalOpen && contributeTarget && (
-        <div className="modal-overlay">
-          <div className="backlinks-modal-card small-confirm-modal contribute-details-card">
-            <div className="modal-header">
-              <h3>Contribution Details</h3>
-              <span
-                className="modal-close"
-                onClick={closeContributeViewModal}
-              >
-                ×
-              </span>
-            </div>
-            <div className="modal-body">
-              <p className="contribute-meta">
-                Domain: {contributeTarget.domain}
-                <br />
-                Project: {getProjectName(contributeTarget.projectId)}
-                <br />
-                Category: {contributeTarget.categoryId}
-              </p>
-
-              {contributeTarget.contributions &&
-                contributeTarget.contributions.length > 0 && (
-                  <table className="contribute-table">
-                    <thead>
-                      <tr>
-                        <th>Sub Backlink URL</th>
-                        <th>Sub Backlink ID</th>
-                        <th>Password</th>
-                        <th>Created At</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {contributeTarget.contributions.map((row, idx) => (
-                        <tr key={idx}>
-                          <td>
-                            {row.subUrl ? (
-                              <div className="url-row">
-                                <button
-                                  type="button"
-                                  className="url-icon-btn"
-                                  onClick={() => handleCopyUrl(row.subUrl)}
-                                >
-                                  <FiCopy />
-                                </button>
-                                <a
-                                  href={row.subUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="url-icon-btn"
-                                >
-                                  <HiOutlineExternalLink />
-                                </a>
-                                <span className="url-text">
-                                  {renderUrlCell(row.subUrl)}
-                                </span>
-                              </div>
-                            ) : (
-                              "-"
-                            )}
-                          </td>
-                          <td>{row.subBacklinkId}</td>
-                          <td>{row.password}</td>
-                          <td>
-                            {new Date(row.createdAt).toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="primary-btn"
+        {/* CONTRIBUTE VIEW MODAL */}
+        {contributeViewModalOpen && contributeTarget && (
+          <div className="modal-overlay">
+            <div className="backlinks-modal-card small-confirm-modal contribute-details-card">
+              <div className="modal-header">
+                <h3>Contribution Details</h3>
+                <span
+                  className="modal-close"
                   onClick={closeContributeViewModal}
                 >
-                  Close
-                </button>
+                  ×
+                </span>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+              <div className="modal-body">
+                <p className="contribute-meta">
+                  Domain: {contributeTarget.domain}
+                  <br />
+                  Project: {getProjectName(contributeTarget.projectId)}
+                  <br />
+                  Category: {contributeTarget.categoryId}
+                </p>
 
-      {/* DELETE CONFIRMATION MODAL */}
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal-card small-confirm-modal">
-            <div className="modal-header">
-              <h3>Delete Backlink</h3>
-              <span className="modal-close" onClick={handleCancelDelete}>
-                ×
-              </span>
-            </div>
-            <div className="modal-body">
-              <p>Are you sure you want to delete this backlink?</p>
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="primary-btn"
-                  onClick={handleConfirmDelete}
-                >
-                  Yes, Delete
-                </button>
+                {contributeTarget.contributions &&
+                  contributeTarget.contributions.length > 0 && (
+                    <table className="contribute-table">
+                      <thead>
+                        <tr>
+                          <th>Sub Backlink URL</th>
+                          <th>Sub Backlink ID</th>
+                          <th>Password</th>
+                          <th>Created At</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {contributeTarget.contributions.map((row, idx) => (
+                          <tr key={idx}>
+                            <td>
+                              {row.subUrl ? (
+                                <div className="url-row">
+                                  <button
+                                    type="button"
+                                    className="url-icon-btn"
+                                    onClick={() => handleCopyUrl(row.subUrl)}
+                                  >
+                                    <FiCopy />
+                                  </button>
+                                  <a
+                                    href={row.subUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="url-icon-btn"
+                                  >
+                                    <HiOutlineExternalLink />
+                                  </a>
+                                  <span className="url-text">
+                                    {renderUrlCell(row.subUrl)}
+                                  </span>
+                                </div>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td>{row.subBacklinkId}</td>
+                            <td>{row.password}</td>
+                            <td>
+                              {new Date(row.createdAt).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    onClick={closeContributeViewModal}
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+
+        {/* URL LIST MODAL FOR "+N More urls" */}
+        {urlModalOpen && (
+          <div className="modal-overlay">
+            <div className="small-url-modal-card">
+              <div className="modal-header">
+                <h3>All URLs</h3>
+                <span className="modal-close" onClick={handleCloseUrlModal}>
+                  ×
+                </span>
+              </div>
+              <div className="modal-body url-list-modal-body">
+                {urlModalUrls.map((u, idx) => (
+                  <div key={idx} className="url-row">
+                    <button
+                      type="button"
+                      className="url-icon-btn"
+                      onClick={() => handleCopyUrl(u)}
+                    >
+                      <FiCopy />
+                    </button>
+                    <a
+                      href={u}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="url-icon-btn"
+                    >
+                      <HiOutlineExternalLink />
+                    </a>
+                    <span className="url-text">{renderUrlCell(u)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* DELETE CONFIRMATION MODAL */}
+        {showDeleteModal && (
+          <div className="modal-overlay">
+            <div className="modal-card small-confirm-modal">
+              <div className="modal-header">
+                <h3>Delete Backlink</h3>
+                <span className="modal-close" onClick={handleCancelDelete}>
+                  ×
+                </span>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to delete this backlink?</p>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    onClick={handleConfirmDelete}
+                  >
+                    Yes, Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

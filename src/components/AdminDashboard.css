@@ -1067,7 +1067,37 @@ th, td {
   gap: 6px;
   margin-bottom: 4px;
 }
+.user-backlinks-table .actions-icon-btn svg {
+  width: 22px;
+  height: 22px;
+}
+.more-urls-btn {
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #1d4ed8;
+  font-size: 13px;
+  cursor: pointer;
+}
 
+.more-urls-btn:hover {
+  text-decoration: underline;
+}
+
+.small-url-modal-card {
+  max-width: 480px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+}
+
+.url-list-modal-body {
+  max-height: 320px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
 .url-icon-btn {
   cursor: pointer;
   color: #4a5568;
@@ -1607,7 +1637,15 @@ th, td {
   align-items: center;
   gap: 10px;
 }
+.sortable-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px; /* make arrow sit right next to SS */
+}
 
+.sort-icon {
+  font-size: 14px;
+}
 /* The link input boxes */
 .social-row input {
   flex: 1;
