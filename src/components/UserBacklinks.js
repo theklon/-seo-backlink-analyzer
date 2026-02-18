@@ -598,17 +598,11 @@ function UserBacklinks() {
     value: p.id || p._id,
     label: p.name,
   }));
-  const selectedProjectOption =
-    selectedProject &&
-    projectOptions.find((opt) => opt.value === selectedProject);
 
   const categoryOptions = categories.map((c) => ({
     value: c.name,
     label: c.name,
   }));
-  const selectedCategoryOption =
-    selectedCategory &&
-    categoryOptions.find((opt) => opt.value === selectedCategory);
 
   const addCategoryValue = category && { value: category, label: category };
 
