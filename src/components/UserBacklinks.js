@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./AdminDashboard.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import Select from "react-select";
 
 import logo from "../assets/klonlogo.png";
 import { HiOutlineExternalLink } from "react-icons/hi";
@@ -54,8 +55,6 @@ function UserBacklinks() {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [projectSearch, setProjectSearch] = useState("");
-  const [categorySearch, setCategorySearch] = useState("");
 
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -595,6 +594,23 @@ function UserBacklinks() {
     return true;
   });
 
+  // Build react-select options for filters
+  const projectOptions = projects.map((p) => ({
+    value: p.id || p._id,
+    label: p.name,
+  }));
+  const selectedProjectOption =
+    selectedProject &&
+    projectOptions.find((opt) => opt.value === selectedProject);
+
+  const categoryOptions = categories.map((c) => ({
+    value: c.name,
+    label: c.name,
+  }));
+  const selectedCategoryOption =
+    selectedCategory &&
+    categoryOptions.find((opt) => opt.value === selectedCategory);
+
   return (
     <div className="dashboard-root user-dashboard">
       {/* TOP BAR */}
@@ -709,49 +725,33 @@ function UserBacklinks() {
                 />
               </div>
 
-              {/* Searchable Projects dropdown */}
-              <input
-                list="userProjectOptions"
-                className="filter-select"
+              {/* Projects: react-select searchable dropdown */}
+              <Select
+                className="filter-select react-select"
+                classNamePrefix="react-select"
                 placeholder="Projects"
-                value={projectSearch}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setProjectSearch(value);
-
-                  const match = projects.find(
-                    (p) => p.name.toLowerCase() === value.toLowerCase()
-                  );
-                  setSelectedProject(match ? (match.id || match._id) : "");
-                }}
+                isClearable
+                isSearchable
+                options={projectOptions}
+                value={selectedProjectOption || null}
+                onChange={(option) =>
+                  setSelectedProject(option ? option.value : "")
+                }
               />
-              <datalist id="userProjectOptions">
-                {projects.map((p) => (
-                  <option key={p.id || p._id} value={p.name} />
-                ))}
-              </datalist>
 
-              {/* Searchable Category dropdown */}
-              <input
-                list="userCategoryOptions"
-                className="filter-select"
+              {/* Category: react-select searchable dropdown */}
+              <Select
+                className="filter-select react-select"
+                classNamePrefix="react-select"
                 placeholder="Category"
-                value={categorySearch}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setCategorySearch(value);
-
-                  const match = categories.find(
-                    (c) => c.name.toLowerCase() === value.toLowerCase()
-                  );
-                  setSelectedCategory(match ? match.name : "");
-                }}
+                isClearable
+                isSearchable
+                options={categoryOptions}
+                value={selectedCategoryOption || null}
+                onChange={(option) =>
+                  setSelectedCategory(option ? option.value : "")
+                }
               />
-              <datalist id="userCategoryOptions">
-                {categories.map((c) => (
-                  <option key={c.id || c._id} value={c.name} />
-                ))}
-              </datalist>
 
               <select
                 className="filter-select"
@@ -1421,4 +1421,5 @@ function UserBacklinks() {
     </div>
   );
 }
+
 export default UserBacklinks;
