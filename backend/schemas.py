@@ -102,7 +102,8 @@ class ContributionEntry(BaseMongoModel):
     subUrl: Optional[str] = None
     createdAt: datetime
     userId: Optional[str] = None       # NEW – id from users collection
-    userName: Optional[str] = None     # NEW – convenience for display
+    userName: Optional[str] = None 
+    projectId: Optional[str] = None     # NEW – convenience for display
 
 
     

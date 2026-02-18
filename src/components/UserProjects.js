@@ -240,6 +240,7 @@ function UserProjects() {
                             className="user-project-btn user-project-btn-backlinks"
                             type="button"
                             onClick={() => {
+                              const id = p.id || p._id; 
                               navigate(`/user/projects/${p.id}/backlinks`, {
                                 state: {
                                   projectName: p.name,
