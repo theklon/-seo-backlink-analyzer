@@ -1097,16 +1097,17 @@ th, td {
   margin-bottom: 0px;   /* space below both lines before "Project" */
 }
 /* Base wrapper: no extra border/padding */
+/* Make react-select the same size as filter-select boxes */
 .react-select {
-  width: 50%;
+  width: 160px;          /* or 180px – whatever DA/SS visually use */
+  font-size: 14px;       /* match .filter-select font-size */
 }
-
 /* Make react-select box look like DA / SS select */
 .react-select__control {
-  min-height: 36px;              /* adjust to your DA box height */
+  min-height: 36px;
   border-radius: 6px;
   border: 1px solid #d1d5db;
-  background-color: #ffffff;   
+  background-color: #ffffff;
   box-shadow: none;
 }
 

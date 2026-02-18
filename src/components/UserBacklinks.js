@@ -598,11 +598,17 @@ function UserBacklinks() {
     value: p.id || p._id,
     label: p.name,
   }));
+  const selectedProjectOption =
+    selectedProject &&
+    projectOptions.find((opt) => opt.value === selectedProject);
 
   const categoryOptions = categories.map((c) => ({
     value: c.name,
     label: c.name,
   }));
+  const selectedCategoryOption =
+    selectedCategory &&
+    categoryOptions.find((opt) => opt.value === selectedCategory);
 
   const addCategoryValue = category && { value: category, label: category };
 
@@ -725,34 +731,43 @@ function UserBacklinks() {
               </div>
 
               {/* Projects: react-select searchable dropdown */}
-              {/* Projects: same as DA / SS styling */}
-              <select
-                className="filter-select"
-                value={selectedProject}
-                onChange={(e) => setSelectedProject(e.target.value)}
-              >
-                <option value="">Projects</option>
-                {projectOptions.map((p) => (
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
-              </select>
+             {/* Projects: searchable dropdown with same box */}
+              <Select
+                className="react-select"
+                classNamePrefix="react-select"
+                placeholder="Projects"
+                isClearable
+                isSearchable
+                options={projectOptions}
+                // projectOptions = [{ value: p.id/_id, label: p.name }]
+                value={
+                  selectedProject
+                    ? projectOptions.find((opt) => opt.value === selectedProject)
+                    : null
+                }
+                onChange={(option) =>
+                  setSelectedProject(option ? option.value : "")
+                }
+              />
 
-              {/* Category: same as DA / SS styling */}
-              <select
-                className="filter-select"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Category</option>
-                {categoryOptions.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-
+              {/* Category: searchable dropdown with same box */}
+              <Select
+                className="react-select"
+                classNamePrefix="react-select"
+                placeholder="Category"
+                isClearable
+                isSearchable
+                options={categoryOptions}
+                // categoryOptions = [{ value: c.name, label: c.name }]
+                value={
+                  selectedCategory
+                    ? categoryOptions.find((opt) => opt.value === selectedCategory)
+                    : null
+                }
+                onChange={(option) =>
+                  setSelectedCategory(option ? option.value : "")
+                }
+              />
               <select
                 className="filter-select"
                 value={selectedDaRange}
