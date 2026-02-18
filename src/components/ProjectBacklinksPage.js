@@ -13,6 +13,7 @@ import { LuCalendar, LuArrowUpDown } from "react-icons/lu";
 import { FiBell, FiCopy } from "react-icons/fi";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
+import Select from "react-select";
 
 function ProjectBacklinksPage() {
   const location = useLocation();
@@ -177,6 +178,15 @@ function ProjectBacklinksPage() {
     new Set((adminUsers || []).map((u) => u.name).filter(Boolean))
   );
 
+  // react-select options for Categories
+  const categorySelectOptions = categoryOptions.map((c) => ({
+    value: c,
+    label: c,
+  }));
+  const selectedCategoryOption =
+    selectedCategory &&
+    categorySelectOptions.find((opt) => opt.value === selectedCategory);
+
   // Apply filters
   const filteredRows = rows.filter((row) => {
     if (selectedCategory && row.category !== selectedCategory) {
@@ -316,19 +326,19 @@ function ProjectBacklinksPage() {
               className="backlink-filters"
               style={{ marginTop: 12, marginBottom: 12 }}
             >
-              {/* Searchable Categories dropdown */}
-              <input
-                list="projectCategoryOptions"
-                className="filter-select"
+              {/* Categories: react-select searchable dropdown */}
+              <Select
+                className="filter-select react-select"
+                classNamePrefix="react-select"
                 placeholder="Categories"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                isClearable
+                isSearchable
+                options={categorySelectOptions}
+                value={selectedCategoryOption || null}
+                onChange={(option) =>
+                  setSelectedCategory(option ? option.value : "")
+                }
               />
-              <datalist id="projectCategoryOptions">
-                {categoryOptions.map((c) => (
-                  <option key={c} value={c} />
-                ))}
-              </datalist>
 
               <select
                 className="filter-select"

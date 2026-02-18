@@ -594,7 +594,7 @@ function UserBacklinks() {
     return true;
   });
 
-  // Build react-select options for filters
+  // Build react-select options for filters and modals
   const projectOptions = projects.map((p) => ({
     value: p.id || p._id,
     label: p.name,
@@ -610,6 +610,13 @@ function UserBacklinks() {
   const selectedCategoryOption =
     selectedCategory &&
     categoryOptions.find((opt) => opt.value === selectedCategory);
+
+  const addCategoryValue =
+    category && { value: category, label: category };
+
+  const contributeProjectValue =
+    contributeProjectId &&
+    projectOptions.find((opt) => opt.value === contributeProjectId);
 
   return (
     <div className="dashboard-root user-dashboard">
@@ -1003,19 +1010,18 @@ function UserBacklinks() {
                     <label>
                       Category <span>*</span>
                     </label>
-                    <select
-                      className="modal-select"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      required
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map((c) => (
-                        <option key={c.id || c._id} value={c.name}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
+                    <Select
+                      className="modal-select react-select"
+                      classNamePrefix="react-select"
+                      placeholder="Select Category"
+                      isClearable
+                      isSearchable
+                      options={categoryOptions}
+                      value={addCategoryValue || null}
+                      onChange={(option) =>
+                        setCategory(option ? option.value : "")
+                      }
+                    />
                   </div>
                 </div>
 
@@ -1209,18 +1215,18 @@ function UserBacklinks() {
 
                 <div className="modal-field">
                   <label>Project</label>
-                  <select
-                    className="modal-select"
-                    value={contributeProjectId}
-                    onChange={(e) => setContributeProjectId(e.target.value)}
-                  >
-                    <option value="">Select Project</option>
-                    {projects.map((p) => (
-                      <option key={p.id || p._id} value={p.id || p._id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    className="modal-select react-select"
+                    classNamePrefix="react-select"
+                    placeholder="Select Project"
+                    isClearable
+                    isSearchable
+                    options={projectOptions}
+                    value={contributeProjectValue || null}
+                    onChange={(option) =>
+                      setContributeProjectId(option ? option.value : "")
+                    }
+                  />
                 </div>
                 <div className="modal-field">
                   <label>Sub Backlink URL</label>
