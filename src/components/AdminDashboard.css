@@ -428,9 +428,12 @@ th, td {
 
 /* ===== BREADCRUMB ===== */
 .breadcrumb {
-  font-size: 14px;
   color: #6b7280;
-  margin-bottom: 20px;
+  font-size: 14px;
+  margin-bottom: 0px;
+  background: #fff;
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .breadcrumb span {
@@ -776,7 +779,7 @@ th, td {
 
 /* Or, if you only want to affect this page: */
 .user-dashboard .backlink-filters {
-  margin-top: 16px;       /* more space under title */
+  margin-top: 0;       /* more space under title */
 }
 /* 1. Project Name column (first column) – take remaining width */
 .user-dashboard .project-table th:first-child,
@@ -1192,6 +1195,8 @@ th, td {
   width: 100%;
   max-width: 100%;
   border: 1px solid #e5e7eb;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 .backlink-filters .search-box {
     align-items: center;
@@ -1200,15 +1205,12 @@ th, td {
 }
 
 /* Search width similar to screenshot */
-/* .search-box {
-  flex: 0 0 320px;
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-  border-radius: 6px;   /* <-- was 999px */
-  /* padding: 8px 4px;
+.search-box {
+  background: #fff;
   border: 1px solid #e5e7eb;
-} */
+  flex: 0 0 320px;
+  padding: 8px 4px;
+}
 
 .filter-select {
   min-width: 100px;
