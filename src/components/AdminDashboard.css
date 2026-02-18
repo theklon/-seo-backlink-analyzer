@@ -1084,6 +1084,18 @@ th, td {
 .user-dashboard .user-projects-table .user-backlinks-table td:nth-child(5) {
   width: 34%;          /* URL gets more room */
 }
+.new-backlink-btn {
+  display: inline-flex;          /* put icon + text on one row */
+  align-items: center;           /* vertically center both */
+  justify-content: center;       /* center content in the button */
+  gap: 6px;                      /* space between icon and text */
+  /* keep your existing padding, colors, etc. */
+}
+
+/* Optional: control icon size explicitly */
+.new-backlink-btn svg {
+  font-size: 18px;               /* or whatever matches your design */
+}
 
 .user-dashboard .user-projects-table .user-backlinks-table th:nth-child(6),
 .user-dashboard .user-projects-table .user-backlinks-table td:nth-child(6) {
