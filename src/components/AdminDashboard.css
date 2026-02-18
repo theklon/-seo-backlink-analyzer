@@ -201,7 +201,7 @@ input[type="password"]::-webkit-textfield-decoration-container {
 /* MAIN CONTENT */
 .main-content {
   flex: 1;
-  padding: 18px 22px;
+  background:#0000;
 }
 
 /* BANNER */
@@ -687,15 +687,15 @@ th, td {
   border-bottom: none;
 }
 
-
+.main-wrapper {
+  padding: 10px;
+}
 
 .table-container td:last-child {
   text-align: center;
   color: #475569;
 }
-.main-content {
-  background: transparent;   /* DO NOT use white here */
-}
+
 /* add project button */
 .primary-btn {
   background-color: #2f3b82;   /* same blue */

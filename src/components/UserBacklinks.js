@@ -677,6 +677,7 @@ function UserBacklinks() {
           </div>
 
           {/* FILTER BAR */}
+          <div className="main-wrapper ">
           <div className="backlink-filters">
             <div className="search-box">
               <span className="search-icon">
@@ -1322,6 +1323,7 @@ function UserBacklinks() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
