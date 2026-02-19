@@ -734,9 +734,11 @@ th, td {
 .project-info-card input,
 .project-info-card select,
 .project-info-card textarea {
-  border-radius: 0;
-  border: 0;
-  border-bottom: 1px solid #d1d5db;
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid #d1d5db !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
   padding-left: 0;
   padding-right: 0;
 }
