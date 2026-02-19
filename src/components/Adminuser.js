@@ -370,9 +370,9 @@ function Adminuser() {
             </span>
             {" > Users"}
           </div>
-
-          <h2 className="page-title">Users</h2>
           <div className="main-wrapper">
+          <h2 className="page-title">Users</h2>
+          
           {/* STATS CARDS */}
           {statsError && (
             <div style={{ color: "red", marginBottom: 8 }}>{statsError}</div>

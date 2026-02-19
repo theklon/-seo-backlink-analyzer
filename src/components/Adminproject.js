@@ -332,6 +332,7 @@ function Adminproject() {
           </div>
 
           {/* TITLE + BUTTON IN ONE LINE */}
+          <div className="main-wrapper">
           <div className="page-header">
             <h2 className="page-title">Projects</h2>
 
@@ -342,7 +343,6 @@ function Adminproject() {
               + Add Project
             </button>
           </div>
-          <div className="main-wrapper">
           <div className="table-wrapper">
             {/* CREATE PROJECT MODAL */}
             {showCreateProject && (

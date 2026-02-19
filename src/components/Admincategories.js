@@ -310,6 +310,7 @@ function Admincategories() {
           </div>
 
           {/* HEADER + BUTTON IN ONE LINE */}
+          <div className="main-wrapper">
           <div className="page-header">
             <h2 className="page-title">Categories</h2>
 
@@ -320,7 +321,6 @@ function Admincategories() {
               + Add Category
             </button>
           </div>
-          <div className="main-wrapper">
           {/* TABLE ACTION BAR + TABLE */}
           <div className="table-wrapper">
             {/* ADD CATEGORY MODAL */}
