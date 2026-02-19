@@ -166,7 +166,7 @@ function Admincategories() {
   };
 
   return (
-    <div className="dashboard-root admin dashboard">
+    <div className="dashboard-root admin-dashboard">
       {/* TOP BAR */}
       <div className="topbar">
         <div className="topbar-left">

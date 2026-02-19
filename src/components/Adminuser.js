@@ -231,7 +231,7 @@ function Adminuser() {
   };
 
   return (
-    <div className="dashboard-root">
+    <div className="dashboard-root admin-dashboard">
       {/* TOP BAR */}
       <div className="topbar">
         <div className="topbar-left">
