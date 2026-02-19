@@ -472,12 +472,12 @@ function UserProjectInfoPage() {
                   {/* About the Company */}
                   <div className="modal-field">
                     <label>
-                      About the Company (Short Description – 150–1000 words)
+                      About the Company 
                     </label>
                     {isEditing ? (
                       <textarea
                         className="boxed-textarea"
-                        rows={5}
+                        rows={8}
                         placeholder="Short description of the company..."
                         value={aboutCompany}
                         onChange={(e) => setAboutCompany(e.target.value)}
@@ -496,7 +496,7 @@ function UserProjectInfoPage() {
                     {isEditing ? (
                       <textarea
                         className="boxed-textarea"
-                        rows={4}
+                        rows={6}
                         placeholder="Key services or products..."
                         value={aboutServices}
                         onChange={(e) => setAboutServices(e.target.value)}
@@ -515,7 +515,7 @@ function UserProjectInfoPage() {
                     {isEditing ? (
                       <textarea
                         className="boxed-textarea"
-                        rows={3}
+                        rows={5}
                         value={targetAudience}
                         onChange={(e) => setTargetAudience(e.target.value)}
                         style={{ resize: "vertical", width: "100%" }}
@@ -693,7 +693,7 @@ function UserProjectInfoPage() {
                     {isEditing ? (
                       <textarea
                         className="boxed-textarea"
-                        rows={3}
+                        rows={6}
                         value={specialNotes}
                         onChange={(e) => setSpecialNotes(e.target.value)}
                         style={{ resize: "vertical", width: "100%" }}

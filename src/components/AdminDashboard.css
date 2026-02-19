@@ -2598,3 +2598,38 @@ th, td {
 .tool-card .modal-field > div {
   margin-bottom: 4px;           /* space below value in view mode */
 }
+/* Base table styling for all dashboard tables */
+.dashboard-root table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e5e7eb;   /* thin outer border */
+  border-radius: 8px;
+  overflow: hidden;            /* keeps radius on outer edge */
+}
+
+/* Horizontal lines between rows */
+.dashboard-root table th,
+.dashboard-root table td {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Optional: no bottom border on last row */
+.dashboard-root table tbody tr:last-child th,
+.dashboard-root table tbody tr:last-child td {
+  border-bottom: none;
+}
+/* Smooth hover effect on rows */
+.dashboard-root table tbody tr {
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+/* Highlight row on hover */
+.dashboard-root table tbody tr:hover {
+  background-color: #f9fafb;               /* subtle grey */
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);             /* tiny lift effect */
+}
