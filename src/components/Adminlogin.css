@@ -20,6 +20,19 @@
 .user-login-page {
   background-image: url("../assets/userloginimg.png");
 }
+/* USER login background */
+.user-login-page .left-section {
+  background-image: url("../assets/userloginimg.png");
+  background-size: cover;
+  background-position: center;
+}
+
+/* ADMIN login background */
+.admin-login-page .left-section {
+  background-image: url("../assets/adminpagebg.png");
+  background-size: cover;
+  background-position: center;
+}
 /* LEFT SECTION */
 .left-section {
   flex: 1;

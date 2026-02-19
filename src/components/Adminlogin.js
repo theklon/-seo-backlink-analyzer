@@ -4,7 +4,6 @@ import "./Adminlogin.css";
 import klonLogo from "../assets/klonlogo.png";
 import { API_BASE_URL } from "../api";
 
-
 function Adminlogin() {
   const navigate = useNavigate();
 
@@ -14,6 +13,7 @@ function Adminlogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
   useEffect(() => {
     document.title = "CEO Login of Klon";
 
@@ -85,6 +85,7 @@ function Adminlogin() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          email: email.trim().toLowerCase(),
           otp: otp.trim(),
         }),
       });
@@ -109,6 +110,8 @@ function Adminlogin() {
       : "login-card user-login-card step-otp";
 
   return (
+    // if you want a separate background for admin, you can change
+    // "user-login-page" to "admin-login-page" here and match it in CSS.
     <div className="login-page user-login-page">
       <div className="left-section">
         <div className="logo-block">

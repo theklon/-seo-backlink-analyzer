@@ -82,19 +82,14 @@ admin_otp_store = {
 
 def send_admin_otp_email(to_email: str, otp_code: str):
     """Send admin login OTP to fixed email."""
-    smtp_host = os.getenv("SMTP_HOST", "email-smtp.us-east-1.amazonaws.com")
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    smtp_user = os.getenv("SMTP_USER")
-    smtp_pass = os.getenv("SMTP_PASS")
-
     msg = MIMEText(f"Your admin login OTP is: {otp_code}")
     msg["Subject"] = "Klon Admin Login OTP"
-    msg["From"] = smtp_user
+    msg["From"] = SMTP_FROM or SMTP_USER   # match MAIL FROM you configured
     msg["To"] = to_email
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
         server.starttls()
-        server.login(smtp_user, smtp_pass)
+        server.login(SMTP_USER, SMTP_PASS)
         server.send_message(msg)
 
 
@@ -362,37 +357,34 @@ async def admin_login(payload: dict):
         send_admin_otp_email(email, otp_code)
     except Exception as e:
         print("Failed to send admin OTP email:", e)
-
-    print("ADMIN OTP for", email, "=", otp_code)
-    return {"otp_required": True}
+        raise HTTPException(status_code=500, detail="Failed to send admin OTP email")
 
 
 @app.post("/api/admin/verify-otp")
 async def verify_admin_otp(payload: dict):
-    """
-    Step 2 – Admin submits OTP received on email.
-    Frontend will treat success as 'admin logged in'.
-    """
     email = (payload.get("email") or "").strip().lower()
     otp = (payload.get("otp") or "").strip()
 
+    if not email:
+        raise HTTPException(status_code=400, detail="Email required")
     if not otp:
         raise HTTPException(status_code=400, detail="OTP required")
 
-    record = admin_otp_store.get(ADMIN_OTP_EMAIL)
+    if email not in ALLOWED_ADMIN_EMAILS:
+        raise HTTPException(status_code=401, detail="Unauthorized email")
+
+    record = admin_otp_store.get(email)
     if not record:
         raise HTTPException(status_code=400, detail="No OTP pending")
 
     if datetime.utcnow() > record["expires_at"]:
-        del admin_otp_store[ADMIN_OTP_EMAIL]
+        del admin_otp_store[email]
         raise HTTPException(status_code=400, detail="OTP expired")
 
     if otp != record["code"]:
         raise HTTPException(status_code=400, detail="Invalid OTP")
 
-    del admin_otp_store[ADMIN_OTP_EMAIL]
-
-    # No token system yet – frontend uses localStorage flag.
+    del admin_otp_store[email]
     return {"message": "Admin OTP verified", "admin": True}
 
 
