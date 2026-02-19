@@ -473,14 +473,40 @@ async def list_users():
 @app.put("/api/projects/{project_id}")
 async def update_project_info(project_id: str, payload: dict):
     update_fields = {
-        "instagramUrl": payload.get("instagramUrl", "").strip(),
+        # Social fields (existing)
+        "instagramUrl": (payload.get("instagramUrl") or "").strip(),
         "instagramPosts": payload.get("instagramPosts", 0),
         "instagramFollowers": payload.get("instagramFollowers", 0),
         "instagramFollowing": payload.get("instagramFollowing", 0),
-        "infoDomain": payload.get("infoDomain", "").strip(),
-        "infoBio": payload.get("infoBio", "").strip(),
-        "infoContact": payload.get("infoContact", "").strip(),
+        "infoDomain": (payload.get("infoDomain") or "").strip(),
+        "infoBio": (payload.get("infoBio") or "").strip(),
+        "infoContact": (payload.get("infoContact") or "").strip(),
         "infoExtraFields": payload.get("infoExtraFields", []),
+
+        # NEW: Project Info page fields
+        "infoClientName": (payload.get("infoClientName") or "").strip(),
+        "infoCompanyName": (payload.get("infoCompanyName") or "").strip(),
+        "infoWebsiteUrl": (payload.get("infoWebsiteUrl") or "").strip(),
+        "infoBrandingGuidelines": (payload.get("infoBrandingGuidelines") or "").strip(),
+        "infoClientLogoUrl": (payload.get("infoClientLogoUrl") or "").strip(),
+        "infoYearsInBusiness": (payload.get("infoYearsInBusiness") or "").strip(),
+        "infoIndustry": (payload.get("infoIndustry") or "").strip(),
+        "infoBusinessType": (payload.get("infoBusinessType") or "").strip(),
+        "infoAboutCompany": (payload.get("infoAboutCompany") or "").strip(),
+        "infoAboutServices": (payload.get("infoAboutServices") or "").strip(),
+        "infoTargetAudience": (payload.get("infoTargetAudience") or "").strip(),
+        "infoServiceLocations": (payload.get("infoServiceLocations") or "").strip(),
+        "infoUsp": (payload.get("infoUsp") or "").strip(),
+        "infoBusinessEmail": (payload.get("infoBusinessEmail") or "").strip(),
+        "infoPhoneNumber": (payload.get("infoPhoneNumber") or "").strip(),
+        "infoAltContact": (payload.get("infoAltContact") or "").strip(),
+        "infoAddress": (payload.get("infoAddress") or "").strip(),
+        "infoStreet": (payload.get("infoStreet") or "").strip(),
+        "infoCity": (payload.get("infoCity") or "").strip(),
+        "infoStateName": (payload.get("infoStateName") or "").strip(),
+        "infoCountry": (payload.get("infoCountry") or "").strip(),
+        "infoPincode": (payload.get("infoPincode") or "").strip(),
+        "infoSpecialNotes": (payload.get("infoSpecialNotes") or "").strip(),
     }
 
     await projects_collection.update_one(
