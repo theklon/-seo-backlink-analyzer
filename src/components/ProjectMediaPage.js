@@ -170,35 +170,7 @@ function ProjectMediaPage() {
   };
 
   // existing helper (kept, though we now use popup instead of new tab)
-  const openDataUrlInNewTab = (dataUrl, filename = "file") => {
-    if (!dataUrl) return;
-
-    // If it is a normal URL (http/https), just open it
-    if (!dataUrl.startsWith("data:")) {
-      window.open(dataUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
-
-    // If it is a data URL, convert to Blob first
-    const parts = dataUrl.split(",");
-    if (parts.length < 2) {
-      window.open(dataUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
-
-    const mimeMatch = parts[0].match(/data:(.*?);base64/);
-    const mime = mimeMatch ? mimeMatch[1] : "application/octet-stream";
-    const bstr = atob(parts[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    const blob = new Blob([u8arr], { type: mime });
-    const url = URL.createObjectURL(blob);
-
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+  
 
   const fileToDataUrl = (file) =>
     new Promise((resolve, reject) => {
