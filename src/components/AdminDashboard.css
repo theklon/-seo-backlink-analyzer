@@ -2502,7 +2502,7 @@ th, td {
 .tool-card .modal-field input,
 .tool-card .modal-field textarea {
   width: 100%;
-  margin-bottom: 4px;           /* little space below input/textarea */
+  margin-bottom: 0px;           /* little space below input/textarea */
 }
 
 .tool-card .modal-field > div {
