@@ -1313,7 +1313,7 @@ th, td {
   color: #111827;   /* same dark color as your Projects/Category text */
 }
 .backlink-filters .filter-select::placeholder {
-  color: #6b7280;   /* optional: match placeholder grey */
+  color: #818182;   /* optional: match placeholder grey */
 }
 /* Search width similar to screenshot */
 .search-box {
