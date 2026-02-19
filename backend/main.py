@@ -8,6 +8,7 @@ import string
 import smtplib
 from email.mime.text import MIMEText
 from email.message import EmailMessage
+from .models import tools_collection  # after adding it in models.py
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -652,7 +653,29 @@ async def list_projects(
 
 
 # ==== CATEGORIES ====
-
+ 
+@app.post("/api/tools")
+async def create_tool(payload: dict):
+    doc = {
+        "toolName": (payload.get("toolName") or "").strip(),
+        "link": (payload.get("link") or "").strip(),
+        "benefits": (payload.get("benefits") or "").strip(),
+        "accessType": (payload.get("accessType") or "paid").strip(),
+        "createdAt": datetime.utcnow(),
+        # optional – track who created it but don't filter by it:
+        "ownerUserId": (payload.get("ownerUserId") or "").strip(),
+    }
+    res = await tools_collection.insert_one(doc)
+    created = await tools_collection.find_one({"_id": res.inserted_id})
+    created["_id"] = str(created["_id"])
+    return created
+ 
+@app.get("/api/tools")
+async def list_tools():
+    tools = await tools_collection.find({}).to_list(length=1000)
+    for t in tools:
+        t["_id"] = str(t["_id"])
+    return tools
 @app.post("/api/admin/categories", response_model=CategoryOut)
 async def create_category(cat: CategoryCreate):
     now = datetime.utcnow()

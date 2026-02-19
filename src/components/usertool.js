@@ -3,6 +3,7 @@ import "./AdminDashboard.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import logo from "../assets/klonlogo.png";
+import { API_BASE_URL } from "../api";
 
 import { FaHome } from "react-icons/fa";
 import { FaLink, FaDesktop } from "react-icons/fa6";
@@ -29,7 +30,7 @@ function UserTools() {
   const [accessType, setAccessType] = useState("paid"); // "paid" | "free" | "trial"
   const [error, setError] = useState("");
 
-  // local list of saved tools
+  // list of saved tools (from backend)
   const [savedTools, setSavedTools] = useState([]);
 
   // for popup
@@ -40,19 +41,20 @@ function UserTools() {
   const [menuOpenId, setMenuOpenId] = useState(null); // which tool's 3-dots menu is open
   const [editingId, setEditingId] = useState(null); // which tool is being edited
 
-  // Load from localStorage on first mount
+  // Load tools from backend on first mount (shared for all users)
   useEffect(() => {
-    const stored = localStorage.getItem("userTools");
-    if (stored) {
+    const fetchTools = async () => {
       try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          setSavedTools(parsed);
-        }
-      } catch (e) {
-        console.error("Failed to parse stored tools", e);
+        const res = await fetch(`${API_BASE_URL}/api/tools`);
+        if (!res.ok) throw new Error("Failed to load tools");
+        const data = await res.json();
+        setSavedTools(data);
+      } catch (err) {
+        console.error("Error loading tools", err);
       }
-    }
+    };
+
+    fetchTools();
   }, []);
 
   // Close modal on ESC
@@ -73,56 +75,64 @@ function UserTools() {
     };
   }, [isModalOpen]);
 
-  // Persist tools to localStorage
-  useEffect(() => {
-    localStorage.setItem("userTools", JSON.stringify(savedTools));
-  }, [savedTools]);
-
-  const handleSaveTool = (e) => {
+  const handleSaveTool = async (e) => {
     e.preventDefault();
     if (!toolName.trim() || !link.trim()) {
       setError("Tool name and link are required.");
       return;
     }
 
-    if (editingId) {
-      // update existing tool
-      setSavedTools((prev) =>
-        prev.map((t) =>
-          t.id === editingId
-            ? {
-                ...t,
-                toolName: toolName.trim(),
-                link: link.trim(),
-                benefits: benefits.trim(),
-                accessType,
-              }
-            : t
-        )
-      );
-    } else {
-      // create new
-      const newTool = {
-        id: Date.now(),
-        toolName: toolName.trim(),
-        link: link.trim(),
-        benefits: benefits.trim(),
-        accessType,
-      };
+    try {
+      if (editingId) {
+        // For now, edit only locally (no backend PUT yet)
+        setSavedTools((prev) =>
+          prev.map((t) =>
+            (t._id || t.id) === editingId
+              ? {
+                  ...t,
+                  toolName: toolName.trim(),
+                  link: link.trim(),
+                  benefits: benefits.trim(),
+                  accessType,
+                }
+              : t
+          )
+        );
+      } else {
+        // create new tool in backend so it is shared across all users
+        const newToolPayload = {
+          toolName: toolName.trim(),
+          link: link.trim(),
+          benefits: benefits.trim(),
+          accessType,
+        };
 
-      // TODO: POST to backend when a tools API exists.
-      console.log("Saving tool:", newTool);
+        const res = await fetch(`${API_BASE_URL}/api/tools`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newToolPayload),
+        });
 
-      // update local list so it shows on the right
-      setSavedTools((prev) => [newTool, ...prev]);
+        if (!res.ok) {
+          throw new Error("Failed to save tool");
+        }
+
+        const saved = await res.json();
+
+        // update list so it shows on the right (use backend _id)
+        setSavedTools((prev) => [saved, ...prev]);
+      }
+
+      setError("");
+      setToolName("");
+      setLink("");
+      setBenefits("");
+      setAccessType("paid");
+      setEditingId(null);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Error saving tool");
     }
-
-    setError("");
-    setToolName("");
-    setLink("");
-    setBenefits("");
-    setAccessType("paid");
-    setEditingId(null);
   };
 
   const handleEditTool = (tool) => {
@@ -130,12 +140,12 @@ function UserTools() {
     setLink(tool.link);
     setBenefits(tool.benefits || "");
     setAccessType(tool.accessType || "paid");
-    setEditingId(tool.id);
+    setEditingId(tool._id || tool.id);
     setMenuOpenId(null);
   };
 
   const handleDeleteTool = (id) => {
-    const toDelete = savedTools.find((t) => t.id === id);
+    const toDelete = savedTools.find((t) => (t._id || t.id) === id);
     if (!toDelete) return;
 
     const ok = window.confirm(
@@ -143,11 +153,12 @@ function UserTools() {
     );
     if (!ok) return;
 
-    setSavedTools((prev) => prev.filter((t) => t.id !== id));
+    // For now, delete only locally (no backend DELETE yet)
+    setSavedTools((prev) => prev.filter((t) => (t._id || t.id) !== id));
 
     if (editingId === id) setEditingId(null);
     if (menuOpenId === id) setMenuOpenId(null);
-    if (selectedTool && selectedTool.id === id) {
+    if (selectedTool && (selectedTool._id || selectedTool.id) === id) {
       setIsModalOpen(false);
       setSelectedTool(null);
     }
@@ -361,7 +372,10 @@ function UserTools() {
                   {savedTools.length > 0 && (
                     <div className="saved-tools-card">
                       {savedTools.map((tool) => (
-                        <div key={tool.id} className="saved-tool-row">
+                        <div
+                          key={tool._id || tool.id}
+                          className="saved-tool-row"
+                        >
                           <div className="saved-tool-header">
                             {/* LEFT: tool name as clickable hidden link */}
                             <button
@@ -383,6 +397,11 @@ function UserTools() {
                                 Open link
                               </span>
                             </button>
+                            <span className="saved-tool-access">
+                              {tool.accessType
+                                ? tool.accessType.charAt(0).toUpperCase() + tool.accessType.slice(1)
+                                : "-"}
+                            </span>
 
                             {/* RIGHT: info icon + 3-dots menu */}
                             <div className="saved-tool-actions">
@@ -404,7 +423,9 @@ function UserTools() {
                                   className="saved-tool-menu-btn"
                                   onClick={() =>
                                     setMenuOpenId(
-                                      menuOpenId === tool.id ? null : tool.id
+                                      menuOpenId === (tool._id || tool.id)
+                                        ? null
+                                        : tool._id || tool.id
                                     )
                                   }
                                   aria-label="More actions"
@@ -412,19 +433,23 @@ function UserTools() {
                                   <FiMoreVertical />
                                 </button>
 
-                                {menuOpenId === tool.id && (
+                                {menuOpenId === (tool._id || tool.id) && (
                                   <div className="saved-tool-menu">
                                     <button
                                       type="button"
                                       className="saved-tool-menu-item"
-                                      onClick={() => handleEditTool(tool)}
+                                      onClick={() =>
+                                        handleEditTool(tool)
+                                      }
                                     >
                                       Edit
                                     </button>
                                     <button
                                       type="button"
                                       className="saved-tool-menu-item delete"
-                                      onClick={() => handleDeleteTool(tool.id)}
+                                      onClick={() =>
+                                        handleDeleteTool(tool._id || tool.id)
+                                      }
                                     >
                                       Delete
                                     </button>
@@ -490,7 +515,9 @@ function UserTools() {
                       <span className="tool-modal-label">Access Type:</span>
                       <span>
                         {selectedTool.accessType
-                          ? selectedTool.accessType.charAt(0).toUpperCase() +
+                          ? selectedTool.accessType
+                              .charAt(0)
+                              .toUpperCase() +
                             selectedTool.accessType.slice(1)
                           : "-"}
                       </span>

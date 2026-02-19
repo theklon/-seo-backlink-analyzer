@@ -2391,8 +2391,17 @@ th, td {
 .saved-tool-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* icons then name */
+  justify-content: space-between; /* icons then name */
   gap: 8px;
+}
+ 
+.saved-tool-access {
+  font-size: 12px;
+  color: #4b5563;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: #f3f4f6; /* light pill */
+  white-space: nowrap;
 }
 .saved-tools-list {
   margin-top: 8px;
