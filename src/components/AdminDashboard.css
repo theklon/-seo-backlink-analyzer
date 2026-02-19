@@ -748,13 +748,11 @@ th, td {
 .project-info-card input,
 .project-info-card select,
 .project-info-card textarea {
-  border-radius: 0 !important;
-  border: 0 !important;
-  border-bottom: 1px solid #d1d5db !important;
-  background-color: transparent !important;
+  border-radius: 6 !important;
+  border: 1px solid #d1d5db !important;
+  background-color: #ffffff !important;
   box-shadow: none !important;
-  padding-left: 0;
-  padding-right: 0;
+  padding: 8px 10px;
   font-size:13px;
   margin-top: 0;
 }
@@ -773,6 +771,18 @@ th, td {
 }
 .project-info-card .card-subtitle {
   display: none;
+}
+.logo-preview {
+  margin-top: 8px;
+}
+
+.logo-preview-img {
+  max-width: 120px;
+  max-height: 60px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  object-fit: contain;
+  background: #fff;
 }
 /* Layout for rows inside project info card */
 .project-info-card .modal-field-row {

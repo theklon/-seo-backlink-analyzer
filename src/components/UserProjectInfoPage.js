@@ -166,6 +166,19 @@ function UserProjectInfoPage() {
     }
   };
 
+  const handleLogoFileChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.result) {
+        setClientLogoUrl(reader.result.toString());
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const displayProjectName =
     projectNameFromState || project?.name || "Project Info";
 
@@ -406,7 +419,7 @@ function UserProjectInfoPage() {
                       </div>
                     </div>
 
-                    {/* Branding Guidelines */}
+                    {/* Branding Guidelines (boxed) */}
                     <div className="modal-field">
                       <label>Branding Guidelines</label>
                       {isEditing ? (
@@ -427,24 +440,42 @@ function UserProjectInfoPage() {
                       )}
                     </div>
 
-                    {/* Client Logo */}
+                    {/* Client Logo upload + preview */}
                     <div className="modal-field">
                       <label>Client Logo (Upload – Optional)</label>
                       {isEditing ? (
-                        <input
-                          type="url"
-                          placeholder="Logo URL or file link"
-                          value={clientLogoUrl}
-                          onChange={(e) => setClientLogoUrl(e.target.value)}
-                        />
+                        <>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleLogoFileChange}
+                          />
+                          {clientLogoUrl && (
+                            <div className="logo-preview">
+                              <img
+                                src={clientLogoUrl}
+                                alt="Client logo preview"
+                                className="logo-preview-img"
+                              />
+                            </div>
+                          )}
+                        </>
+                      ) : clientLogoUrl ? (
+                        <div className="logo-preview">
+                          <img
+                            src={clientLogoUrl}
+                            alt="Client logo"
+                            className="logo-preview-img"
+                          />
+                        </div>
                       ) : (
-                        <div>{clientLogoUrl || "-"}</div>
+                        <div>-</div>
                       )}
                     </div>
                   </div>
 
-                  {/* CARD 2 – Business Details */}
-                  <div className="tool-card project-info-card">
+                  {/* CARD 2 – Business Details (all boxed via CSS) */}
+                  <div className="tool-card project-info-card project-info-details-card">
                     {/* About Company */}
                     <div className="modal-field">
                       <label>
@@ -666,11 +697,12 @@ function UserProjectInfoPage() {
                       </div>
                     </div>
 
-                    {/* Special requirements */}
+                    {/* Special requirements (boxed) */}
                     <div className="modal-field">
                       <label>Any Special Requirements / Notes</label>
                       {isEditing ? (
                         <textarea
+                          className="boxed-textarea"
                           rows={3}
                           value={specialNotes}
                           onChange={(e) => setSpecialNotes(e.target.value)}
