@@ -21,6 +21,7 @@ from .models import (
     categories_collection,
     backlinks_collection,
     project_media_collection,
+    tools_collection, 
 )
 from .schemas import (
     UserCreate,
