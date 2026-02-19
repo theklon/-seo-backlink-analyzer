@@ -110,7 +110,7 @@ function UserTools() {
         const res = await fetch(`${API_BASE_URL}/api/tools`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(newToolPayload),
         });
 
         if (!res.ok) {
@@ -419,7 +419,10 @@ function UserTools() {
                             </button>
                             <span className="saved-tool-access">
                               {tool.accessType
-                                ? tool.accessType.charAt(0).toUpperCase() + tool.accessType.slice(1)
+                                ? tool.accessType
+                                    .charAt(0)
+                                    .toUpperCase() +
+                                  tool.accessType.slice(1)
                                 : "-"}
                             </span>
 
@@ -458,9 +461,7 @@ function UserTools() {
                                     <button
                                       type="button"
                                       className="saved-tool-menu-item"
-                                      onClick={() =>
-                                        handleEditTool(tool)
-                                      }
+                                      onClick={() => handleEditTool(tool)}
                                     >
                                       Edit
                                     </button>
