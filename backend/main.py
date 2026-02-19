@@ -472,6 +472,19 @@ async def update_project_info(project_id: str, payload: dict):
         "instagramPosts": payload.get("instagramPosts", 0),
         "instagramFollowers": payload.get("instagramFollowers", 0),
         "instagramFollowing": payload.get("instagramFollowing", 0),
+                # NEW: manual social counts
+        "facebookUrl": (payload.get("facebookUrl") or "").strip(),
+        "facebookPosts": payload.get("facebookPosts", 0),
+        "facebookFollowers": payload.get("facebookFollowers", 0),
+        "facebookFollowing": payload.get("facebookFollowing", 0),
+        "twitterUrl": (payload.get("twitterUrl") or "").strip(),
+        "twitterPosts": payload.get("twitterPosts", 0),
+        "twitterFollowers": payload.get("twitterFollowers", 0),
+        "twitterFollowing": payload.get("twitterFollowing", 0),
+        "linkedinUrl": (payload.get("linkedinUrl") or "").strip(),
+        "linkedinPosts": payload.get("linkedinPosts", 0),
+        "linkedinFollowers": payload.get("linkedinFollowers", 0),
+        "linkedinFollowing": payload.get("linkedinFollowing", 0),
         "infoDomain": (payload.get("infoDomain") or "").strip(),
         "infoBio": (payload.get("infoBio") or "").strip(),
         "infoContact": (payload.get("infoContact") or "").strip(),
@@ -685,23 +698,27 @@ async def create_tool(payload: dict):
     created["_id"] = str(created["_id"])
     return created
 
-    
- @app.delete("/api/tools/{tool_id}")
+
+@app.delete("/api/tools/{tool_id}")
 async def delete_tool(tool_id: str):
     if not ObjectId.is_valid(tool_id):
         raise HTTPException(status_code=400, detail="Invalid tool id")
-
+ 
     result = await tools_collection.delete_one({"_id": ObjectId(tool_id)})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Tool not found")
-
+ 
     return {"deleted": True}
+ 
+ 
 @app.get("/api/tools")
 async def list_tools():
     tools = await tools_collection.find({}).to_list(length=1000)
     for t in tools:
         t["_id"] = str(t["_id"])
     return tools
+
+    
 @app.post("/api/admin/categories", response_model=CategoryOut)
 async def create_category(cat: CategoryCreate):
     now = datetime.utcnow()

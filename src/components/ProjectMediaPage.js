@@ -35,7 +35,7 @@ function ProjectMediaPage() {
   const [activeTab, setActiveTab] = useState("images");
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]); // {id,name,url}
-  const [files, setFiles] = useState([]);   // {id,name,url}
+  const [files, setFiles] = useState([]); // {id,name,url}
 
   const [imageError, setImageError] = useState("");
   const [videoError, setVideoError] = useState("");
@@ -71,12 +71,28 @@ function ProjectMediaPage() {
   const [videoDeleteTarget, setVideoDeleteTarget] = useState(null);
   const [fileDeleteTarget, setFileDeleteTarget] = useState(null);
 
+  // Image preview (lightbox)
+  const [previewImage, setPreviewImage] = useState(null);
+  const [isImagePreviewOpen, setIsImagePreviewOpen] = useState(false);
+
+  // File preview (PDF/doc/image)
+  const [previewFile, setPreviewFile] = useState(null);
+  const [isFilePreviewOpen, setIsFilePreviewOpen] = useState(false);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         if (imageModalOpen) setImageModalOpen(false);
         if (videoModalOpen) setVideoModalOpen(false);
         if (fileModalOpen) setFileModalOpen(false);
+        if (isImagePreviewOpen) {
+          setIsImagePreviewOpen(false);
+          setPreviewImage(null);
+        }
+        if (isFilePreviewOpen) {
+          setIsFilePreviewOpen(false);
+          setPreviewFile(null);
+        }
       }
     };
 
@@ -84,7 +100,13 @@ function ProjectMediaPage() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [imageModalOpen, videoModalOpen, fileModalOpen]);
+  }, [
+    imageModalOpen,
+    videoModalOpen,
+    fileModalOpen,
+    isImagePreviewOpen,
+    isFilePreviewOpen,
+  ]);
 
   // Load already-saved media for this project
   useEffect(() => {
@@ -147,6 +169,7 @@ function ProjectMediaPage() {
     }
   };
 
+  // existing helper (kept, though we now use popup instead of new tab)
   const openDataUrlInNewTab = (dataUrl, filename = "file") => {
     if (!dataUrl) return;
 
@@ -177,11 +200,6 @@ function ProjectMediaPage() {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const handleOpenFile = (file) => {
-    if (!file || !file.url) return;
-    openDataUrlInNewTab(file.url, file.name || "file");
-  };
-
   const fileToDataUrl = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -189,6 +207,43 @@ function ProjectMediaPage() {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+
+  // Download helper used for images & files
+  const handleDownload = (item) => {
+    if (!item || !item.url) return;
+    const link = document.createElement("a");
+    link.href = item.url;
+    link.download = item.name || "file";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Convert data URL -> Blob URL for previews
+  const dataUrlToBlobUrl = (dataUrl) => {
+    if (!dataUrl || !dataUrl.startsWith("data:")) return dataUrl;
+    const parts = dataUrl.split(",");
+    if (parts.length < 2) return dataUrl;
+
+    const mimeMatch = parts[0].match(/data:(.*?);base64/);
+    const mime = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+    const bstr = atob(parts[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    const blob = new Blob([u8arr], { type: mime });
+    return URL.createObjectURL(blob);
+  };
+
+  const handleOpenFile = (file) => {
+    // instead of new tab, open preview popup
+    if (!file || !file.url) return;
+    const previewUrl = dataUrlToBlobUrl(file.url);
+    setPreviewFile({ ...file, previewUrl });
+    setIsFilePreviewOpen(true);
+  };
 
   // ========== IMAGES ==========
 
@@ -609,7 +664,15 @@ function ProjectMediaPage() {
                 <div className="media-grid">
                   {images.map((img) => (
                     <div key={img.id} className="media-image-card">
-                      <img src={img.url} alt={img.name} />
+                      <img
+                        src={img.url}
+                        alt={img.name}
+                        onClick={() => {
+                          setPreviewImage(img);
+                          setIsImagePreviewOpen(true);
+                        }}
+                        style={{ cursor: "pointer" }}
+                      />
                       <div className="media-image-title">
                         <input
                           type="text"
@@ -625,14 +688,23 @@ function ProjectMediaPage() {
                           }}
                         />
                       </div>
-                      <button
-                        type="button"
-                        className="image-menu-btn"
-                        onClick={() => setDeleteImageTarget(img)}
-                        title="More options"
-                      >
-                        ...
-                      </button>
+                      <div className="media-image-actions">
+                        <button
+                          type="button"
+                          className="image-download-btn"
+                          onClick={() => handleDownload(img)}
+                        >
+                          Download
+                        </button>
+                        <button
+                          type="button"
+                          className="image-menu-btn"
+                          onClick={() => setDeleteImageTarget(img)}
+                          title="More options"
+                        >
+                          ...
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -772,7 +844,7 @@ function ProjectMediaPage() {
                           <td>-</td>
                           <td>
                             <div className="url-row">
-                              {/* Eye: open file */}
+                              {/* Eye: open file in popup */}
                               {f.url && (
                                 <button
                                   type="button"
@@ -1381,6 +1453,96 @@ function ProjectMediaPage() {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* IMAGE PREVIEW (lightbox) */}
+      {isImagePreviewOpen && previewImage && (
+        <div
+          className="image-preview-modal"
+          onClick={() => {
+            setIsImagePreviewOpen(false);
+            setPreviewImage(null);
+          }}
+        >
+          <div
+            className="image-preview-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="image-preview-close"
+              onClick={() => {
+                setIsImagePreviewOpen(false);
+                setPreviewImage(null);
+              }}
+            >
+              ×
+            </button>
+
+            <img
+              src={previewImage.url}
+              alt={previewImage.name}
+              className="image-preview-img"
+            />
+
+            <div className="image-preview-footer">
+              <span className="image-preview-name">
+                {previewImage.name}
+              </span>
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={() => handleDownload(previewImage)}
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FILE PREVIEW MODAL */}
+      {isFilePreviewOpen && previewFile && (
+        <div
+          className="file-preview-modal"
+          onClick={() => {
+            setIsFilePreviewOpen(false);
+            setPreviewFile(null);
+          }}
+        >
+          <div
+            className="file-preview-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="file-preview-close"
+              onClick={() => {
+                setIsFilePreviewOpen(false);
+                setPreviewFile(null);
+              }}
+            >
+              ×
+            </button>
+
+            <div className="file-preview-header">
+              <span className="file-preview-name">{previewFile.name}</span>
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={() => handleDownload(previewFile)}
+              >
+                Download
+              </button>
+            </div>
+
+            <iframe
+              src={dataUrlToBlobUrl(previewFile.previewUrl || previewFile.url)}
+              title={previewFile.name}
+              className="file-preview-frame"
+            />
           </div>
         </div>
       )}
