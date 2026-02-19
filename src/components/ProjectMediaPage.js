@@ -13,6 +13,7 @@ import { LuCalendar } from "react-icons/lu";
 import { FiBell, FiCopy } from "react-icons/fi";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
+import { MdOutlineFileDownload } from "react-icons/md";
 import {
   AiOutlineEye,
   AiOutlineFilePdf,
@@ -168,9 +169,6 @@ function ProjectMediaPage() {
       console.error("Copy failed", e);
     }
   };
-
-  // existing helper (kept, though we now use popup instead of new tab)
-  
 
   const fileToDataUrl = (file) =>
     new Promise((resolve, reject) => {
@@ -665,8 +663,9 @@ function ProjectMediaPage() {
                           type="button"
                           className="image-download-btn"
                           onClick={() => handleDownload(img)}
+                          title="Download image"
                         >
-                          Download
+                          <MdOutlineFileDownload />
                         </button>
                         <button
                           type="button"
@@ -1430,6 +1429,7 @@ function ProjectMediaPage() {
       )}
 
       {/* IMAGE PREVIEW (lightbox) */}
+      {/* IMAGE PREVIEW (lightbox) */}
       {isImagePreviewOpen && previewImage && (
         <div
           className="image-preview-modal"
@@ -1458,19 +1458,6 @@ function ProjectMediaPage() {
               alt={previewImage.name}
               className="image-preview-img"
             />
-
-            <div className="image-preview-footer">
-              <span className="image-preview-name">
-                {previewImage.name}
-              </span>
-              <button
-                type="button"
-                className="primary-btn"
-                onClick={() => handleDownload(previewImage)}
-              >
-                Download
-              </button>
-            </div>
           </div>
         </div>
       )}
