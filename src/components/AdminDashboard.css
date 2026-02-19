@@ -1314,7 +1314,7 @@ th, td {
 .backlink-filters .search-box input,
 .backlink-filters .filter-select,
 .backlink-filters .react-select__control {
-  color: #111827;   /* same dark color as your Projects/Category text */
+  color: #9a9a9a;   /* same dark color as your Projects/Category text */
 }
 .backlink-filters .filter-select::placeholder {
   color: #818182;   /* optional: match placeholder grey */
