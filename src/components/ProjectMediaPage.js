@@ -653,7 +653,6 @@ function ProjectMediaPage() {
                               handleImageNameChange(img.id, e.target.value)
                             }
                             style={{
-                              width: "100%",
                               border: "none",
                               background: "transparent",
                               outline: "none",

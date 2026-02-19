@@ -2112,7 +2112,13 @@ th, td {
   overflow: hidden;
   background: #f9fafb;
 }
-
+.media-image-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
 .media-image-card img {
   width: 100%;
   height: 140px;
@@ -2122,6 +2128,7 @@ th, td {
 .media-image-title {
   padding: 8px 10px;
   font-size: 13px;
+  flex: 1;
 }
 .image-menu-btn {
   position: absolute;
@@ -2703,7 +2710,7 @@ th, td {
   align-items: center;
   justify-content: flex-start; /* icons next to each other */
   gap: 8px;                    /* space between download and ... */
-  margin-top: 4px;
+  margin-top: 0px;
 }
 .media-image-title input {
   font-size: 12px;
