@@ -200,7 +200,7 @@ input[type="password"]::-webkit-textfield-decoration-container {
 }
 /* ==== Admin dashboard ONLY – black top bar ==== */
 .admin-dashboard .topbar {
-  background-color: #000000;   /* solid black */
+  background-color: #292525;   /* solid black */
   color: #ffffff;
 }
 
