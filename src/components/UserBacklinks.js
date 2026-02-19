@@ -724,8 +724,7 @@ function UserBacklinks() {
                 />
               </div>
 
-              {/* Projects: react-select searchable dropdown */}
-             {/* Projects: searchable dropdown with same box */}
+              {/* Projects: searchable dropdown with same box */}
               <Select
                 className="react-select"
                 classNamePrefix="react-select"
@@ -733,7 +732,6 @@ function UserBacklinks() {
                 isClearable
                 isSearchable
                 options={projectOptions}
-                // projectOptions = [{ value: p.id/_id, label: p.name }]
                 value={
                   selectedProject
                     ? projectOptions.find((opt) => opt.value === selectedProject)
@@ -752,10 +750,11 @@ function UserBacklinks() {
                 isClearable
                 isSearchable
                 options={categoryOptions}
-                // categoryOptions = [{ value: c.name, label: c.name }]
                 value={
                   selectedCategory
-                    ? categoryOptions.find((opt) => opt.value === selectedCategory)
+                    ? categoryOptions.find(
+                        (opt) => opt.value === selectedCategory
+                      )
                     : null
                 }
                 onChange={(option) =>
@@ -857,11 +856,16 @@ function UserBacklinks() {
                                   (p.id || p._id) === item.projectId ||
                                   p.name === item.projectId
                               );
-                              const projName = project ? project.name : item.projectId;
+                              const projName = project
+                                ? project.name
+                                : item.projectId;
 
                               if (!selectedProject) return projName;
 
-                              return (item.projectId || "") === selectedProject ? projName : "-";
+                              return (item.projectId || "") ===
+                                selectedProject
+                                ? projName
+                                : "-";
                             })()}
                           </td>
                           <td>{item.categoryId}</td>
@@ -1026,7 +1030,8 @@ function UserBacklinks() {
                   <div className="modal-field small-field">
                     <label>DA</label>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       value={da}
                       onChange={(e) => setDa(e.target.value)}
                     />
@@ -1035,7 +1040,8 @@ function UserBacklinks() {
                   <div className="modal-field small-field">
                     <label>SS</label>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       value={ss}
                       onChange={(e) => setSs(e.target.value)}
                     />

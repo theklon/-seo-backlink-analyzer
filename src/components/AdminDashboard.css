@@ -2111,6 +2111,7 @@ th, td {
   border-radius: 12px;
   overflow: hidden;
   background: #f9fafb;
+  position: relative;
 }
 .media-image-row {
   display: flex;
@@ -2131,15 +2132,13 @@ th, td {
   flex: 1;
 }
 .image-menu-btn {
-  position: absolute;
-  right: 6px;
-  bottom: 6px;
   border: none;
   background: transparent;
-  color: #4b5563;      /* gray text */
+  color: #4b5563;
   cursor: pointer;
-  font-size: 18px;     /* just three dots */
+  font-size: 20px;
   padding: 0;
+  /* no position, no right/bottom */
 }
 
 .media-image-card {

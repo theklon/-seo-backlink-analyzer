@@ -556,7 +556,7 @@ function ProjectMediaPage() {
           </div>
 
           <div className="main-wrapper">
-            <h2 className="page-title">{projectName} – Media</h2>
+            <h2 className="page-title"> Media</h2>
 
             {/* Tabs + upload button row */}
             <div className="media-tabs-row">
