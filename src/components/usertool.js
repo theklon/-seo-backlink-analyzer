@@ -110,11 +110,18 @@ function UserTools() {
         const res = await fetch(`${API_BASE_URL}/api/tools`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newToolPayload),
+          body: JSON.stringify(payload),
         });
 
         if (!res.ok) {
-          throw new Error("Failed to save tool");
+          let message = "Failed to save tool";
+
+          if (res.status === 400) {
+            // backend uses 400 for duplicate-name error
+            message = "Tool already exists";
+          }
+
+          throw new Error(message);
         }
 
         const saved = await res.json();

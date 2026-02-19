@@ -5,7 +5,7 @@ import "./AdminDashboard.css";
 
 import logo from "../assets/klonlogo.png";
 import { API_BASE_URL } from "../api";
-
+import { FaYoutube } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaLink, FaDesktop } from "react-icons/fa6";
 import { VscTools } from "react-icons/vsc";
@@ -168,6 +168,12 @@ function ProjectMediaPage() {
     } catch (e) {
       console.error("Copy failed", e);
     }
+  };
+
+  // YouTube URL detection for showing logo
+  const isYoutubeUrl = (url) => {
+    if (!url) return false;
+    return /youtube\.com\/watch|youtu\.be\//i.test(url);
   };
 
   const fileToDataUrl = (file) =>
@@ -546,17 +552,7 @@ function ProjectMediaPage() {
               View Projects
             </span>
             {" > "}
-            <span
-              style={{ cursor: "pointer" }}
-              onClick={() =>
-                navigate(`/user/projects/${projectId}/backlinks`, {
-                  state: { projectName },
-                })
-              }
-            >
-              {projectName}
-            </span>
-            {" > Media"}
+            <span>Media</span>
           </div>
 
           <div className="main-wrapper">
@@ -633,7 +629,7 @@ function ProjectMediaPage() {
 
                 <div className="media-grid">
                   {images.map((img) => (
-                    <div className="media-image-card">
+                    <div className="media-image-card" key={img.id}>
                       <img
                         src={img.url}
                         alt={img.name}
@@ -714,7 +710,27 @@ function ProjectMediaPage() {
                         <tr key={v.id}>
                           <td>{v.name}</td>
                           <td style={{ fontSize: 13, color: "#4b5563" }}>
-                            {v.url || "-"}
+                            {v.url ? (
+                              <span
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 6,
+                                }}
+                              >
+                                {isYoutubeUrl(v.url) && (
+                                  <FaYoutube
+                                    style={{
+                                      color: "#ff0000",
+                                      fontSize: 16,
+                                    }}
+                                  />
+                                )}
+                                <span>{v.url}</span>
+                              </span>
+                            ) : (
+                              "-"
+                            )}
                           </td>
                           <td>
                             <div className="url-row">
@@ -1466,6 +1482,7 @@ function ProjectMediaPage() {
       )}
 
       {/* FILE PREVIEW MODAL */}
+      {/* FILE PREVIEW MODAL */}
       {isFilePreviewOpen && previewFile && (
         <div
           className="file-preview-modal"
@@ -1478,26 +1495,32 @@ function ProjectMediaPage() {
             className="file-preview-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              className="file-preview-close"
-              onClick={() => {
-                setIsFilePreviewOpen(false);
-                setPreviewFile(null);
-              }}
-            >
-              ×
-            </button>
-
             <div className="file-preview-header">
               <span className="file-preview-name">{previewFile.name}</span>
-              <button
-                type="button"
-                className="primary-btn"
-                onClick={() => handleDownload(previewFile)}
-              >
-                Download
-              </button>
+
+              <div className="file-preview-header-actions">
+                {/* Download icon */}
+                <button
+                  type="button"
+                  className="file-download-icon-btn"
+                  onClick={() => handleDownload(previewFile)}
+                  title="Download file"
+                >
+                  <MdOutlineFileDownload />
+                </button>
+
+                {/* Close icon */}
+                <button
+                  type="button"
+                  className="file-preview-close"
+                  onClick={() => {
+                    setIsFilePreviewOpen(false);
+                    setPreviewFile(null);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
             </div>
 
             <iframe

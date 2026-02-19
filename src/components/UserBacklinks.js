@@ -48,8 +48,8 @@ function UserBacklinks() {
   const [category, setCategory] = useState("");
   const [project, setProject] = useState("");
   const [urls, setUrls] = useState([""]);
-  const [da, setDa] = useState(0);
-  const [ss, setSs] = useState(0);
+  const [da, setDa] = useState("");
+  const [ss, setSs] = useState("");
 
   const [backlinks, setBacklinks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -95,8 +95,8 @@ function UserBacklinks() {
     setCategory("");
     setProject("");
     setUrls([""]);
-    setDa(0);
-    setSs(0);
+    setDa("");
+    setSs("");
   };
 
   const getProjectName = (projectId) => {

@@ -2762,6 +2762,11 @@ th, td {
   margin-bottom: 8px;
   gap: 12px;
 }
+.file-preview-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
 .file-preview-name {
   font-size: 14px;
@@ -2777,11 +2782,24 @@ th, td {
 }
 
 .file-preview-close {
-  position: absolute;
-  top: 8px;
-  right: 12px;
   border: none;
   background: transparent;
-  font-size: 22px;
+  font-size: 20px;
   cursor: pointer;
+  padding: 0;
+}
+/* download icon button */
+.file-download-icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.file-download-icon-btn svg {
+  font-size: 18px; /* adjust if you want smaller/larger */
+  color: #111827;
 }
