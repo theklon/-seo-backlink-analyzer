@@ -477,7 +477,7 @@ function UserProjectInfoPage() {
                     {isEditing ? (
                       <textarea
                         className="boxed-textarea"
-                        rows={8}
+                        rows={10}
                         placeholder="Short description of the company..."
                         value={aboutCompany}
                         onChange={(e) => setAboutCompany(e.target.value)}
@@ -693,7 +693,7 @@ function UserProjectInfoPage() {
                     {isEditing ? (
                       <textarea
                         className="boxed-textarea"
-                        rows={6}
+                        rows={8}
                         value={specialNotes}
                         onChange={(e) => setSpecialNotes(e.target.value)}
                         style={{ resize: "vertical", width: "100%" }}

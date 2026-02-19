@@ -2633,3 +2633,16 @@ th, td {
   box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
   transform: translateY(-1px);             /* tiny lift effect */
 }
+/* User Project Info page – align header + actions with card */
+.user-project-info-page .page-header {
+  max-width: 1100px;      /* same as .project-info-card */
+  margin: 0 auto 16px;    /* center and keep small gap below */
+}
+
+/* Save All actions aligned to card width */
+.user-project-info-page .modal-actions {
+  max-width: 1100px;      /* same width as card */
+  margin: 16px auto 0;    /* place just below card, centered */
+  justify-content: flex-end;
+  padding-right: 0;
+}

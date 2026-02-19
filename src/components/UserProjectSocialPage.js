@@ -11,7 +11,7 @@ import { VscTools } from "react-icons/vsc";
 import { LuCalendar } from "react-icons/lu";
 import { FiBell } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
-import { FaInstagram } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 function UserProjectSocialPage() {
   const navigate = useNavigate();
@@ -22,7 +22,11 @@ function UserProjectSocialPage() {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
 
+  // URLs
   const [instagramUrl, setInstagramUrl] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [twitterUrl, setTwitterUrl] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
 
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -32,6 +36,21 @@ function UserProjectSocialPage() {
   const [instagramPosts, setInstagramPosts] = useState("");
   const [instagramFollowers, setInstagramFollowers] = useState("");
   const [instagramFollowing, setInstagramFollowing] = useState("");
+
+  // Facebook counts
+  const [facebookPosts, setFacebookPosts] = useState("");
+  const [facebookFollowers, setFacebookFollowers] = useState("");
+  const [facebookFollowing, setFacebookFollowing] = useState("");
+
+  // Twitter counts
+  const [twitterPosts, setTwitterPosts] = useState("");
+  const [twitterFollowers, setTwitterFollowers] = useState("");
+  const [twitterFollowing, setTwitterFollowing] = useState("");
+
+  // LinkedIn counts
+  const [linkedinPosts, setLinkedinPosts] = useState("");
+  const [linkedinFollowers, setLinkedinFollowers] = useState("");
+  const [linkedinFollowing, setLinkedinFollowing] = useState("");
 
   // per-platform loading for metrics (we only use instagram now)
   const [metricsLoading, setMetricsLoading] = useState({
@@ -57,9 +76,17 @@ function UserProjectSocialPage() {
 
         setProject(found || null);
 
+        // URLs
         setInstagramUrl(found?.instagramUrl || "");
+        setFacebookUrl(found?.facebookUrl || "");
+        setTwitterUrl(found?.twitterUrl || "");
+        setLinkedinUrl(found?.linkedinUrl || "");
+
+        // Instagram counts
         setInstagramPosts(
-          found?.instagramPosts !== undefined ? String(found.instagramPosts) : ""
+          found?.instagramPosts !== undefined
+            ? String(found.instagramPosts)
+            : ""
         );
         setInstagramFollowers(
           found?.instagramFollowers !== undefined
@@ -69,6 +96,51 @@ function UserProjectSocialPage() {
         setInstagramFollowing(
           found?.instagramFollowing !== undefined
             ? String(found.instagramFollowing)
+            : ""
+        );
+
+        // Facebook counts
+        setFacebookPosts(
+          found?.facebookPosts !== undefined ? String(found.facebookPosts) : ""
+        );
+        setFacebookFollowers(
+          found?.facebookFollowers !== undefined
+            ? String(found.facebookFollowers)
+            : ""
+        );
+        setFacebookFollowing(
+          found?.facebookFollowing !== undefined
+            ? String(found.facebookFollowing)
+            : ""
+        );
+
+        // Twitter counts
+        setTwitterPosts(
+          found?.twitterPosts !== undefined ? String(found.twitterPosts) : ""
+        );
+        setTwitterFollowers(
+          found?.twitterFollowers !== undefined
+            ? String(found.twitterFollowers)
+            : ""
+        );
+        setTwitterFollowing(
+          found?.twitterFollowing !== undefined
+            ? String(found.twitterFollowing)
+            : ""
+        );
+
+        // LinkedIn counts
+        setLinkedinPosts(
+          found?.linkedinPosts !== undefined ? String(found.linkedinPosts) : ""
+        );
+        setLinkedinFollowers(
+          found?.linkedinFollowers !== undefined
+            ? String(found.linkedinFollowers)
+            : ""
+        );
+        setLinkedinFollowing(
+          found?.linkedinFollowing !== undefined
+            ? String(found.linkedinFollowing)
             : ""
         );
       } catch (err) {
@@ -123,6 +195,21 @@ function UserProjectSocialPage() {
         instagramPosts: Number(instagramPosts) || 0,
         instagramFollowers: Number(instagramFollowers) || 0,
         instagramFollowing: Number(instagramFollowing) || 0,
+
+        facebookUrl: facebookUrl.trim(),
+        facebookPosts: Number(facebookPosts) || 0,
+        facebookFollowers: Number(facebookFollowers) || 0,
+        facebookFollowing: Number(facebookFollowing) || 0,
+
+        twitterUrl: twitterUrl.trim(),
+        twitterPosts: Number(twitterPosts) || 0,
+        twitterFollowers: Number(twitterFollowers) || 0,
+        twitterFollowing: Number(twitterFollowing) || 0,
+
+        linkedinUrl: linkedinUrl.trim(),
+        linkedinPosts: Number(linkedinPosts) || 0,
+        linkedinFollowers: Number(linkedinFollowers) || 0,
+        linkedinFollowing: Number(linkedinFollowing) || 0,
       };
 
       const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
@@ -137,9 +224,9 @@ function UserProjectSocialPage() {
 
       const updated = await res.json();
       setProject(updated);
-      setSaveSuccess("Instagram details saved successfully.");
+      setSaveSuccess("Social details saved successfully.");
     } catch (err) {
-      setSaveError(err.message || "Error saving Instagram details");
+      setSaveError(err.message || "Error saving social details");
     } finally {
       setSaving(false);
     }
@@ -268,7 +355,7 @@ function UserProjectSocialPage() {
             {!loading && project && (
               <div>
                 <div className="social-cards-row">
-                  {/* Instagram only */}
+                  {/* Instagram */}
                   <div className="social-card-large social-card-instagram">
                     <p className="social-card-title">
                       <FaInstagram style={{ marginRight: 8 }} />
@@ -323,19 +410,169 @@ function UserProjectSocialPage() {
                         />
                       </div>
                     </div>
+                  </div>
 
-                    {/* Save button directly below Instagram card */}
-                    <div className="modal-actions" style={{ marginTop: 16 }}>
-                      <button
-                        type="button"
-                        className="primary-btn"
-                        onClick={handleSave}
-                        disabled={saving}
-                      >
-                        {saving ? "Saving..." : "Save"}
-                      </button>
+                  {/* Facebook – manual */}
+                  <div className="social-card-large social-card-facebook">
+                    <p className="social-card-title">
+                      <FaFacebook style={{ marginRight: 8 }} />
+                      Facebook
+                    </p>
+
+                    <div className="social-row-content">
+                      <label className="field-label">Page URL</label>
+                      <input
+                        type="url"
+                        placeholder="Facebook page URL"
+                        value={facebookUrl}
+                        onChange={(e) => setFacebookUrl(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="social-counts-row">
+                      <div className="social-count-field">
+                        <label className="field-label">Posts</label>
+                        <input
+                          type="number"
+                          value={facebookPosts}
+                          onChange={(e) => setFacebookPosts(e.target.value)}
+                        />
+                      </div>
+                      <div className="social-count-field">
+                        <label className="field-label">Followers</label>
+                        <input
+                          type="number"
+                          value={facebookFollowers}
+                          onChange={(e) =>
+                            setFacebookFollowers(e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="social-count-field">
+                        <label className="field-label">Following</label>
+                        <input
+                          type="number"
+                          value={facebookFollowing}
+                          onChange={(e) =>
+                            setFacebookFollowing(e.target.value)
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
+
+                  {/* Twitter – manual */}
+                  <div className="social-card-large social-card-twitter">
+                    <p className="social-card-title">
+                      <FaTwitter style={{ marginRight: 8 }} />
+                      Twitter
+                    </p>
+
+                    <div className="social-row-content">
+                      <label className="field-label">Profile URL</label>
+                      <input
+                        type="url"
+                        placeholder="Twitter profile URL"
+                        value={twitterUrl}
+                        onChange={(e) => setTwitterUrl(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="social-counts-row">
+                      <div className="social-count-field">
+                        <label className="field-label">Posts</label>
+                        <input
+                          type="number"
+                          value={twitterPosts}
+                          onChange={(e) => setTwitterPosts(e.target.value)}
+                        />
+                      </div>
+                      <div className="social-count-field">
+                        <label className="field-label">Followers</label>
+                        <input
+                          type="number"
+                          value={twitterFollowers}
+                          onChange={(e) =>
+                            setTwitterFollowers(e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="social-count-field">
+                        <label className="field-label">Following</label>
+                        <input
+                          type="number"
+                          value={twitterFollowing}
+                          onChange={(e) =>
+                            setTwitterFollowing(e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* LinkedIn – manual */}
+                  <div className="social-card-large social-card-linkedin">
+                    <p className="social-card-title">
+                      <FaLinkedin style={{ marginRight: 8 }} />
+                      LinkedIn
+                    </p>
+
+                    <div className="social-row-content">
+                      <label className="field-label">Page URL</label>
+                      <input
+                        type="url"
+                        placeholder="LinkedIn page URL"
+                        value={linkedinUrl}
+                        onChange={(e) => setLinkedinUrl(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="social-counts-row">
+                      <div className="social-count-field">
+                        <label className="field-label">Posts</label>
+                        <input
+                          type="number"
+                          value={linkedinPosts}
+                          onChange={(e) => setLinkedinPosts(e.target.value)}
+                        />
+                      </div>
+                      <div className="social-count-field">
+                        <label className="field-label">Followers</label>
+                        <input
+                          type="number"
+                          value={linkedinFollowers}
+                          onChange={(e) =>
+                            setLinkedinFollowers(e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="social-count-field">
+                        <label className="field-label">Following</label>
+                        <input
+                          type="number"
+                          value={linkedinFollowing}
+                          onChange={(e) =>
+                            setLinkedinFollowing(e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Single save button for all social platforms */}
+                <div
+                  className="modal-actions"
+                  style={{ marginTop: 24, justifyContent: "flex-end" }}
+                >
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    onClick={handleSave}
+                    disabled={saving}
+                  >
+                    {saving ? "Saving..." : "Save All"}
+                  </button>
                 </div>
               </div>
             )}
