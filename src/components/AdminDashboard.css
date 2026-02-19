@@ -723,6 +723,12 @@ th, td {
   justify-content: flex-end; /* pushes button to right */
   margin-bottom: 1px;       /* space above table */
 }
+/* Larger card for Project Info page */
+.project-info-card {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
 /* ONLY Projects & Categories tables */
 .project-page .table-container,
 .category-page .table-container {
