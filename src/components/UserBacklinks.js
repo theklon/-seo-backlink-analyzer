@@ -857,15 +857,11 @@ function UserBacklinks() {
                                   (p.id || p._id) === item.projectId ||
                                   p.name === item.projectId
                               );
-                              const projName = project
-                                ? project.name
-                                : item.projectId;
+                              const projName = project ? project.name : item.projectId;
 
                               if (!selectedProject) return projName;
 
-                              return (item.projectId || "") === selectedProject
-                                ? projName
-                                : "";
+                              return (item.projectId || "") === selectedProject ? projName : "-";
                             })()}
                           </td>
                           <td>{item.categoryId}</td>

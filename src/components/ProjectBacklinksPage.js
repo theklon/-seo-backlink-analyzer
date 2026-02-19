@@ -328,7 +328,7 @@ function ProjectBacklinksPage() {
             >
               {/* Categories: react-select searchable dropdown */}
               <Select
-                className="filter-select react-select"
+                className="react-select"
                 classNamePrefix="react-select"
                 placeholder="Categories"
                 isClearable

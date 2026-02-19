@@ -1124,7 +1124,17 @@ th, td {
   display: none;
 }
 
-
+/* Make all filters (search, selects, react-select) look identical */
+.backlink-filters .search-box input,
+.backlink-filters .filter-select,
+.backlink-filters .react-select__control {
+  height: 36px;                 /* same height */
+  font-size: 14px;              /* same font size */
+  border-radius: 6px;           /* same rounded corners */
+  border: 1px solid #d1d5db;    /* same border color */
+  background-color: #ffffff;    /* same background */
+  box-shadow: none;
+}
 /* Optional: control icon size explicitly */
 .new-backlink-btn svg {
   font-size: 18px;               /* or whatever matches your design */
