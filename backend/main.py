@@ -657,20 +657,45 @@ async def list_projects(
  
 @app.post("/api/tools")
 async def create_tool(payload: dict):
+    name = (payload.get("toolName") or "").strip()
+    link = (payload.get("link") or "").strip()
+    benefits = (payload.get("benefits") or "").strip()
+    access_type = (payload.get("accessType") or "paid").strip()
+
+    if not name or not link:
+        raise HTTPException(status_code=400, detail="Tool name and link are required")
+
+    # DUPLICATE CHECK: same name OR same link
+    existing = await tools_collection.find_one(
+        {"$or": [{"toolName": name}, {"link": link}]}
+    )
+    if existing:
+        raise HTTPException(status_code=400, detail="Tool already exists")
+
     doc = {
-        "toolName": (payload.get("toolName") or "").strip(),
-        "link": (payload.get("link") or "").strip(),
-        "benefits": (payload.get("benefits") or "").strip(),
-        "accessType": (payload.get("accessType") or "paid").strip(),
+        "toolName": name,
+        "link": link,
+        "benefits": benefits,
+        "accessType": access_type,
         "createdAt": datetime.utcnow(),
-        # optional – track who created it but don't filter by it:
         "ownerUserId": (payload.get("ownerUserId") or "").strip(),
     }
     res = await tools_collection.insert_one(doc)
     created = await tools_collection.find_one({"_id": res.inserted_id})
     created["_id"] = str(created["_id"])
     return created
- 
+
+    
+ @app.delete("/api/tools/{tool_id}")
+async def delete_tool(tool_id: str):
+    if not ObjectId.is_valid(tool_id):
+        raise HTTPException(status_code=400, detail="Invalid tool id")
+
+    result = await tools_collection.delete_one({"_id": ObjectId(tool_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Tool not found")
+
+    return {"deleted": True}
 @app.get("/api/tools")
 async def list_tools():
     tools = await tools_collection.find({}).to_list(length=1000)

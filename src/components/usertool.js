@@ -144,7 +144,7 @@ function UserTools() {
     setMenuOpenId(null);
   };
 
-  const handleDeleteTool = (id) => {
+  const handleDeleteTool = async (id) => {
     const toDelete = savedTools.find((t) => (t._id || t.id) === id);
     if (!toDelete) return;
 
@@ -153,14 +153,27 @@ function UserTools() {
     );
     if (!ok) return;
 
-    // For now, delete only locally (no backend DELETE yet)
-    setSavedTools((prev) => prev.filter((t) => (t._id || t.id) !== id));
+    try {
+      // call backend DELETE so it stays deleted after refresh
+      const res = await fetch(`${API_BASE_URL}/api/tools/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to delete tool");
+      }
 
-    if (editingId === id) setEditingId(null);
-    if (menuOpenId === id) setMenuOpenId(null);
-    if (selectedTool && (selectedTool._id || selectedTool.id) === id) {
-      setIsModalOpen(false);
-      setSelectedTool(null);
+      setSavedTools((prev) => prev.filter((t) => (t._id || t.id) !== id));
+
+      if (editingId === id) setEditingId(null);
+      if (menuOpenId === id) setMenuOpenId(null);
+      if (selectedTool && (selectedTool._id || selectedTool.id) === id) {
+        setIsModalOpen(false);
+        setSelectedTool(null);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Error deleting tool");
     }
   };
 
