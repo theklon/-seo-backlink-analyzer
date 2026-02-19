@@ -342,7 +342,7 @@ function Adminproject() {
               + Add Project
             </button>
           </div>
-
+          <div className="main-wrapper">
           <div className="table-wrapper">
             {/* CREATE PROJECT MODAL */}
             {showCreateProject && (
@@ -521,6 +521,7 @@ function Adminproject() {
                   )}
                 </tbody>
               </table>
+            </div>
             </div>
           </div>
         </div>

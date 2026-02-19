@@ -320,7 +320,7 @@ function Admincategories() {
               + Add Category
             </button>
           </div>
-
+          <div className="main-wrapper">
           {/* TABLE ACTION BAR + TABLE */}
           <div className="table-wrapper">
             {/* ADD CATEGORY MODAL */}
@@ -505,6 +505,7 @@ function Admincategories() {
                 </tbody>
               </table>
             </div>
+          </div>
           </div>
         </div>
       </div>

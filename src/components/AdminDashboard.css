@@ -198,6 +198,28 @@ input[type="password"]::-webkit-textfield-decoration-container {
   width: 100%;
   box-sizing: border-box;
 }
+/* ==== Admin dashboard ONLY – black top bar ==== */
+.admin-dashboard .topbar {
+  background-color: #000000;   /* solid black */
+  color: #ffffff;
+}
+
+/* Ensure icons and text in the topbar are visible on black */
+.admin-dashboard .topbar .topbar-icon svg,
+.admin-dashboard .topbar .admin-name,
+.admin-dashboard .topbar .admin-role {
+  color: #ffffff;
+}
+
+/* If the topbar-right has a subtle background, keep it transparent for admin */
+.admin-dashboard .topbar-right {
+  background: transparent;
+}
+
+/* Optional: tweak the divider color on black */
+.admin-dashboard .topbar-divider {
+  background-color: rgba(255, 255, 255, 0.25);
+}
 .menu-item {
   display: flex;
   align-items: center;

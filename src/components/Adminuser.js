@@ -372,7 +372,7 @@ function Adminuser() {
           </div>
 
           <h2 className="page-title">Users</h2>
-
+          <div className="main-wrapper">
           {/* STATS CARDS */}
           {statsError && (
             <div style={{ color: "red", marginBottom: 8 }}>{statsError}</div>
@@ -616,6 +616,7 @@ function Adminuser() {
                 )}
               </tbody>
             </table>
+          </div>
           </div>
         </div>
       </div>

@@ -53,7 +53,7 @@ function AdminDashboard() {
   }, []);
 
   return (
-    <div className="dashboard-root">
+    <div className="dashboard-root admin-dashboard">
       {/* TOP BAR */}
       <div className="topbar">
         <div className="topbar-left">
@@ -184,7 +184,7 @@ function AdminDashboard() {
         </div>
 
         {/* MAIN CONTENT */}
-        <div className="main-wrapper">
+        <div className="main-content">
           <div
             className="banner"
             style={{ backgroundImage: `url(${banner})` }}
