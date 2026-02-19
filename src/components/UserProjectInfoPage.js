@@ -161,7 +161,7 @@ function UserProjectInfoPage() {
       const updated = await res.json();
       setProject(updated);
       setSaveSuccess("Project info saved successfully.");
-      setIsEditing(false); // switch to view mode after save
+      setIsEditing(false);
     } catch (err) {
       setSaveError(err.message || "Error saving project info");
     } finally {
@@ -294,14 +294,15 @@ function UserProjectInfoPage() {
             {/* Info card */}
             {!loading && project && (
               <div className="tool-card project-info-card">
-                {/* Edit/View toggle, top-right of card */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginBottom: 8,
-                  }}
-                >
+                {/* Header inside card: step + View/Edit */}
+                <div className="project-info-card-header">
+                  {isEditing && (
+                    <div className="project-info-card-step">
+                      {step === 1
+                        ? "Step 1 of 2 – Business & Brand Info"
+                        : "Step 2 of 2 – Contact & Address"}
+                    </div>
+                  )}
                   <button
                     type="button"
                     className="user-project-btn user-project-btn-backlinks"
@@ -320,21 +321,6 @@ function UserProjectInfoPage() {
                     handleSave();
                   }}
                 >
-                  {/* STEP LABEL */}
-                  {isEditing && (
-                    <div
-                      style={{
-                        marginBottom: 16,
-                        fontWeight: 500,
-                        fontSize: 14,
-                      }}
-                    >
-                      {step === 1
-                        ? "Step 1 of 2 – Business & Brand Info"
-                        : "Step 2 of 2 – Contact & Address"}
-                    </div>
-                  )}
-
                   {/* VIEW MODE: show everything (both steps) */}
                   {!isEditing && (
                     <>
@@ -390,7 +376,10 @@ function UserProjectInfoPage() {
 
                       {/* About Company (BOX) */}
                       <div className="modal-field">
-                        <label>About the Company (Short Description – 150–1000 words)</label>
+                        <label>
+                          About the Company (Short Description – 150–1000
+                          words)
+                        </label>
                         <div style={{ whiteSpace: "pre-wrap" }}>
                           {aboutCompany || "-"}
                         </div>
@@ -406,7 +395,9 @@ function UserProjectInfoPage() {
 
                       {/* Target Audience (BOX) */}
                       <div className="modal-field">
-                        <label>Target Audience (Who are your customers?)</label>
+                        <label>
+                          Target Audience (Who are your customers?)
+                        </label>
                         <div style={{ whiteSpace: "pre-wrap" }}>
                           {targetAudience || "-"}
                         </div>
@@ -587,7 +578,10 @@ function UserProjectInfoPage() {
 
                       {/* About the Company (BOX) */}
                       <div className="modal-field">
-                        <label>About the Company (Short Description – 150–1000 words)</label>
+                        <label>
+                          About the Company (Short Description – 150–1000
+                          words)
+                        </label>
                         <textarea
                           className="boxed-textarea"
                           rows={5}
@@ -613,7 +607,9 @@ function UserProjectInfoPage() {
 
                       {/* Target Audience (BOX) */}
                       <div className="modal-field">
-                        <label>Target Audience (Who are your customers?)</label>
+                        <label>
+                          Target Audience (Who are your customers?)
+                        </label>
                         <textarea
                           className="boxed-textarea"
                           rows={3}
