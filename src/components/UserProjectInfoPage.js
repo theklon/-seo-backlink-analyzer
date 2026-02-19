@@ -49,6 +49,7 @@ function UserProjectInfoPage() {
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState("");
   const [isEditing, setIsEditing] = useState(false); // default: view mode
+  const [step, setStep] = useState(1); // 1 = business info, 2 = contact & address
 
   const projectNameFromState = location.state?.projectName;
 
@@ -103,6 +104,7 @@ function UserProjectInfoPage() {
           found?.infoBrandingGuidelines ||
           found?.infoAboutCompany;
         setIsEditing(!hasAnyData);
+        setStep(1);
       } catch (err) {
         setLoadError(err.message || "Error loading project");
       } finally {
@@ -303,7 +305,10 @@ function UserProjectInfoPage() {
                   <button
                     type="button"
                     className="user-project-btn user-project-btn-backlinks"
-                    onClick={() => setIsEditing((prev) => !prev)}
+                    onClick={() => {
+                      setIsEditing((prev) => !prev);
+                      setStep(1);
+                    }}
                   >
                     {isEditing ? "View" : "Edit"}
                   </button>
@@ -315,366 +320,475 @@ function UserProjectInfoPage() {
                     handleSave();
                   }}
                 >
-                  {/* Row 1: Client & Company */}
-                  <div className="modal-field-row">
-                    <div className="modal-field">
-                      <label>Client Name</label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={clientName}
-                          onChange={(e) => setClientName(e.target.value)}
-                        />
-                      ) : (
-                        <div>{clientName || "-"}</div>
-                      )}
+                  {/* STEP LABEL */}
+                  {isEditing && (
+                    <div
+                      style={{
+                        marginBottom: 16,
+                        fontWeight: 500,
+                        fontSize: 14,
+                      }}
+                    >
+                      {step === 1
+                        ? "Step 1 of 2 – Business & Brand Info"
+                        : "Step 2 of 2 – Contact & Address"}
                     </div>
-                    <div className="modal-field">
-                      <label>Company Name</label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={companyName}
-                          onChange={(e) => setCompanyName(e.target.value)}
-                        />
-                      ) : (
-                        <div>{companyName || "-"}</div>
-                      )}
-                    </div>
-                  </div>
+                  )}
 
-                  {/* Row 2: Website + Years */}
-                  <div className="modal-field-row">
-                    <div className="modal-field">
-                      <label>Website URL</label>
-                      {isEditing ? (
+                  {/* VIEW MODE: show everything (both steps) */}
+                  {!isEditing && (
+                    <>
+                      {/* Client & Company */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Client Name</label>
+                          <div>{clientName || "-"}</div>
+                        </div>
+                        <div className="modal-field">
+                          <label>Company Name</label>
+                          <div>{companyName || "-"}</div>
+                        </div>
+                      </div>
+
+                      {/* Website + Years */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Website URL</label>
+                          <div>{websiteUrl || "-"}</div>
+                        </div>
+                        <div className="modal-field">
+                          <label>Years in Business (optional)</label>
+                          <div>{yearsInBusiness || "-"}</div>
+                        </div>
+                      </div>
+
+                      {/* Industry + Business Type */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Industry / Category</label>
+                          <div>{industry || "-"} </div>
+                        </div>
+                        <div className="modal-field">
+                          <label>Business Type</label>
+                          <div>{businessType || "-"}</div>
+                        </div>
+                      </div>
+
+                      {/* Branding Guidelines (BOX) */}
+                      <div className="modal-field">
+                        <label>Branding Guidelines</label>
+                        <div style={{ whiteSpace: "pre-wrap" }}>
+                          {brandingGuidelines || "-"}
+                        </div>
+                      </div>
+
+                      {/* Client Logo */}
+                      <div className="modal-field">
+                        <label>Client Logo (Upload optional)</label>
+                        <div>{clientLogoUrl || "-"}</div>
+                      </div>
+
+                      {/* About Company (BOX) */}
+                      <div className="modal-field">
+                        <label>About the Company (Short Description – 150–1000 words)</label>
+                        <div style={{ whiteSpace: "pre-wrap" }}>
+                          {aboutCompany || "-"}
+                        </div>
+                      </div>
+
+                      {/* About Services (BOX) */}
+                      <div className="modal-field">
+                        <label>About Their Services / Products</label>
+                        <div style={{ whiteSpace: "pre-wrap" }}>
+                          {aboutServices || "-"}
+                        </div>
+                      </div>
+
+                      {/* Target Audience (BOX) */}
+                      <div className="modal-field">
+                        <label>Target Audience (Who are your customers?)</label>
+                        <div style={{ whiteSpace: "pre-wrap" }}>
+                          {targetAudience || "-"}
+                        </div>
+                      </div>
+
+                      {/* Service Locations */}
+                      <div className="modal-field">
+                        <label>Service Locations</label>
+                        <div style={{ whiteSpace: "pre-wrap" }}>
+                          {serviceLocations || "-"}
+                        </div>
+                      </div>
+
+                      {/* USP */}
+                      <div className="modal-field">
+                        <label>Unique Selling Points (USP)</label>
+                        <div style={{ whiteSpace: "pre-wrap" }}>
+                          {usp || "-"}
+                        </div>
+                      </div>
+
+                      {/* Contact details */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Business Email</label>
+                          <div>{businessEmail || "-"}</div>
+                        </div>
+                        <div className="modal-field">
+                          <label>Phone Number</label>
+                          <div>{phoneNumber || "-"}</div>
+                        </div>
+                      </div>
+
+                      <div className="modal-field">
+                        <label>Alternate Contact Number / WhatsApp</label>
+                        <div>{altContact || "-"}</div>
+                      </div>
+
+                      {/* Address block */}
+                      <div className="modal-field">
+                        <label>Address</label>
+                        <div>{address || "-"}</div>
+                      </div>
+
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Street</label>
+                          <div>{street || "-"}</div>
+                        </div>
+                        <div className="modal-field">
+                          <label>City</label>
+                          <div>{city || "-"}</div>
+                        </div>
+                      </div>
+
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>State</label>
+                          <div>{stateName || "-"}</div>
+                        </div>
+                        <div className="modal-field">
+                          <label>Country</label>
+                          <div>{country || "-"}</div>
+                        </div>
+                        <div className="modal-field">
+                          <label>Pincode</label>
+                          <div>{pincode || "-"}</div>
+                        </div>
+                      </div>
+
+                      {/* Special requirements */}
+                      <div className="modal-field">
+                        <label>Any Special Requirements / Notes</label>
+                        <div style={{ whiteSpace: "pre-wrap" }}>
+                          {specialNotes || "-"}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* EDIT MODE – STEP 1: Business / Brand */}
+                  {isEditing && step === 1 && (
+                    <>
+                      {/* Client & Company */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Client Name</label>
+                          <input
+                            type="text"
+                            value={clientName}
+                            onChange={(e) => setClientName(e.target.value)}
+                          />
+                        </div>
+                        <div className="modal-field">
+                          <label>Company Name</label>
+                          <input
+                            type="text"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Website + Years */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Website URL</label>
+                          <input
+                            type="url"
+                            placeholder="https://example.com"
+                            value={websiteUrl}
+                            onChange={(e) => setWebsiteUrl(e.target.value)}
+                          />
+                        </div>
+                        <div className="modal-field">
+                          <label>Years in Business (optional)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={yearsInBusiness}
+                            onChange={(e) =>
+                              setYearsInBusiness(e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      {/* Industry + Business Type */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Industry / Category</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. IT Services, Healthcare"
+                            value={industry}
+                            onChange={(e) => setIndustry(e.target.value)}
+                          />
+                        </div>
+                        <div className="modal-field">
+                          <label>Business Type</label>
+                          <select
+                            value={businessType}
+                            onChange={(e) => setBusinessType(e.target.value)}
+                          >
+                            <option value="">Select Type</option>
+                            <option value="Startup">Startup</option>
+                            <option value="SME">SME</option>
+                            <option value="Enterprise">Enterprise</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Branding Guidelines (BOX) */}
+                      <div className="modal-field">
+                        <label>Branding Guidelines</label>
+                        <textarea
+                          className="boxed-textarea"
+                          rows={3}
+                          placeholder="Brand colors, fonts, tone of voice, etc."
+                          value={brandingGuidelines}
+                          onChange={(e) =>
+                            setBrandingGuidelines(e.target.value)
+                          }
+                          style={{ resize: "vertical", width: "100%" }}
+                        />
+                      </div>
+
+                      {/* Client Logo */}
+                      <div className="modal-field">
+                        <label>Client Logo (Upload optional)</label>
                         <input
                           type="url"
-                          placeholder="https://example.com"
-                          value={websiteUrl}
-                          onChange={(e) => setWebsiteUrl(e.target.value)}
+                          placeholder="Logo URL or file link"
+                          value={clientLogoUrl}
+                          onChange={(e) => setClientLogoUrl(e.target.value)}
                         />
-                      ) : (
-                        <div>{websiteUrl || "-"}</div>
-                      )}
-                    </div>
-                    <div className="modal-field">
-                      <label>Years in Business (optional)</label>
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          min="0"
-                          value={yearsInBusiness}
-                          onChange={(e) => setYearsInBusiness(e.target.value)}
-                        />
-                      ) : (
-                        <div>{yearsInBusiness || "-"}</div>
-                      )}
-                    </div>
-                  </div>
+                      </div>
 
-                  {/* Row 3: Industry + Business Type */}
-                  <div className="modal-field-row">
-                    <div className="modal-field">
-                      <label>Industry / Category</label>
-                      {isEditing ? (
+                      {/* About the Company (BOX) */}
+                      <div className="modal-field">
+                        <label>About the Company (Short Description – 150–1000 words)</label>
+                        <textarea
+                          className="boxed-textarea"
+                          rows={5}
+                          placeholder="Short description of the company..."
+                          value={aboutCompany}
+                          onChange={(e) => setAboutCompany(e.target.value)}
+                          style={{ resize: "vertical", width: "100%" }}
+                        />
+                      </div>
+
+                      {/* About Their Services / Products (BOX) */}
+                      <div className="modal-field">
+                        <label>About Their Services / Products</label>
+                        <textarea
+                          className="boxed-textarea"
+                          rows={4}
+                          placeholder="Key services or products..."
+                          value={aboutServices}
+                          onChange={(e) => setAboutServices(e.target.value)}
+                          style={{ resize: "vertical", width: "100%" }}
+                        />
+                      </div>
+
+                      {/* Target Audience (BOX) */}
+                      <div className="modal-field">
+                        <label>Target Audience (Who are your customers?)</label>
+                        <textarea
+                          className="boxed-textarea"
+                          rows={3}
+                          value={targetAudience}
+                          onChange={(e) => setTargetAudience(e.target.value)}
+                          style={{ resize: "vertical", width: "100%" }}
+                        />
+                      </div>
+
+                      {/* Service Locations (line style) */}
+                      <div className="modal-field">
+                        <label>Service Locations</label>
+                        <textarea
+                          rows={2}
+                          placeholder="Countries / cities served..."
+                          value={serviceLocations}
+                          onChange={(e) =>
+                            setServiceLocations(e.target.value)
+                          }
+                          style={{ resize: "vertical", width: "100%" }}
+                        />
+                      </div>
+
+                      {/* USP (line style) */}
+                      <div className="modal-field">
+                        <label>Unique Selling Points (USP)</label>
+                        <textarea
+                          rows={3}
+                          value={usp}
+                          onChange={(e) => setUsp(e.target.value)}
+                          style={{ resize: "vertical", width: "100%" }}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* EDIT MODE – STEP 2: Contact & Address */}
+                  {isEditing && step === 2 && (
+                    <>
+                      {/* Contact details */}
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Business Email</label>
+                          <input
+                            type="email"
+                            value={businessEmail}
+                            onChange={(e) =>
+                              setBusinessEmail(e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="modal-field">
+                          <label>Phone Number</label>
+                          <input
+                            type="text"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="modal-field">
+                        <label>Alternate Contact Number / WhatsApp</label>
                         <input
                           type="text"
-                          placeholder="e.g. IT Services, Healthcare"
-                          value={industry}
-                          onChange={(e) => setIndustry(e.target.value)}
+                          value={altContact}
+                          onChange={(e) => setAltContact(e.target.value)}
                         />
-                      ) : (
-                        <div>{industry || "-"}</div>
-                      )}
-                    </div>
-                    <div className="modal-field">
-                      <label>Business Type</label>
-                      {isEditing ? (
-                        <select
-                          value={businessType}
-                          onChange={(e) => setBusinessType(e.target.value)}
-                        >
-                          <option value="">Select Type</option>
-                          <option value="Startup">Startup</option>
-                          <option value="SME">SME</option>
-                          <option value="Enterprise">Enterprise</option>
-                        </select>
-                      ) : (
-                        <div>{businessType || "-"}</div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Branding + Logo */}
-                  <div className="modal-field">
-                    <label>Branding Guidelines</label>
-                    {isEditing ? (
-                      <textarea
-                        rows={3}
-                        placeholder="Brand colors, fonts, tone of voice, etc."
-                        value={brandingGuidelines}
-                        onChange={(e) =>
-                          setBrandingGuidelines(e.target.value)
-                        }
-                        style={{ resize: "vertical", width: "100%" }}
-                      />
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }}>
-                        {brandingGuidelines || "-"}
                       </div>
-                    )}
-                  </div>
 
-                  <div className="modal-field">
-                    <label>Client Logo (Upload optional)</label>
-                    {isEditing ? (
-                      <input
-                        type="url"
-                        placeholder="Logo URL or file link"
-                        value={clientLogoUrl}
-                        onChange={(e) => setClientLogoUrl(e.target.value)}
-                      />
-                    ) : (
-                      <div>{clientLogoUrl || "-"}</div>
-                    )}
-                  </div>
-
-                  {/* About company & services */}
-                  <div className="modal-field">
-                    <label>About the Company (150–1000 words)</label>
-                    {isEditing ? (
-                      <textarea
-                        rows={5}
-                        placeholder="Short description of the company..."
-                        value={aboutCompany}
-                        onChange={(e) => setAboutCompany(e.target.value)}
-                        style={{ resize: "vertical", width: "100%" }}
-                      />
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }}>
-                        {aboutCompany || "-"}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="modal-field">
-                    <label>About Their Services / Products</label>
-                    {isEditing ? (
-                      <textarea
-                        rows={4}
-                        placeholder="Key services or products..."
-                        value={aboutServices}
-                        onChange={(e) => setAboutServices(e.target.value)}
-                        style={{ resize: "vertical", width: "100%" }}
-                      />
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }}>
-                        {aboutServices || "-"}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Target, Locations, USP */}
-                  <div className="modal-field">
-                    <label>Target Audience (Who are your customers?)</label>
-                    {isEditing ? (
-                      <textarea
-                        rows={3}
-                        value={targetAudience}
-                        onChange={(e) => setTargetAudience(e.target.value)}
-                        style={{ resize: "vertical", width: "100%" }}
-                      />
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }}>
-                        {targetAudience || "-"}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="modal-field">
-                    <label>Service Locations</label>
-                    {isEditing ? (
-                      <textarea
-                        rows={2}
-                        placeholder="Countries / cities served..."
-                        value={serviceLocations}
-                        onChange={(e) => setServiceLocations(e.target.value)}
-                        style={{ resize: "vertical", width: "100%" }}
-                      />
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }}>
-                        {serviceLocations || "-"}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="modal-field">
-                    <label>Unique Selling Points (USP)</label>
-                    {isEditing ? (
-                      <textarea
-                        rows={3}
-                        value={usp}
-                        onChange={(e) => setUsp(e.target.value)}
-                        style={{ resize: "vertical", width: "100%" }}
-                      />
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }}>
-                        {usp || "-"}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Contact details */}
-                  <div className="modal-field-row">
-                    <div className="modal-field">
-                      <label>Business Email</label>
-                      {isEditing ? (
-                        <input
-                          type="email"
-                          value={businessEmail}
-                          onChange={(e) => setBusinessEmail(e.target.value)}
-                        />
-                      ) : (
-                        <div>{businessEmail || "-"}</div>
-                      )}
-                    </div>
-                    <div className="modal-field">
-                      <label>Phone Number</label>
-                      {isEditing ? (
+                      {/* Address block */}
+                      <div className="modal-field">
+                        <label>Address</label>
                         <input
                           type="text"
-                          value={phoneNumber}
-                          onChange={(e) => setPhoneNumber(e.target.value)}
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
                         />
-                      ) : (
-                        <div>{phoneNumber || "-"}</div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="modal-field">
-                    <label>Alternate Contact Number / WhatsApp</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={altContact}
-                        onChange={(e) => setAltContact(e.target.value)}
-                      />
-                    ) : (
-                      <div>{altContact || "-"}</div>
-                    )}
-                  </div>
-
-                  {/* Address block */}
-                  <div className="modal-field">
-                    <label>Address</label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                      />
-                    ) : (
-                      <div>{address || "-"}</div>
-                    )}
-                  </div>
-
-                  <div className="modal-field-row">
-                    <div className="modal-field">
-                      <label>Street</label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={street}
-                          onChange={(e) => setStreet(e.target.value)}
-                        />
-                      ) : (
-                        <div>{street || "-"}</div>
-                      )}
-                    </div>
-                    <div className="modal-field">
-                      <label>City</label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                        />
-                      ) : (
-                        <div>{city || "-"}</div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="modal-field-row">
-                    <div className="modal-field">
-                      <label>State</label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={stateName}
-                          onChange={(e) => setStateName(e.target.value)}
-                        />
-                      ) : (
-                        <div>{stateName || "-"}</div>
-                      )}
-                    </div>
-                    <div className="modal-field">
-                      <label>Country</label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={country}
-                          onChange={(e) => setCountry(e.target.value)}
-                        />
-                      ) : (
-                        <div>{country || "-"}</div>
-                      )}
-                    </div>
-                    <div className="modal-field">
-                      <label>Pincode</label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={pincode}
-                          onChange={(e) => setPincode(e.target.value)}
-                        />
-                      ) : (
-                        <div>{pincode || "-"}</div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Special requirements */}
-                  <div className="modal-field">
-                    <label>Any Special Requirements / Notes</label>
-                    {isEditing ? (
-                      <textarea
-                        rows={3}
-                        value={specialNotes}
-                        onChange={(e) => setSpecialNotes(e.target.value)}
-                        style={{ resize: "vertical", width: "100%" }}
-                      />
-                    ) : (
-                      <div style={{ whiteSpace: "pre-wrap" }}>
-                        {specialNotes || "-"}
                       </div>
-                    )}
-                  </div>
 
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>Street</label>
+                          <input
+                            type="text"
+                            value={street}
+                            onChange={(e) => setStreet(e.target.value)}
+                          />
+                        </div>
+                        <div className="modal-field">
+                          <label>City</label>
+                          <input
+                            type="text"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="modal-field-row">
+                        <div className="modal-field">
+                          <label>State</label>
+                          <input
+                            type="text"
+                            value={stateName}
+                            onChange={(e) => setStateName(e.target.value)}
+                          />
+                        </div>
+                        <div className="modal-field">
+                          <label>Country</label>
+                          <input
+                            type="text"
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
+                          />
+                        </div>
+                        <div className="modal-field">
+                          <label>Pincode</label>
+                          <input
+                            type="text"
+                            value={pincode}
+                            onChange={(e) => setPincode(e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Special requirements */}
+                      <div className="modal-field">
+                        <label>Any Special Requirements / Notes</label>
+                        <textarea
+                          rows={3}
+                          value={specialNotes}
+                          onChange={(e) => setSpecialNotes(e.target.value)}
+                          style={{ resize: "vertical", width: "100%" }}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* EDIT MODE BUTTONS */}
                   {isEditing && (
                     <div
                       className="modal-actions"
-                      style={{ justifyContent: "flex-end", marginTop: 16 }}
+                      style={{
+                        justifyContent: "space-between",
+                        marginTop: 16,
+                      }}
                     >
-                      <button
-                        className="primary-btn"
-                        type="submit"
-                        disabled={saving}
-                      >
-                        {saving ? "Saving..." : "Save"}
-                      </button>
+                      {step === 2 && (
+                        <button
+                          type="button"
+                          className="primary-btn"
+                          onClick={() => setStep(1)}
+                        >
+                          Back
+                        </button>
+                      )}
+                      {step === 1 && (
+                        <button
+                          type="button"
+                          className="primary-btn"
+                          onClick={() => setStep(2)}
+                        >
+                          Next
+                        </button>
+                      )}
+                      {step === 2 && (
+                        <button
+                          className="primary-btn"
+                          type="submit"
+                          disabled={saving}
+                        >
+                          {saving ? "Saving..." : "Save"}
+                        </button>
+                      )}
                     </div>
                   )}
                 </form>

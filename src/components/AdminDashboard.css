@@ -724,10 +724,28 @@ th, td {
   margin-bottom: 1px;       /* space above table */
 }
 /* Larger card for Project Info page */
+/* Larger card for Project Info page */
 .project-info-card {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px;
+  max-width: 100%;      /* use full main-content width */
+  margin: 0;
+  padding: 24px 28px;
+}
+/* Lighter inputs in Project Info page only */
+.project-info-card input,
+.project-info-card select,
+.project-info-card textarea {
+  border-radius: 0;
+  border: 0;
+  border-bottom: 1px solid #d1d5db;
+  padding-left: 0;
+  padding-right: 0;
+}
+/* Boxed textareas just for the long fields */
+.project-info-card textarea.boxed-textarea {
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  padding: 8px 10px;
+  background-color: #ffffff;
 }
 /* ONLY Projects & Categories tables */
 .project-page .table-container,
