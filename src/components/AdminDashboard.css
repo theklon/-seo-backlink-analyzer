@@ -743,6 +743,20 @@ th, td {
   padding-left: 0;
   padding-right: 0;
   font-size:13px;
+  margin-top: 0;
+}
+/* Top bar inside project info card (step label + View/Edit button) */
+.project-info-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.project-info-card-step {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
 }
 /* Layout for rows inside project info card */
 .project-info-card .modal-field-row {
@@ -758,19 +772,23 @@ th, td {
   }
 }
 .project-info-card .modal-field {
-  margin-bottom: 12px;
+  margin-top: 0;
+  margin-bottom: 8px;    /* was 12px, or larger globally */
 }
+ 
 /* Boxed textareas just for the long fields */
 .project-info-card textarea.boxed-textarea {
   border-radius: 6px;
   border: 1px solid #d1d5db;
-  padding: 8px 10px;
   background-color: #ffffff;
+  padding-top: 4px;      /* was 8px */
+  padding-bottom: 6px;
 }
 .project-info-card label {
+  display: block;
   font-size: 13px;
   font-weight: 500;
-  margin-bottom: 4px;
+  margin-bottom: 2px;    /* was 4px */
 }
 /* ONLY Projects & Categories tables */
 .project-page .table-container,
