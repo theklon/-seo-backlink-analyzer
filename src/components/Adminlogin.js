@@ -110,7 +110,7 @@ function Adminlogin() {
       : "login-card user-login-card step-otp";
 
   return (
-    <div className="login-page user-login-page">
+    <div className="login-page admin-login-page">
       <div className="left-section">
         <div className="logo-block">
           <img src={klonLogo} alt="Klon Logo" className="main-logo" />
