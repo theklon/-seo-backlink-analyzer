@@ -282,10 +282,22 @@ function UserProjectInfoPage() {
           </div>
 
           <div className="main-wrapper">
-            {/* Title */}
-            <h2 className="page-title">
-              Project Info – {displayProjectName}
-            </h2>
+            {/* Title + View/Edit button in one row */}
+            <div className="page-header">
+              <h2 className="page-title">
+                Project Info – {displayProjectName}
+              </h2>
+
+              {!loading && project && (
+                <button
+                  type="button"
+                  className="user-project-btn user-project-btn-backlinks"
+                  onClick={() => setIsEditing((prev) => !prev)}
+                >
+                  {isEditing ? "View" : "Edit"}
+                </button>
+              )}
+            </div>
 
             {/* Messages and loading */}
             {loadError && (
@@ -308,20 +320,6 @@ function UserProjectInfoPage() {
                   handleSave();
                 }}
               >
-                {/* Top bar: View / Edit toggle */}
-                <div className="project-info-card-header">
-                  <div className="project-info-card-step">
-                    Project Information
-                  </div>
-                  <button
-                    type="button"
-                    className="user-project-btn user-project-btn-backlinks"
-                    onClick={() => setIsEditing((prev) => !prev)}
-                  >
-                    {isEditing ? "View" : "Edit"}
-                  </button>
-                </div>
-
                 {/* 3‑card layout */}
                 <div className="project-info-grid">
                   {/* CARD 1 – Basic Business Information */}

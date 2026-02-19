@@ -955,7 +955,7 @@ th, td {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 /* Wraps table + button */
 .table-wrapper {
