@@ -629,7 +629,7 @@ th, td {
 
 .modal-field input {
   width: 100%;
-  padding: 10px 12px;
+  padding: 0px;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
 }
@@ -723,6 +723,19 @@ th, td {
   justify-content: flex-end; /* pushes button to right */
   margin-bottom: 1px;       /* space above table */
 }
+/* 3‑card layout for Project Info page */
+.project-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* On small screens, stack cards */
+@media (max-width: 1024px) {
+  .project-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* Larger card for Project Info page */
 /* Larger card for Project Info page */
 /* Wider, centered Project Info card */
@@ -757,6 +770,9 @@ th, td {
   font-size: 13px;
   font-weight: 600;
   color: #4b5563;
+}
+.project-info-card .card-subtitle {
+  display: none;
 }
 /* Layout for rows inside project info card */
 .project-info-card .modal-field-row {

@@ -95,7 +95,6 @@ function UserProjectInfoPage() {
         setPincode(found?.infoPincode ?? "");
         setSpecialNotes(found?.infoSpecialNotes ?? "");
 
-        // If nothing saved yet, open in edit mode; otherwise view mode
         const hasAnyData =
           found?.infoClientName ||
           found?.infoCompanyName ||
@@ -312,12 +311,8 @@ function UserProjectInfoPage() {
 
                 {/* 3‑card layout */}
                 <div className="project-info-grid">
-                  {/* CARD 1 – Part 1: Basic Business Information */}
+                  {/* CARD 1 – Basic Business Information */}
                   <div className="tool-card project-info-card">
-                    <h3 className="card-subtitle">
-                      Part 1: Basic Business Information
-                    </h3>
-
                     {/* Client & Company */}
                     <div className="modal-field-row">
                       <div className="modal-field">
@@ -448,10 +443,8 @@ function UserProjectInfoPage() {
                     </div>
                   </div>
 
-                  {/* CARD 2 – Part 2: Business Details */}
+                  {/* CARD 2 – Business Details */}
                   <div className="tool-card project-info-card">
-                    <h3 className="card-subtitle">Part 2: Business Details</h3>
-
                     {/* About Company */}
                     <div className="modal-field">
                       <label>
@@ -548,12 +541,8 @@ function UserProjectInfoPage() {
                     </div>
                   </div>
 
-                  {/* CARD 3 – Part 3: Contact & Address Information */}
+                  {/* CARD 3 – Contact & Address Information */}
                   <div className="tool-card project-info-card">
-                    <h3 className="card-subtitle">
-                      Part 3: Contact & Address Information
-                    </h3>
-
                     {/* Contact details */}
                     <div className="modal-field-row">
                       <div className="modal-field">
