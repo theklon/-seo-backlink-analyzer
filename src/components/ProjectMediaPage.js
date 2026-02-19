@@ -31,7 +31,6 @@ function ProjectMediaPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const projectName = location.state?.projectName || "Project";
 
   const [activeTab, setActiveTab] = useState("images");
   const [images, setImages] = useState([]);
