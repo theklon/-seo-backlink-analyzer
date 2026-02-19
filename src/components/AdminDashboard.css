@@ -2700,9 +2700,13 @@ th, td {
 
 .media-image-actions {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-start; /* icons next to each other */
+  gap: 8px;                    /* space between download and ... */
   margin-top: 4px;
+}
+.media-image-title input {
+  font-size: 12px;
 }
 
 .image-download-btn {
@@ -2718,7 +2722,7 @@ th, td {
 
 /* optional: control icon size/color */
 .image-download-btn svg {
-  font-size: 18px;   /* adjust if needed */
+  font-size: 12px;   /* adjust if needed */
   color: #111827;    /* or whatever text color you want */
 }
 .file-preview-modal {

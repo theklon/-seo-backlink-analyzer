@@ -633,7 +633,7 @@ function ProjectMediaPage() {
 
                 <div className="media-grid">
                   {images.map((img) => (
-                    <div key={img.id} className="media-image-card">
+                    <div className="media-image-card">
                       <img
                         src={img.url}
                         alt={img.name}
@@ -643,38 +643,42 @@ function ProjectMediaPage() {
                         }}
                         style={{ cursor: "pointer" }}
                       />
-                      <div className="media-image-title">
-                        <input
-                          type="text"
-                          value={img.name}
-                          onChange={(e) =>
-                            handleImageNameChange(img.id, e.target.value)
-                          }
-                          style={{
-                            width: "100%",
-                            border: "none",
-                            background: "transparent",
-                            outline: "none",
-                          }}
-                        />
-                      </div>
-                      <div className="media-image-actions">
-                        <button
-                          type="button"
-                          className="image-download-btn"
-                          onClick={() => handleDownload(img)}
-                          title="Download image"
-                        >
-                          <MdOutlineFileDownload />
-                        </button>
-                        <button
-                          type="button"
-                          className="image-menu-btn"
-                          onClick={() => setDeleteImageTarget(img)}
-                          title="More options"
-                        >
-                          ...
-                        </button>
+
+                      <div className="media-image-row">
+                        <div className="media-image-title">
+                          <input
+                            type="text"
+                            value={img.name}
+                            onChange={(e) =>
+                              handleImageNameChange(img.id, e.target.value)
+                            }
+                            style={{
+                              width: "100%",
+                              border: "none",
+                              background: "transparent",
+                              outline: "none",
+                            }}
+                          />
+                        </div>
+
+                        <div className="media-image-actions">
+                          <button
+                            type="button"
+                            className="image-download-btn"
+                            onClick={() => handleDownload(img)}
+                            title="Download image"
+                          >
+                            <MdOutlineFileDownload />
+                          </button>
+                          <button
+                            type="button"
+                            className="image-menu-btn"
+                            onClick={() => setDeleteImageTarget(img)}
+                            title="More options"
+                          >
+                            ...
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
