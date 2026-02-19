@@ -729,10 +729,10 @@ th, td {
   max-width: 750px;   /* adjust if needed */
 }
 .project-actions {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;              /* space between buttons */
+  display: flex;
+  justify-content: flex-start;   /* align buttons to the left of the cell */
+  gap: 8px;
+  padding-right: 24px;           /* add right padding = white space to border */
 }
 
 /* Buttons styling to match screenshot */
@@ -748,6 +748,10 @@ th, td {
   margin-right: 0;
 
   border-radius: 0;     /* make UserProjects table sharp, not curved */
+}
+/* Header row background for UserProjects table */
+.user-dashboard .user-projects-table thead tr {
+  background-color: #dfefff;
 }
 .user-dashboard .user-projects-table td.user-projects-actions-col {
   padding-right: 16px;    /* space between last button and table border */
