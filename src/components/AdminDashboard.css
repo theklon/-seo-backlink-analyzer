@@ -1299,10 +1299,22 @@ th, td {
 }
 .backlink-filters .search-box {
     align-items: center;
-    border-radius: 6px;
     display: flex;
+    gap: 6px;
+  /* NO border / background / radius here */
+    border: none;
+    background: transparent;
+    padding: 0;
 }
-
+/* Text color for all filter controls */
+.backlink-filters .search-box input,
+.backlink-filters .filter-select,
+.backlink-filters .react-select__control {
+  color: #111827;   /* same dark color as your Projects/Category text */
+}
+.backlink-filters .filter-select::placeholder {
+  color: #6b7280;   /* optional: match placeholder grey */
+}
 /* Search width similar to screenshot */
 .search-box {
   background: #fff;

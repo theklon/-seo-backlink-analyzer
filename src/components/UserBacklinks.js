@@ -851,7 +851,7 @@ function UserBacklinks() {
                           <td>{item.domain}</td>
                           <td>
                             {(() => {
-                              if (!item.projectId) return "";
+                              if (!item.projectId) return "-";
                               const project = projects.find(
                                 (p) =>
                                   (p.id || p._id) === item.projectId ||
