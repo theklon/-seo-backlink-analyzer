@@ -85,12 +85,20 @@ function UserPlacements() {
   };
 
   // Close add/edit modal on ESC key
+  // Close add/edit and delete modals on ESC key
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.key === "Escape" || e.key === "Esc") && isModalOpen && !saving) {
-        // inline closeModal logic to avoid depending on closeModal
-        setIsModalOpen(false);
-        setEditingId(null);
+      if (e.key === "Escape" || e.key === "Esc") {
+        // close add/edit modal
+        if (isModalOpen && !saving) {
+          setIsModalOpen(false);
+          setEditingId(null);
+        }
+        // close delete confirmation modal
+        if (isDeleteModalOpen) {
+          setIsDeleteModalOpen(false);
+          setDeleteTarget(null);
+        }
       }
     };
 
@@ -98,7 +106,7 @@ function UserPlacements() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isModalOpen, saving]);
+  }, [isModalOpen, saving, isDeleteModalOpen]);
 
   const handleSavePlacement = async (e) => {
     e.preventDefault();
@@ -524,13 +532,6 @@ function UserPlacements() {
               className="modal-actions"
               style={{ justifyContent: "flex-end" }}
             >
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={handleCancelDelete}
-              >
-                Cancel
-              </button>
               <button
                 type="button"
                 className="primary-btn"
