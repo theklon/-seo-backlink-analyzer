@@ -565,10 +565,6 @@ function UserBacklinks() {
       }
     }
 
-    if (selectedProject && (item.projectId || "") !== selectedProject) {
-      return false;
-    }
-
     if (selectedCategory && (item.categoryId || "") !== selectedCategory) {
       return false;
     }
