@@ -122,6 +122,15 @@ function UserProjects() {
               <VscTools className="nav-icon" />
               <span>Tool Collections</span>
             </li>
+            <li
+              className={`menu-item ${
+                location.pathname === "/user/placements" ? "active" : ""
+              }`}
+              onClick={() => navigate("/user/placements")}
+            >
+              <VscTools className="nav-icon" />
+              <span>Master of Placement</span>
+            </li>
           </ul>
         </div>
 

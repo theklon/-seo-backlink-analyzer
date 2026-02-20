@@ -97,6 +97,15 @@ function UserDashboard() {
               <VscTools className="nav-icon" />
               <span>Tool Collection</span>
             </li>
+            <li
+              className={`menu-item ${
+                location.pathname === "/user/placements" ? "active" : ""
+              }`}
+              onClick={() => navigate("/user/placements")}
+            >
+              <VscTools className="nav-icon" />
+              <span>Master of Placement</span>
+            </li>
           </ul>
         </div>
 

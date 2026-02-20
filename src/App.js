@@ -7,7 +7,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import Adminuser from "./components/Adminuser";
 import Adminproject from "./components/Adminproject";
 import Admincategories from "./components/Admincategories";
-
+import UserPlacements from "./components/UserPlacements";
 import Userlogin from "./components/Userlogin";
 import UserDashboard from "./components/UserDashboard";
 import UserBacklinks from "./components/UserBacklinks";
@@ -171,6 +171,10 @@ function App() {
             </UserProtectedRoute>
           }
         />
+
+        <Route 
+          path="/user/placements" 
+          element={<UserPlacements />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" replace />} />
