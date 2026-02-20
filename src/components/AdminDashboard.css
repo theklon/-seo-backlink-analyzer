@@ -45,6 +45,10 @@ input[type="password"]::-webkit-textfield-decoration-container {
   font-size: 18px;
   cursor: pointer;
 }
+/* Optional: tighter card for placements table */
+.user-dashboard .main-content .user-backlinks-table.user-placements-table {
+  padding-top: 0;
+}
 /* ===== USER PAGES: LIGHT TOP BAR ===== */
 .user-dashboard .topbar {
   background: #ffffff;

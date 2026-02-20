@@ -1,4 +1,3 @@
-# backend/main.py
 from datetime import datetime, timedelta
 from typing import List, Optional
 import os
@@ -8,7 +7,6 @@ import string
 import smtplib
 from email.mime.text import MIMEText
 from email.message import EmailMessage
-from .models import tools_collection  # after adding it in models.py
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,8 +19,9 @@ from .models import (
     categories_collection,
     backlinks_collection,
     project_media_collection,
-    tools_collection, 
+    tools_collection,
 )
+from .db import placements_collection
 from .schemas import (
     UserCreate,
     UserOut,
@@ -34,6 +33,8 @@ from .schemas import (
     CategoryOut,
     BacklinkCreate,
     BacklinkOut,
+    PlacementCreate,
+    PlacementOut,
 )
 
 app = FastAPI(title="Backlink Digital API")
@@ -76,7 +77,7 @@ ALLOWED_ADMIN_EMAILS = {
     os.getenv("ADMIN_OTP_EMAIL", "ajay@nextwebi.com").lower(),
     "sureshraksha7@gmail.com",
 }
- 
+
 admin_otp_store = {
     # "ajay@nextwebi.com": {"code": "123456", "expires_at": datetime(...) }
 }
@@ -86,7 +87,7 @@ def send_admin_otp_email(to_email: str, otp_code: str):
     """Send admin login OTP to fixed email."""
     msg = MIMEText(f"Your admin login OTP is: {otp_code}")
     msg["Subject"] = "Klon Admin Login OTP"
-    msg["From"] = SMTP_FROM or SMTP_USER   # match MAIL FROM you configured
+    msg["From"] = SMTP_FROM or SMTP_USER  # match MAIL FROM you configured
     msg["To"] = to_email
 
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
@@ -98,6 +99,8 @@ def send_admin_otp_email(to_email: str, otp_code: str):
 def generate_otp(length: int = 6) -> str:
     """Generate numeric OTP like '123456'."""
     return "".join(random.choices(string.digits, k=length))
+
+
 def build_login_otp_email_body(otp: str) -> str:
     return f"""\
 <!DOCTYPE html>
@@ -134,6 +137,7 @@ def build_login_otp_email_body(otp: str) -> str:
 </html>
 """
 
+
 def send_otp_email(to_email: str, otp: str) -> None:
     """Send user OTP email via SMTP."""
     msg = EmailMessage()
@@ -141,10 +145,8 @@ def send_otp_email(to_email: str, otp: str) -> None:
     msg["From"] = SMTP_FROM
     msg["To"] = to_email
 
-    # Plain-text fallback (for clients that don't support HTML)
     msg.set_content(f"Your OTP code is: {otp}\nIt is valid for 10 minutes.")
 
-    # HTML version (what you want it to look like)
     html_body = build_login_otp_email_body(otp)
     msg.add_alternative(html_body, subtype="html")
 
@@ -161,12 +163,14 @@ async def health():
 
 # ================= AUTH: ROOT =================
 
+
 @app.get("/")
 async def root():
     return {"status": "ok"}
 
 
 # ================= USER AUTH: OTP + LOGIN =================
+
 
 @app.post("/api/auth/request-otp")
 async def request_otp(payload: dict):
@@ -331,6 +335,7 @@ async def login(payload: dict):
 
 # ================= ADMIN LOGIN WITH EMAIL OTP =================
 
+
 @app.post("/api/admin/login")
 async def admin_login(payload: dict):
     """
@@ -391,6 +396,7 @@ async def verify_admin_otp(payload: dict):
 
 
 # ==== USERS (for Admin Users page) ====
+
 
 @app.post("/api/admin/users", response_model=UserOut)
 async def create_user(user: UserCreate):
@@ -464,6 +470,7 @@ async def list_users():
 
 # ==== PROJECTS (social links update) ====
 
+
 @app.put("/api/projects/{project_id}")
 async def update_project_info(project_id: str, payload: dict):
     update_fields = {
@@ -472,7 +479,7 @@ async def update_project_info(project_id: str, payload: dict):
         "instagramPosts": payload.get("instagramPosts", 0),
         "instagramFollowers": payload.get("instagramFollowers", 0),
         "instagramFollowing": payload.get("instagramFollowing", 0),
-                # NEW: manual social counts
+        # NEW: manual social counts
         "facebookUrl": (payload.get("facebookUrl") or "").strip(),
         "facebookPosts": payload.get("facebookPosts", 0),
         "facebookFollowers": payload.get("facebookFollowers", 0),
@@ -489,12 +496,13 @@ async def update_project_info(project_id: str, payload: dict):
         "infoBio": (payload.get("infoBio") or "").strip(),
         "infoContact": (payload.get("infoContact") or "").strip(),
         "infoExtraFields": payload.get("infoExtraFields", []),
-
         # NEW: Project Info page fields
         "infoClientName": (payload.get("infoClientName") or "").strip(),
         "infoCompanyName": (payload.get("infoCompanyName") or "").strip(),
         "infoWebsiteUrl": (payload.get("infoWebsiteUrl") or "").strip(),
-        "infoBrandingGuidelines": (payload.get("infoBrandingGuidelines") or "").strip(),
+        "infoBrandingGuidelines": (
+            payload.get("infoBrandingGuidelines") or ""
+        ).strip(),
         "infoClientLogoUrl": (payload.get("infoClientLogoUrl") or "").strip(),
         "infoYearsInBusiness": (payload.get("infoYearsInBusiness") or "").strip(),
         "infoIndustry": (payload.get("infoIndustry") or "").strip(),
@@ -502,7 +510,9 @@ async def update_project_info(project_id: str, payload: dict):
         "infoAboutCompany": (payload.get("infoAboutCompany") or "").strip(),
         "infoAboutServices": (payload.get("infoAboutServices") or "").strip(),
         "infoTargetAudience": (payload.get("infoTargetAudience") or "").strip(),
-        "infoServiceLocations": (payload.get("infoServiceLocations") or "").strip(),
+        "infoServiceLocations": (
+            payload.get("infoServiceLocations") or ""
+        ).strip(),
         "infoUsp": (payload.get("infoUsp") or "").strip(),
         "infoBusinessEmail": (payload.get("infoBusinessEmail") or "").strip(),
         "infoPhoneNumber": (payload.get("infoPhoneNumber") or "").strip(),
@@ -532,6 +542,7 @@ async def update_project_info(project_id: str, payload: dict):
 
 # ==== PROJECTS (Admin + User View) ====
 
+
 @app.post("/api/admin/projects", response_model=ProjectOut)
 async def create_project(project: ProjectCreate):
     now = datetime.utcnow()
@@ -552,6 +563,7 @@ async def create_project(project: ProjectCreate):
 
 
 # ==== PROJECT MEDIA ====
+
 
 @app.post(
     "/api/projects/{project_id}/media",
@@ -666,8 +678,64 @@ async def list_projects(
     return projects
 
 
-# ==== CATEGORIES ====
- 
+# ==== PLACEMENTS (Master of Placement page) ====
+
+
+@app.get("/api/placements", response_model=List[PlacementOut])
+async def list_placements():
+    docs = await placements_collection.find({}).to_list(length=1000)
+    results: List[PlacementOut] = []
+    for d in docs:
+        d["id"] = str(d["_id"])
+        del d["_id"]
+        results.append(PlacementOut(**d))
+    return results
+
+
+@app.post("/api/placements", response_model=PlacementOut)
+async def create_placement(payload: PlacementCreate):
+    doc = payload.dict()
+    res = await placements_collection.insert_one(doc)
+    doc_db = await placements_collection.find_one({"_id": res.inserted_id})
+    doc_db["id"] = str(doc_db["_id"])
+    del doc_db["_id"]
+    return PlacementOut(**doc_db)
+
+
+@app.put("/api/placements/{placement_id}", response_model=PlacementOut)
+async def update_placement(placement_id: str, payload: PlacementCreate):
+    if not ObjectId.is_valid(placement_id):
+        raise HTTPException(status_code=400, detail="Invalid placement id")
+
+    update_doc = payload.dict()
+    res = await placements_collection.find_one_and_update(
+        {"_id": ObjectId(placement_id)},
+        {"$set": update_doc},
+        return_document=True,
+    )
+    if not res:
+        raise HTTPException(status_code=404, detail="Placement not found")
+
+    res["id"] = str(res["_id"])
+    del res["_id"]
+    return PlacementOut(**res)
+
+
+@app.delete("/api/placements/{placement_id}")
+async def delete_placement(placement_id: str):
+    if not ObjectId.is_valid(placement_id):
+        raise HTTPException(status_code=400, detail="Invalid placement id")
+
+    result = await placements_collection.delete_one({"_id": ObjectId(placement_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Placement not found")
+
+    return {"deleted": True}
+
+
+# ==== TOOLS / CATEGORIES ====
+
+
 @app.post("/api/tools")
 async def create_tool(payload: dict):
     name = (payload.get("toolName") or "").strip()
@@ -678,7 +746,6 @@ async def create_tool(payload: dict):
     if not name or not link:
         raise HTTPException(status_code=400, detail="Tool name and link are required")
 
-    # DUPLICATE CHECK: same name OR same link
     existing = await tools_collection.find_one(
         {"$or": [{"toolName": name}, {"link": link}]}
     )
@@ -703,14 +770,14 @@ async def create_tool(payload: dict):
 async def delete_tool(tool_id: str):
     if not ObjectId.is_valid(tool_id):
         raise HTTPException(status_code=400, detail="Invalid tool id")
- 
+
     result = await tools_collection.delete_one({"_id": ObjectId(tool_id)})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Tool not found")
- 
+
     return {"deleted": True}
- 
- 
+
+
 @app.get("/api/tools")
 async def list_tools():
     tools = await tools_collection.find({}).to_list(length=1000)
@@ -718,7 +785,7 @@ async def list_tools():
         t["_id"] = str(t["_id"])
     return tools
 
-    
+
 @app.post("/api/admin/categories", response_model=CategoryOut)
 async def create_category(cat: CategoryCreate):
     now = datetime.utcnow()
@@ -782,6 +849,7 @@ async def list_categories():
 
 
 # ==== BACKLINKS (User Backlinks page) ====
+
 
 @app.post("/api/user/backlinks", response_model=BacklinkOut)
 async def create_backlink(backlink: BacklinkCreate):
@@ -1011,6 +1079,7 @@ async def scrape_linkedin(page):
 
 # ==== BACKLINKS CONTRIBUTIONS & DELETE ====
 
+
 @app.put("/api/user/backlinks/{backlink_id}/contribute")
 async def set_backlink_contribution(backlink_id: str, payload: dict):
     if not ObjectId.is_valid(backlink_id):
@@ -1077,6 +1146,7 @@ async def delete_backlink(backlink_id: str):
 
 
 # ==== DASHBOARD STATS ====
+
 
 @app.get("/api/admin/stats")
 async def admin_stats():
