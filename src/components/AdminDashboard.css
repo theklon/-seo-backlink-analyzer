@@ -2131,6 +2131,10 @@ th, td {
   font-size: 13px;
   flex: 1;
 }
+.video-url-link {
+  cursor: pointer;
+  text-decoration: underline;
+}
 .image-menu-btn {
   border: none;
   background: transparent;

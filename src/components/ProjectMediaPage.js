@@ -78,6 +78,8 @@ function ProjectMediaPage() {
   // File preview (PDF/doc/image)
   const [previewFile, setPreviewFile] = useState(null);
   const [isFilePreviewOpen, setIsFilePreviewOpen] = useState(false);
+  const [previewVideo, setPreviewVideo] = useState(null);
+  const [isVideoPreviewOpen, setIsVideoPreviewOpen] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -93,6 +95,10 @@ function ProjectMediaPage() {
           setIsFilePreviewOpen(false);
           setPreviewFile(null);
         }
+        if (isVideoPreviewOpen) {
+          setIsVideoPreviewOpen(false);
+          setPreviewVideo(null);
+        }
       }
     };
 
@@ -106,6 +112,7 @@ function ProjectMediaPage() {
     fileModalOpen,
     isImagePreviewOpen,
     isFilePreviewOpen,
+    isVideoPreviewOpen,
   ]);
 
   // Load already-saved media for this project
@@ -174,7 +181,22 @@ function ProjectMediaPage() {
     if (!url) return false;
     return /youtube\.com\/watch|youtu\.be\//i.test(url);
   };
-
+  const getYoutubeEmbedUrl = (url) => {
+    if (!url) return "";
+    try {
+      const u = new URL(url);
+      // youtu.be/<id>
+      if (u.hostname.includes("youtu.be")) {
+        const id = u.pathname.replace("/", "");
+        return id ? `https://www.youtube.com/embed/${id}` : url;
+      }
+      // youtube.com/watch?v=<id>
+      const id = u.searchParams.get("v");
+      return id ? `https://www.youtube.com/embed/${id}` : url;
+    } catch {
+      return url;
+    }
+  };
   const fileToDataUrl = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -715,7 +737,14 @@ function ProjectMediaPage() {
                                   display: "inline-flex",
                                   alignItems: "center",
                                   gap: 6,
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
                                 }}
+                                onClick={() => {
+                                  setPreviewVideo(v);
+                                  setIsVideoPreviewOpen(true);
+                                }}
+                                title="Play video"
                               >
                                 {isYoutubeUrl(v.url) && (
                                   <FaYoutube
@@ -1527,6 +1556,53 @@ function ProjectMediaPage() {
               title={previewFile.name}
               className="file-preview-frame"
             />
+          </div>
+        </div>
+      )}
+      {isVideoPreviewOpen && previewVideo && (
+        <div
+          className="file-preview-modal"          // reuse same overlay styles
+          onClick={() => {
+            setIsVideoPreviewOpen(false);
+            setPreviewVideo(null);
+          }}
+        >
+          <div
+            className="file-preview-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="file-preview-header">
+              <div className="file-preview-name">
+                {previewVideo.name || "Video"}
+              </div>
+              <div className="file-preview-header-actions">
+                <button
+                  type="button"
+                  className="file-preview-close"
+                  onClick={() => {
+                    setIsVideoPreviewOpen(false);
+                    setPreviewVideo(null);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {isYoutubeUrl(previewVideo.url) ? (
+              <iframe
+                src={getYoutubeEmbedUrl(previewVideo.url)}
+                title={previewVideo.name || "Video preview"}
+                className="file-preview-frame"
+                allowFullScreen
+              />
+            ) : (
+              <video
+                src={previewVideo.url}
+                controls
+                className="file-preview-frame"
+              />
+            )}
           </div>
         </div>
       )}
