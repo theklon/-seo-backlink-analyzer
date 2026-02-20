@@ -14,7 +14,6 @@ import { IoIosArrowDown, IoMdAdd, IoMdSearch } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import { FaHouseLaptop } from "react-icons/fa6";
 
-
 function UserPlacements() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,6 +33,10 @@ function UserPlacements() {
   const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null); // null = add, id = edit
+
+  // Delete confirmation state
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Load placements from backend on mount
   useEffect(() => {
@@ -81,8 +84,7 @@ function UserPlacements() {
     setEditingId(null);
   };
 
-  // Close modal on ESC key
-  // Close modal on ESC key
+  // Close add/edit modal on ESC key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.key === "Escape" || e.key === "Esc") && isModalOpen && !saving) {
@@ -156,25 +158,37 @@ function UserPlacements() {
     }
   };
 
-  const handleDeletePlacement = async (id) => {
+  // Step 1: open delete confirmation modal
+  const handleDeletePlacement = (id) => {
     const toDelete = placements.find((p) => p.id === id);
     if (!toDelete) return;
+    setDeleteTarget(toDelete);
+    setIsDeleteModalOpen(true);
+  };
 
-    const ok = window.confirm(
-      `Are you sure you want to delete "${toDelete.placement}"?`
-    );
-    if (!ok) return;
+  // Step 2: confirm delete
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/placements/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/placements/${deleteTarget.id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete placement");
-      setPlacements((prev) => prev.filter((p) => p.id !== id));
+      setPlacements((prev) => prev.filter((p) => p.id !== deleteTarget.id));
     } catch (err) {
       console.error("Error deleting placement", err);
       alert(err.message || "Failed to delete placement");
+    } finally {
+      setIsDeleteModalOpen(false);
+      setDeleteTarget(null);
     }
+  };
+
+  // Step 3: cancel delete
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteTarget(null);
   };
 
   // Filters
@@ -270,7 +284,7 @@ function UserPlacements() {
               }`}
               onClick={() => navigate("/user/placements")}
             >
-              <FaHouseLaptop  className="nav-icon" />
+              <FaHouseLaptop className="nav-icon" />
               <span>Master of Placement</span>
             </li>
           </ul>
@@ -476,6 +490,55 @@ function UserPlacements() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {isDeleteModalOpen && deleteTarget && (
+        <div className="modal-backdrop" onClick={handleCancelDelete}>
+          <div
+            className="modal-card"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: 420 }}
+          >
+            <div className="modal-header">
+              <h3>Delete Placement</h3>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={handleCancelDelete}
+              >
+                <IoMdClose />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <p>
+                Are you sure you want to delete{" "}
+                <strong>{deleteTarget.placement}</strong>?
+              </p>
+            </div>
+
+            <div
+              className="modal-actions"
+              style={{ justifyContent: "flex-end" }}
+            >
+              <button
+                type="button"
+                className="secondary-btn"
+                onClick={handleCancelDelete}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="primary-btn"
+                onClick={handleConfirmDelete}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
