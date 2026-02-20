@@ -11,7 +11,7 @@ import { VscTools } from "react-icons/vsc";
 import { LuCalendar } from "react-icons/lu";
 import { FiBell, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { IoIosArrowDown, IoMdAdd, IoMdSearch } from "react-icons/io";
-import { IoMdClose } from "react-icons/io"; 
+import { IoMdClose } from "react-icons/io";
 
 function UserPlacements() {
   const navigate = useNavigate();
@@ -78,6 +78,25 @@ function UserPlacements() {
     setIsModalOpen(false);
     setEditingId(null);
   };
+
+  // Close modal on ESC key
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" || e.key === "Esc") {
+        // respect saving flag so user doesn't accidentally close mid-save
+        if (!saving) {
+          closeModal();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalOpen, saving]);
 
   const handleSavePlacement = async (e) => {
     e.preventDefault();
@@ -385,12 +404,12 @@ function UserPlacements() {
             <div className="modal-header">
               <h3>{editingId ? "Edit Placement" : "New Placement"}</h3>
               <button
-              type="button"
-              className="modal-close-btn"
-              onClick={closeModal}
-            >
-              <IoMdClose />
-            </button>
+                type="button"
+                className="modal-close-btn"
+                onClick={closeModal}
+              >
+                <IoMdClose />
+              </button>
             </div>
 
             <form onSubmit={handleSavePlacement}>
@@ -415,8 +434,8 @@ function UserPlacements() {
 
                 <div className="modal-field">
                   <label>Uses</label>
-                  <textarea
-                    rows={3}
+                  <input
+                    type="text"
                     value={uses}
                     onChange={(e) => setUses(e.target.value)}
                     placeholder="How this placement is used"
@@ -448,14 +467,6 @@ function UserPlacements() {
                 className="modal-actions"
                 style={{ justifyContent: "flex-end" }}
               >
-                <button
-                  type="button"
-                  className="secondary-btn"
-                  onClick={closeModal}
-                  disabled={saving}
-                >
-                  Cancel
-                </button>
                 <button className="primary-btn" type="submit" disabled={saving}>
                   {saving
                     ? "Saving..."
