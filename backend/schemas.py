@@ -94,7 +94,14 @@ class CategoryOut(CategoryBase):
     createdAt: datetime
     updatedAt: datetime
 
-
+class PlacementCreate(BaseModel):
+  placement: str
+  uses: Optional[str] = ""
+  type: Optional[str] = ""
+  industry: Optional[str] = ""
+ 
+class PlacementOut(PlacementCreate):
+  id: str
 # ==== BACKLINK ====
 class ContributionEntry(BaseMongoModel):
     subBacklinkId: str
