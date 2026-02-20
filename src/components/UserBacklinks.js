@@ -14,6 +14,7 @@ import { FiBell, FiCopy } from "react-icons/fi";
 import { IoIosArrowDown, IoMdSearch, IoMdAdd } from "react-icons/io";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaHouseLaptop } from "react-icons/fa6";
 
 import { API_BASE_URL } from "../api";
 
@@ -688,7 +689,7 @@ function UserBacklinks() {
               }`}
               onClick={() => navigate("/user/placements")}
             >
-              <VscTools className="nav-icon" />
+              <FaHouseLaptop className="nav-icon" />
               <span>Master of Placement</span>
             </li>
           </ul>

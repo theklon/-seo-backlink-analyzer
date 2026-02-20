@@ -12,6 +12,7 @@ import { LuCalendar } from "react-icons/lu";
 import { FiBell } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoMdSearch } from "react-icons/io";
+import { FaHouseLaptop } from "react-icons/fa6";
 
 function UserProjects() {
   const navigate = useNavigate();
@@ -128,7 +129,7 @@ function UserProjects() {
               }`}
               onClick={() => navigate("/user/placements")}
             >
-              <VscTools className="nav-icon" />
+              <FaHouseLaptop className="nav-icon" />
               <span>Master of Placement</span>
             </li>
           </ul>

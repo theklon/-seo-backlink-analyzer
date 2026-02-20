@@ -14,6 +14,7 @@ import { FiBell, FiCopy } from "react-icons/fi";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 import { MdOutlineFileDownload } from "react-icons/md";
+import { FaHouseLaptop } from "react-icons/fa6";
 import {
   AiOutlineEye,
   AiOutlineFilePdf,
@@ -558,7 +559,7 @@ function ProjectMediaPage() {
               }`}
               onClick={() => navigate("/user/placements")}
             >
-              <VscTools className="nav-icon" />
+              <FaHouseLaptop className="nav-icon" />
               <span>Master of Placement</span>
             </li>
           </ul>

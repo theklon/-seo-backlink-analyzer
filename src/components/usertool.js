@@ -12,6 +12,7 @@ import { VscTools } from "react-icons/vsc";
 import { LuCalendar } from "react-icons/lu";
 import { FiBell, FiInfo, FiMoreVertical } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
+import { FaHouseLaptop } from "react-icons/fa6";
 
 function getShortUrl(url) {
   if (!url) return "-";
@@ -258,6 +259,15 @@ function UserTools() {
             >
               <VscTools className="nav-icon" />
               <span>Tool Collections</span>
+            </li>
+            <li
+              className={`menu-item ${
+                location.pathname === "/user/placements" ? "active" : ""
+              }`}
+              onClick={() => navigate("/user/placements")}
+            >
+              <FaHouseLaptop className="nav-icon" />
+              <span>Master of Placement</span>
             </li>
           </ul>
         </div>

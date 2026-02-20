@@ -13,6 +13,7 @@ import { LuCalendar, LuArrowUpDown } from "react-icons/lu";
 import { FiBell, FiCopy } from "react-icons/fi";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
+import { FaHouseLaptop } from "react-icons/fa6";
 import Select from "react-select";
 
 function ProjectBacklinksPage() {
@@ -299,7 +300,7 @@ function ProjectBacklinksPage() {
               }`}
               onClick={() => navigate("/user/placements")}
             >
-              <VscTools className="nav-icon" />
+              <FaHouseLaptop className="nav-icon" />
               <span>Master of Placement</span>
             </li>
           </ul>
