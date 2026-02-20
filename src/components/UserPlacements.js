@@ -91,7 +91,7 @@ function UserPlacements() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isModalOpen, saving]);
+  }, [isModalOpen, saving, closeModal]);
 
   const handleSavePlacement = async (e) => {
     e.preventDefault();
