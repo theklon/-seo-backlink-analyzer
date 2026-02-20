@@ -20,8 +20,9 @@ from .models import (
     backlinks_collection,
     project_media_collection,
     tools_collection,
+    placements_collection,
 )
-from .db import placements_collection
+
 from .schemas import (
     UserCreate,
     UserOut,
