@@ -80,10 +80,13 @@ function UserPlacements() {
   };
 
   // Close modal on ESC key
+  // Close modal on ESC key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.key === "Escape" || e.key === "Esc") && isModalOpen && !saving) {
-        closeModal();
+        // inline closeModal logic to avoid depending on closeModal
+        setIsModalOpen(false);
+        setEditingId(null);
       }
     };
 
@@ -91,7 +94,7 @@ function UserPlacements() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isModalOpen, saving, closeModal]);
+  }, [isModalOpen, saving]);
 
   const handleSavePlacement = async (e) => {
     e.preventDefault();
