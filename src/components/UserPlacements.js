@@ -81,14 +81,9 @@ function UserPlacements() {
 
   // Close modal on ESC key
   useEffect(() => {
-    if (!isModalOpen) return;
-
     const handleKeyDown = (e) => {
-      if (e.key === "Escape" || e.key === "Esc") {
-        // respect saving flag so user doesn't accidentally close mid-save
-        if (!saving) {
-          closeModal();
-        }
+      if ((e.key === "Escape" || e.key === "Esc") && isModalOpen && !saving) {
+        closeModal();
       }
     };
 
