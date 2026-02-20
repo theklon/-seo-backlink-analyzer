@@ -11,6 +11,7 @@ import { VscTools } from "react-icons/vsc";
 import { LuCalendar } from "react-icons/lu";
 import { FiBell, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { IoIosArrowDown, IoMdAdd, IoMdSearch } from "react-icons/io";
+import { IoMdClose } from "react-icons/io"; 
 
 function UserPlacements() {
   const navigate = useNavigate();
@@ -383,6 +384,13 @@ function UserPlacements() {
           >
             <div className="modal-header">
               <h3>{editingId ? "Edit Placement" : "New Placement"}</h3>
+              <button
+              type="button"
+              className="modal-close-btn"
+              onClick={closeModal}
+            >
+              <IoMdClose />
+            </button>
             </div>
 
             <form onSubmit={handleSavePlacement}>

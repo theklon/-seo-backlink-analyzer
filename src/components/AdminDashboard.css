@@ -49,6 +49,15 @@ input[type="password"]::-webkit-textfield-decoration-container {
 .user-dashboard .main-content .user-backlinks-table.user-placements-table {
   padding-top: 0;
 }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;    /* vertical center */
+  justify-content: center;/* horizontal center */
+  z-index: 9999;
+}
 /* ===== USER PAGES: LIGHT TOP BAR ===== */
 .user-dashboard .topbar {
   background: #ffffff;
@@ -634,21 +643,21 @@ th, td {
 
 /* ===== MODAL CARD ===== */
 .modal-card {
-  width: auto;
-  height: auto;
   background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  padding: 20px 22px;
+  border-radius: 16px;
+  padding: 24px 28px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
 }
-
-/* HEADER */
+ 
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  justify-content: space-between;  /* title left, close icon right */
+  margin-bottom: 16px;
 }
+ 
 
 .modal-header h3 {
   font-size: 18px;
@@ -1398,7 +1407,21 @@ th, td {
 .modal-close:hover {
   color: #111827;
 }
-
+.modal-close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+ 
+.modal-close-btn:hover {
+  color: #0f172a;
+}
 /* BODY */
 .modal-body {
   display: flex;
