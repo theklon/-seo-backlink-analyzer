@@ -306,10 +306,7 @@ function UserPlacements() {
             </div>
 
             {/* TABLE */}
-            <div
-              className="table-container user-backlinks-table"
-              style={{ marginTop: 24 }}
-            >
+            <div className="table-container user-backlinks-table user-placements-table">
               {loadError && (
                 <div style={{ color: "red", marginBottom: 8 }}>
                   {loadError}
